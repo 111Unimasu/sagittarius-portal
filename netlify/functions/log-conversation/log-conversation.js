@@ -1,0 +1,1 @@
+{"id":"/netlify/functions/log-conversation/log-conversation.js","path":"/netlify/functions/log-conversation/log-conversation.js","sha":"2b1359b445741169ccff9df54bfe2e99954e6401","mime_type":"application/javascript","size":1881,"site_id":"612cbd06-229a-47f9-8d61-837cfca6d712","deploy_id":"6a0ad49a8832b300aefc3a3b"}
