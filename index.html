@@ -1,1 +1,46 @@
-{"id":"/index.html","path":"/index.html","sha":"6429de00929b6019c55fb83c57f4ab095305597c","mime_type":"text/html","size":26916,"site_id":"612cbd06-229a-47f9-8d61-837cfca6d712","deploy_id":"6a0ad49a8832b300aefc3a3b"}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sagittarius Portal</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI','Microsoft YaHei',sans-serif;min-height:100vh;background:linear-gradient(135deg,#0a0a1a 0%,#1a0a2e 30%,#2d1b4e 60%,#1a0a2e 100%);color:#e8d5b7;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow-x:hidden}
+body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background-image:radial-gradient(2px 2px at 20px 30px,#ffd700,transparent),radial-gradient(2px 2px at 100px 70px,#b8860b,transparent),radial-gradient(1px 1px at 200px 40px,#fff,transparent),radial-gradient(2px 2px at 350px 80px,#ffd700,transparent),radial-gradient(1px 1px at 500px 120px,#e8d5b7,transparent),radial-gradient(2px 2px at 650px 50px,#daa520,transparent),radial-gradient(1px 1px at 800px 160px,#fff,transparent),radial-gradient(2px 2px at 950px 100px,#ffd700,transparent);background-size:1200px 400px;animation:twinkle 8s ease-in-out infinite;pointer-events:none;z-index:0}
+@keyframes twinkle{0%,100%{opacity:.7}50%{opacity:1}}
+.container{position:relative;z-index:1;text-align:center;padding:40px 20px}
+h1{font-size:3em;background:linear-gradient(135deg,#ffd700,#daa520,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px}
+.subtitle{color:#b8860b;font-size:1.2em;letter-spacing:3px;margin-bottom:60px}
+.cards{display:flex;gap:40px;flex-wrap:wrap;justify-content:center;max-width:900px;margin:0 auto}
+.card{background:rgba(26,10,46,.85);border:1px solid rgba(218,165,32,.3);border-radius:20px;padding:40px 30px;width:340px;cursor:pointer;transition:all .3s ease;text-decoration:none;color:inherit;display:block}
+.card:hover{border-color:rgba(255,215,0,.8);transform:translateY(-5px);box-shadow:0 10px 40px rgba(255,215,0,.15);background:rgba(26,10,46,.95)}
+.card-icon{font-size:3.5em;margin-bottom:20px}
+.card h2{font-size:1.6em;color:#ffd700;margin-bottom:15px}
+.card p{color:#a0a0b0;line-height:1.7;font-size:.95em}
+.card .tag{display:inline-block;margin-top:15px;padding:5px 15px;border-radius:20px;font-size:.8em;background:rgba(218,165,32,.15);color:#daa520;border:1px solid rgba(218,165,32,.3)}
+footer{position:relative;z-index:1;margin-top:80px;color:#554466;font-size:.85em}
+@media(max-width:800px){.cards{flex-direction:column;align-items:center;gap:20px}.card{width:100%;max-width:340px}h1{font-size:2em}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Sagittarius Portal</h1>
+<p class="subtitle">人马座 · AI 双子星</p>
+<div class="cards">
+<a href="chat/" class="card">
+  <div class="card-icon">🌞</div>
+  <h2>Third Sun</h2>
+  <p>AI 智能对话助手<br>由 DeepSeek 驱动</p>
+  <span class="tag">聊天 · 问答</span>
+</a>
+<a href="debate/" class="card">
+  <div class="card-icon">🔮</div>
+  <h2>Witchcraft</h2>
+  <p>深度辩论分析引擎<br>双人观点对抗 + AI 裁判</p>
+  <span class="tag">推理 · 辩论</span>
+</a>
+</div></div>
+<footer>@张潮洋 · Sagittarius Portal</footer>
+</body>
+</html>
