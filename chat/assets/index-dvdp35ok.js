@@ -1,0 +1,1 @@
+{"id":"/assets/index-dvdp35ok.js","path":"/assets/index-dvdp35ok.js","sha":"872ae4f444f255b8ce3792d5bbe5cd4e7d16707f","mime_type":"application/javascript","size":180376,"site_id":"4a0eb831-a594-47f0-ab52-9beae5a075ab","deploy_id":"6a0a5072a79a2d0bd8f25aba"}
