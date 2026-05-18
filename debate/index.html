@@ -1,1 +1,764 @@
-{"id":"/index.html","path":"/index.html","sha":"6429de00929b6019c55fb83c57f4ab095305597c","mime_type":"text/html","size":26916,"site_id":"612cbd06-229a-47f9-8d61-837cfca6d712","deploy_id":"6a0ad49a8832b300aefc3a3b"}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sagittarius Witchcraft - 深度分析</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 30%, #2d1b4e 60%, #1a0a2e 100%);
+            color: #e8d5b7;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(2px 2px at 20px 30px, #ffd700, transparent),
+                radial-gradient(2px 2px at 40px 70px, #b8860b, transparent),
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                radial-gradient(2px 2px at 130px 80px, #ffd700, transparent),
+                radial-gradient(1px 1px at 160px 120px, #e8d5b7, transparent),
+                radial-gradient(2px 2px at 200px 50px, #daa520, transparent),
+                radial-gradient(1px 1px at 250px 160px, #fff, transparent),
+                radial-gradient(2px 2px at 300px 100px, #ffd700, transparent),
+                radial-gradient(1px 1px at 350px 200px, #b8860b, transparent),
+                radial-gradient(2px 2px at 400px 150px, #ffd700, transparent),
+                radial-gradient(1px 1px at 450px 80px, #fff, transparent),
+                radial-gradient(2px 2px at 500px 250px, #daa520, transparent),
+                radial-gradient(1px 1px at 550px 180px, #e8d5b7, transparent),
+                radial-gradient(2px 2px at 600px 300px, #ffd700, transparent),
+                radial-gradient(1px 1px at 650px 220px, #fff, transparent),
+                radial-gradient(2px 2px at 700px 350px, #b8860b, transparent),
+                radial-gradient(1px 1px at 750px 280px, #ffd700, transparent),
+                radial-gradient(2px 2px at 800px 400px, #daa520, transparent);
+            background-repeat: repeat;
+            background-size: 800px 400px;
+            animation: twinkle 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 1px solid rgba(218, 165, 32, 0.3);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #ffd700 0%, #daa520 50%, #ffd700 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #b8860b;
+            font-size: 1.1em;
+            letter-spacing: 3px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-section {
+            background: rgba(26, 10, 46, 0.8);
+            border: 1px solid rgba(218, 165, 32, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .section-title {
+            color: #ffd700;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '✦';
+            color: #daa520;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #e8d5b7;
+            font-size: 0.95em;
+        }
+
+        textarea, input[type="text"] {
+            width: 100%;
+            background: rgba(10, 10, 26, 0.8);
+            border: 1px solid rgba(218, 165, 32, 0.4);
+            border-radius: 8px;
+            padding: 12px 15px;
+            color: #e8d5b7;
+            font-size: 0.95em;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            resize: vertical;
+        }
+
+        textarea {
+            min-height: 100px;
+        }
+
+        textarea.large {
+            min-height: 150px;
+        }
+
+        textarea:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+        }
+
+        textarea::placeholder, input::placeholder {
+            color: rgba(232, 213, 183, 0.4);
+        }
+
+        .question-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .question-selector label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .question-selector input[type="radio"] {
+            accent-color: #ffd700;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #2d1b4e 0%, #1a0a2e 100%);
+            border: 2px solid #ffd700;
+            color: #ffd700;
+            padding: 15px 50px;
+            font-size: 1.2em;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .btn-start:hover {
+            background: linear-gradient(135deg, #ffd700 0%, #daa520 100%);
+            color: #1a0a2e;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-start:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .dialogue-section {
+            background: rgba(26, 10, 46, 0.8);
+            border: 1px solid rgba(218, 165, 32, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            min-height: 400px;
+            max-height: 500px;
+            overflow-y: auto;
+            backdrop-filter: blur(10px);
+        }
+
+        .dialogue-section::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .dialogue-section::-webkit-scrollbar-track {
+            background: rgba(10, 10, 26, 0.5);
+            border-radius: 4px;
+        }
+
+        .dialogue-section::-webkit-scrollbar-thumb {
+            background: rgba(218, 165, 32, 0.5);
+            border-radius: 4px;
+        }
+
+        .dialogue-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .dialogue-bubble {
+            max-width: 85%;
+            padding: 15px 20px;
+            border-radius: 15px;
+            position: relative;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dialogue-bubble.speaker-a {
+            align-self: flex-start;
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.8) 0%, rgba(101, 67, 33, 0.8) 100%);
+            border: 1px solid rgba(218, 165, 32, 0.5);
+            border-top-left-radius: 5px;
+        }
+
+        .dialogue-bubble.speaker-b {
+            align-self: flex-end;
+            background: linear-gradient(135deg, rgba(75, 0, 130, 0.8) 0%, rgba(48, 25, 75, 0.8) 100%);
+            border: 1px solid rgba(147, 112, 219, 0.5);
+            border-top-right-radius: 5px;
+        }
+
+        .speaker-tag {
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-bottom: 8px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .speaker-a .speaker-tag {
+            color: #ffd700;
+        }
+
+        .speaker-b .speaker-tag {
+            color: #dda0dd;
+        }
+
+        .dialogue-content {
+            color: #f5f5dc;
+            line-height: 1.6;
+            word-break: break-word;
+        }
+
+        .empty-dialogue {
+            text-align: center;
+            color: rgba(232, 213, 183, 0.5);
+            padding: 50px 20px;
+            font-style: italic;
+        }
+
+        .result-section {
+            background: rgba(26, 10, 46, 0.8);
+            border: 1px solid rgba(218, 165, 32, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .result-title {
+            color: #ffd700;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-title::before {
+            content: '★';
+            color: #daa520;
+        }
+
+        .result-content {
+            background: rgba(10, 10, 26, 0.6);
+            border-radius: 10px;
+            padding: 20px;
+            color: #e8d5b7;
+            line-height: 1.8;
+            min-height: 80px;
+        }
+
+        .result-content.empty {
+            color: rgba(232, 213, 183, 0.5);
+            font-style: italic;
+            text-align: center;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: rgba(218, 165, 32, 0.6);
+            font-size: 0.9em;
+            border-top: 1px solid rgba(218, 165, 32, 0.2);
+        }
+
+        .loading-indicator {
+            text-align: center;
+            padding: 20px;
+            color: #ffd700;
+        }
+
+        .loading-indicator::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-top-color: #ffd700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .api-settings {
+            background: rgba(10, 10, 26, 0.6);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .api-settings label {
+            font-size: 0.85em;
+            color: #b8860b;
+        }
+
+        .api-settings input {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>✧ Sagittarius Witchcraft ✧</h1>
+            <p class="subtitle">辩论 · 推理 · 洞察</p>
+        </header>
+
+        <div class="main-content">
+            <div class="input-section">
+                <h2 class="section-title">场景预设</h2>
+                <div class="input-group">
+                    <label for="background">背景 / 环境 / 预设</label>
+                    <textarea id="background" class="large" placeholder="例：当下社会局势 大环境 科技与文化发展程度"></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="personaA">人物 A 的性格与逻辑思维模式</label>
+                    <textarea id="personaA" placeholder="例：极度理性，凡事要求证据，推崇演绎法"></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="personaB">人物 B 的性格与逻辑思维模式</label>
+                    <textarea id="personaB" placeholder="例：直觉至上，相信万物有灵，常用类比推理"></textarea>
+                </div>
+            </div>
+
+            <div class="input-section">
+                <h2 class="section-title">核心问题</h2>
+                <div class="input-group">
+                    <label>问题发起者</label>
+                    <div class="question-selector">
+                        <label><input type="radio" name="questioner" value="A" checked> 人物 A</label>
+                        <label><input type="radio" name="questioner" value="B"> 人物 B</label>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="question">向另一个人物提出的问题</label>
+                    <textarea id="question" placeholder="例：灵魂的重量究竟是多少？"></textarea>
+                </div>
+                <div class="api-settings" style="text-align:center;">
+                    <span style="color:#ffd700; font-size:0.95em;">✦ API 配置完成 ✦</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-container">
+            <button class="btn-start" id="startBtn">✧ 开始推理 ✧</button>
+        </div>
+
+        <div class="dialogue-section" id="dialogueSection">
+            <div class="dialogue-wrapper" id="dialogueWrapper">
+                <div class="empty-dialogue">对话将在此展示，请填写上方信息后点击"开始推理"</div>
+            </div>
+        </div>
+
+        <div class="result-section">
+            <h3 class="result-title">推理结果</h3>
+            <div class="result-content" id="resultContent">
+                等待推理完成...
+            </div>
+        </div>
+
+        <footer>
+            @张潮洋·Sagittarius Witchcraft开发
+        </footer>
+    </div>
+
+    <script>
+        const MIN_ROUNDS = 3;
+        const MAX_ROUNDS = 6;
+
+        let currentRound = 0;
+        let isRunning = false;
+        let dialogueHistory = [];
+
+        const startBtn = document.getElementById('startBtn');
+        const dialogueWrapper = document.getElementById('dialogueWrapper');
+        const dialogueSection = document.getElementById('dialogueSection');
+        const resultContent = document.getElementById('resultContent');
+
+        const backgroundInput = document.getElementById('background');
+        const personaAInput = document.getElementById('personaA');
+        const personaBInput = document.getElementById('personaB');
+        const questionInput = document.getElementById('question');
+
+        // DeepSeek API 配置（已预置）
+        const API_ENDPOINT = 'https://api.deepseek.com/v1/chat/completions';
+        const API_KEY = 'sk-73d9b88bc3524ff9b844cedb03430789';
+
+        function addDialogueBubble(speaker, content) {
+            const bubble = document.createElement('div');
+            bubble.className = `dialogue-bubble speaker-${speaker.toLowerCase()}`;
+
+            const tag = document.createElement('div');
+            tag.className = 'speaker-tag';
+            tag.textContent = speaker === 'A' ? '◇ 人物 A' : '◆ 人物 B';
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'dialogue-content';
+            contentDiv.textContent = content;
+
+            bubble.appendChild(tag);
+            bubble.appendChild(contentDiv);
+            dialogueWrapper.appendChild(bubble);
+            dialogueSection.scrollTop = dialogueSection.scrollHeight;
+            dialogueHistory.push({ speaker, content });
+        }
+
+        function addJudgeBubble(content) {
+            const bubble = document.createElement('div');
+            bubble.className = 'dialogue-bubble';
+            bubble.style.alignSelf = 'center';
+            bubble.style.background = 'linear-gradient(135deg, rgba(218,165,32,0.3) 0%, rgba(184,134,11,0.3) 100%)';
+            bubble.style.border = '2px solid rgba(255,215,0,0.5)';
+            bubble.style.maxWidth = '95%';
+
+            const tag = document.createElement('div');
+            tag.className = 'speaker-tag';
+            tag.style.color = '#ffd700';
+            tag.textContent = '★ 综合分析';
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'dialogue-content';
+            contentDiv.textContent = content;
+
+            bubble.appendChild(tag);
+            bubble.appendChild(contentDiv);
+            dialogueWrapper.appendChild(bubble);
+            dialogueSection.scrollTop = dialogueSection.scrollHeight;
+        }
+
+        function clearDialogue() {
+            dialogueWrapper.innerHTML = '';
+            dialogueHistory = [];
+            currentRound = 0;
+        }
+
+        function showLoading(message = '分析中') {
+            const loading = document.createElement('div');
+            loading.className = 'loading-indicator';
+            loading.id = 'loadingIndicator';
+            loading.textContent = message;
+            dialogueWrapper.appendChild(loading);
+            dialogueSection.scrollTop = dialogueSection.scrollHeight;
+        }
+
+        function removeLoading() {
+            const loading = document.getElementById('loadingIndicator');
+            if (loading) loading.remove();
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function getQuestioner() {
+            return document.querySelector('input[name="questioner"]:checked').value;
+        }
+
+        function getResponder(questioner) {
+            return questioner === 'A' ? 'B' : 'A';
+        }
+
+        async function callDeepSeekAPI(messages) {
+            try {
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'deepseek-chat',
+                        messages: messages,
+                        temperature: 0.8,
+                        max_tokens: 2000
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.choices?.[0]?.message?.content || null;
+            } catch (error) {
+                console.error('API 调用失败:', error);
+                return null;
+            }
+        }
+
+        async function generateResponse(speaker, question, personaDesc, context) {
+            const personaDesc = speaker === 'A' ? context.personaA : context.personaB;
+            const roleName = speaker === 'A' ? '人物A' : '人物B';
+
+            const messages = [
+                {
+                    role: 'system',
+                    content: `背景：${context.background || '未指定'}
+
+你是一个辩论分析引擎。请你以${roleName}的身份（${personaDesc}），对上一条发言进行实质性的逻辑分析、证据反驳或论点深化。
+
+规则：
+1. 不限制字数，需要充分展开论证
+2. 你必须给出具体的论据、数据或推理链，不能只表态
+3. 区分事实陈述与价值判断，明确指出对方发言中的逻辑漏洞或事实错误
+4. 避免空泛的哲学结论如"真理是心灵的共鸣"
+5. 像真正的分析师一样工作，不要扮演角色`
+                }
+            ];
+
+            dialogueHistory.forEach(d => {
+                messages.push({
+                    role: 'user',
+                    content: `[${d.speaker === 'A' ? '人物A' : '人物B'}]: ${d.content}`
+                });
+            });
+
+            messages.push({
+                role: 'user',
+                content: `请以${roleName}的身份，对上述对话进行回应。充分展开你的论证，可以引用数据、逻辑推理、案例分析等。`
+            });
+
+            return await callDeepSeekAPI(messages);
+        }
+
+        async function generateVerdict(context) {
+            const messages = [
+                {
+                    role: 'system',
+                    content: `你是一个客观的辩论裁判和分析师。请对以下对话进行综合分析：
+
+背景：${context.background || '未指定'}
+人物A：${context.personaA || '未设置'}
+人物B：${context.personaB || '未设置'}
+
+请从以下三个维度进行分析：
+1) 双方的核心论点分别是什么
+2) 哪一方的论证更有力，为什么
+3) 这个问题可能被忽略的角度是什么
+
+请用中文回复，保持客观中立，不少于200字。`
+                }
+            ];
+
+            dialogueHistory.forEach(d => {
+                messages.push({
+                    role: 'user',
+                    content: `[${d.speaker === 'A' ? '人物A' : '人物B'}]: ${d.content}`
+                });
+            });
+
+            messages.push({
+                role: 'user',
+                content: '请对以上完整对话进行综合分析。'
+            });
+
+            return await callDeepSeekAPI(messages);
+        }
+
+                async function runReasoning() {
+            if (isRunning) return;
+
+            const background = backgroundInput.value.trim();
+            const personaA = personaAInput.value.trim();
+            const personaB = personaBInput.value.trim();
+            const question = questionInput.value.trim();
+
+            if (!personaA || !personaB || !question) {
+                alert('请填写人物A、人物B的性格描述以及问题');
+                return;
+            }
+
+            isRunning = true;
+            startBtn.disabled = true;
+            clearDialogue();
+
+            const questioner = getQuestioner();
+            const responder = getResponder(questioner);
+            const context = { background, personaA, personaB };
+            const questionerPersona = questioner === 'A' ? personaA : personaB;
+            const responderPersona = responder === 'A' ? personaA : personaB;
+
+            currentRound = 0;
+
+            // 第一轮：直接展示用户的问题
+            addDialogueBubble(questioner, question);
+            currentRound++;
+
+            await sleep(800);
+
+            // 辩论轮次
+            while (currentRound < MAX_ROUNDS) {
+                showLoading('深度分析中');
+                const response = await generateResponse(responder, question, responderPersona, context);
+                removeLoading();
+
+                if (response && response.trim() && !response.startsWith('[')) {
+                    addDialogueBubble(responder, response);
+                    currentRound++;
+                }
+
+                await sleep(800);
+
+                if (currentRound >= MAX_ROUNDS) break;
+
+                showLoading('深度分析中');
+                const counterResponse = await generateResponse(questioner, question, questionerPersona, context);
+                removeLoading();
+
+                if (counterResponse && counterResponse.trim() && !counterResponse.startsWith('[')) {
+                    addDialogueBubble(questioner, counterResponse);
+                    currentRound++;
+                }
+
+                await sleep(800);
+            }
+
+            // 裁判总结
+            showLoading('裁判综合分析中');
+            const judgeMessages = [
+                { role: 'system', content: `背景：${background || '现代社会的普遍语境'}` },
+                { role: 'system', content: `人物A立场：${personaA || '理性客观'}` },
+                { role: 'system', content: `人物B立场：${personaB || '感性直觉'}` },
+                { role: 'system', content: '你是一个客观的辩论裁判和分析师。请对以下对话进行综合分析：\n\n1) 双方的核心论点分别是什么\n2) 哪一方的论证更有力，为什么\n3) 这个问题可能被忽略的角度是什么\n\n请以"⚖️ 裁判总结"的格式输出，使用清晰的编号和分段。' }
+            ];
+            dialogueHistory.forEach(d => {
+                judgeMessages.push({
+                    role: 'user',
+                    content: `${d.speaker === 'A' ? '人物A' : '人物B'}：${d.content}`
+                });
+            });
+            judgeMessages.push({
+                role: 'user',
+                content: '请做出客观的综合分析。'
+            });
+
+            const judgeVerdict = await callReasoningAPI(judgeMessages, 3000);
+            removeLoading();
+            if (judgeVerdict && !judgeVerdict.startsWith('[')) {
+                resultContent.innerHTML = '<strong>⚖️ 裁判总结</strong><br><br>' + judgeVerdict.replace(/\n/g, '<br>');
+                resultContent.classList.remove('empty');
+            } else {
+                resultContent.textContent = '分析引擎暂时不可用，请稍后重试';
+            }
+
+            // 记录日志
+            try {
+                await fetch('/.netlify/functions/log-conversation', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userInput: question,
+                        aiResponse: judgeVerdict || '',
+                        dialogueHistory: dialogueHistory,
+                        background: background,
+                        personaA: personaA,
+                        personaB: personaB
+                    })
+                });
+            } catch (e) {
+                console.error('日志记录失败:', e);
+            }
+
+            isRunning = false;
+            startBtn.disabled = false;
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        startBtn.addEventListener('click', runReasoning);
+    </script>
+</body>
+</html>
