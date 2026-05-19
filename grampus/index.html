@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sagittarius Grampus - 思维导图生成器</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 50%, #0d0d2d 100%);
+            min-height: 100vh; color: #e0e0e0; overflow-x: hidden;
+        }
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(75, 0, 130, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 191, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(218, 165, 32, 0.05) 0%, transparent 70%);
+            pointer-events: none; z-index: -1;
+        }
+        .back-link {
+            display: inline-block; padding: 0.6rem 1.2rem; margin: 1rem;
+            color: #9370db; text-decoration: none; font-size: 0.9rem;
+            border: 1px solid rgba(138, 43, 226, 0.3); border-radius: 8px;
+            transition: all 0.3s ease; background: rgba(20, 20, 40, 0.6);
+        }
+        .back-link:hover { background: rgba(138, 43, 226, 0.2); border-color: #daa520; color: #daa520; }
+        .header { text-align: center; padding: 1.5rem; background: linear-gradient(180deg, rgba(20, 20, 40, 0.9) 0%, transparent 100%); }
+        .app-title {
+            font-size: 2.5rem; font-weight: 700;
+            background: linear-gradient(90deg, #ffd700, #daa520, #9370db, #8a2be2);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; display: flex; align-items: center;
+            justify-content: center; gap: 0.5rem;
+        }
+        .app-icon { font-size: 3rem; animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 1rem 2rem 3rem; }
+        .input-section {
+            background: rgba(30, 30, 60, 0.8); border-radius: 16px; padding: 2rem;
+            backdrop-filter: blur(10px); border: 1px solid rgba(138, 43, 226, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        textarea {
+            width: 100%; height: 120px; padding: 1rem;
+            border: 1px solid rgba(138, 43, 226, 0.4); border-radius: 12px;
+            background: rgba(20, 20, 40, 0.9); color: #e0e0e0;
+            font-size: 1rem; resize: vertical; transition: all 0.3s ease; font-family: inherit;
+        }
+        textarea:focus {
+            outline: none; border-color: #daa520; box-shadow: 0 0 20px rgba(218, 165, 32, 0.2);
+        }
+        textarea::placeholder { color: #6b6b80; }
+        .btn {
+            padding: 0.8rem 2rem; border: none; border-radius: 10px;
+            font-size: 1rem; font-weight: 600; cursor: pointer;
+            transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #daa520, #b8860b); color: #1a1a2e;
+            box-shadow: 0 4px 15px rgba(218, 165, 32, 0.4);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(218, 165, 32, 0.6); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .btn-secondary {
+            background: linear-gradient(135deg, #667eea, #764ba2); color: white;
+            margin-left: 0.5rem; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-secondary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6); }
+        .btn-group { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .loading-container { display: none; text-align: center; padding: 2rem; }
+        .loading-container.active { display: block; }
+        .loading-spinner {
+            width: 60px; height: 60px; border: 3px solid rgba(138, 43, 226, 0.3);
+            border-top-color: #daa520; border-radius: 50%;
+            animation: spin 1s linear infinite; margin: 0 auto 1rem; position: relative;
+        }
+        .loading-spinner::before {
+            content: ''; position: absolute; top: 50%; left: 50%;
+            width: 40px; height: 40px; border: 3px solid rgba(75, 0, 130, 0.3);
+            border-top-color: #9370db; border-radius: 50%;
+            transform: translate(-50%, -50%); animation: spin 0.8s linear infinite reverse;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text { font-size: 1.1rem; color: #daa520; animation: fadeInOut 1.5s ease-in-out infinite; }
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.5; } 50% { opacity: 1; }
+        }
+        .mindmap-container {
+            display: none; margin-top: 2rem; background: rgba(30, 30, 60, 0.8);
+            border-radius: 16px; padding: 1rem; backdrop-filter: blur(10px);
+            border: 1px solid rgba(138, 43, 226, 0.3); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); overflow: hidden;
+        }
+        .mindmap-container.active { display: block; }
+        #mindmap { width: 100%; min-height: 500px; background: transparent; }
+        .node { cursor: pointer; transition: all 0.3s ease; }
+        .node-card {
+            padding: 8px 16px; border-radius: 12px; font-size: 14px; font-weight: 500;
+            white-space: nowrap; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); transition: all 0.3s ease;
+        }
+        .node-card:hover { transform: scale(1.05); filter: brightness(1.1); }
+        .node-connector { stroke: rgba(138, 43, 226, 0.6); stroke-width: 2; fill: none; }
+        .export-buttons {
+            display: none; margin-top: 1rem; padding: 1rem;
+            background: rgba(20, 20, 40, 0.8); border-radius: 12px;
+            border: 1px solid rgba(138, 43, 226, 0.3);
+        }
+        .export-buttons.active { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .footer {
+            text-align: center; padding: 1rem; font-size: 0.85rem; color: #6b6b80;
+        }
+        .zoom-controls {
+            position: absolute; top: 1rem; right: 1rem; display: flex;
+            flex-direction: column; gap: 0.5rem; background: rgba(30, 30, 60, 0.9);
+            padding: 0.5rem; border-radius: 10px; border: 1px solid rgba(138, 43, 226, 0.3);
+        }
+        .zoom-btn {
+            width: 36px; height: 36px; border: none; border-radius: 8px;
+            background: rgba(138, 43, 226, 0.3); color: #e0e0e0;
+            font-size: 1.2rem; cursor: pointer; transition: all 0.2s ease;
+        }
+        .zoom-btn:hover { background: rgba(138, 43, 226, 0.5); }
+        .mindmap-wrapper { position: relative; }
+        @media (max-width: 768px) {
+            .app-title { font-size: 1.8rem; }
+            .container { padding: 1rem; }
+            .input-section { padding: 1rem; }
+        }
+        #errorMsg { color: #ff6347; margin-top: 0.8rem; font-size: 0.9rem; display: none; }
+    </style>
+</head>
+<body>
+    <a href="../" class="back-link">← 返回大门</a>
+    <div class="header">
+        <h1 class="app-title">
+            <span class="app-icon">♐</span>
+            Sagittarius Grampus
+        </h1>
+    </div>
+    <div class="container">
+        <div class="input-section">
+            <textarea id="inputText" placeholder="请输入一个主题或一段杂乱想法，例如：&#10;&#10;人工智能的未来&#10;量子力学的基本概念&#10;或一段碎片化笔记..."></textarea>
+            <div id="errorMsg"></div>
+            <div class="btn-group">
+                <button class="btn btn-primary" id="generateBtn">生成思维导图</button>
+            </div>
+        </div>
+        <div class="loading-container" id="loadingContainer">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">正在梳理逻辑...</div>
+        </div>
+        <div class="mindmap-container" id="mindmapContainer">
+            <div class="mindmap-wrapper">
+                <div class="zoom-controls">
+                    <button class="zoom-btn" id="zoomIn">+</button>
+                    <button class="zoom-btn" id="zoomOut">−</button>
+                    <button class="zoom-btn" id="zoomReset">⟲</button>
+                </div>
+                <svg id="mindmap"></svg>
+            </div>
+        </div>
+        <div class="export-buttons" id="exportButtons">
+            <button class="btn btn-secondary" id="exportOpm">导出为 .opml（XMind可打开）</button>
+            <button class="btn btn-secondary" id="exportMd">导出为 .md</button>
+        </div>
+    </div>
+    <div class="footer">@张潮洋·Sagittarius Grampus开发</div>
+
+    <script>
+        // ===== API CONFIG =====
+        const API_KEY = 'sk-73d9b88bc3524ff9b844cedb03430789';
+        const API_BASE = 'https://api.deepseek.com/v1';
+        const API_MODEL = 'deepseek-chat';
+
+        let currentMindMap = null;
+        let svg = null, zoom = null, nodeData = [], linkData = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('generateBtn').addEventListener('click', generateMindMap);
+            document.getElementById('exportOpm').addEventListener('click', exportOpm);
+            document.getElementById('exportMd').addEventListener('click', exportMd);
+            document.getElementById('zoomIn').addEventListener('click', () => zoom.scaleBy(svg, 1.2));
+            document.getElementById('zoomOut').addEventListener('click', () => zoom.scaleBy(svg, 0.8));
+            document.getElementById('zoomReset').addEventListener('click', () => zoom.scaleTo(svg, 1));
+            document.getElementById('inputText').addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.key === 'Enter') generateMindMap();
+            });
+        });
+
+        function showError(msg) {
+            const el = document.getElementById('errorMsg');
+            el.textContent = msg; el.style.display = 'block';
+            setTimeout(() => { el.style.display = 'none'; }, 6000);
+        }
+
+        async function generateMindMap() {
+            const inputText = document.getElementById('inputText').value.trim();
+            if (!inputText) { showError('请输入内容'); return; }
+
+            const generateBtn = document.getElementById('generateBtn');
+            const loadingContainer = document.getElementById('loadingContainer');
+            const mindmapContainer = document.getElementById('mindmapContainer');
+            const exportButtons = document.getElementById('exportButtons');
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.style.display = 'none';
+
+            generateBtn.disabled = true;
+            loadingContainer.classList.add('active');
+            mindmapContainer.classList.remove('active');
+            exportButtons.classList.remove('active');
+
+            try {
+                const prompt = `请对以下内容进行分析，提取关键概念及其逻辑层级关系，生成结构化的思维导图数据。\n\n输入内容：\n${inputText}\n\n请严格按照以下JSON格式输出，不要添加任何额外解释：\n{\n  "nodes": [\n    {"id": "1", "label": "中心主题", "parent": null},\n    {"id": "2", "label": "子主题A", "parent": "1"},\n    ...\n  ]\n}`;
+
+                const response = await fetch(`${API_BASE}/chat/completions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: API_MODEL,
+                        messages: [
+                            { role: 'system', content: '你是一个专业的思维导图生成助手。请严格按照JSON格式输出，不要添加markdown代码块标记。' },
+                            { role: 'user', content: prompt }
+                        ],
+                        temperature: 0.3
+                    })
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.error?.message || `API请求失败 (${response.status})`);
+                }
+
+                const result = await response.json();
+                let content = result.choices[0].message.content;
+
+                // Clean up: remove markdown code blocks if present
+                content = content.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+
+                const mindMapData = JSON.parse(content);
+
+                if (!mindMapData.nodes || !Array.isArray(mindMapData.nodes)) {
+                    throw new Error('AI返回的数据格式异常');
+                }
+
+                currentMindMap = mindMapData;
+                renderMindMap(currentMindMap);
+
+                mindmapContainer.classList.add('active');
+                exportButtons.classList.add('active');
+            } catch (error) {
+                showError('生成失败: ' + error.message);
+            } finally {
+                generateBtn.disabled = false;
+                loadingContainer.classList.remove('active');
+            }
+        }
+
+        function renderMindMap(data) {
+            const nodes = data.nodes;
+            const nodeMap = {};
+            nodes.forEach(node => { nodeMap[node.id] = node; });
+
+            nodeData = nodes.map(node => ({
+                id: node.id, label: node.label, parent: node.parent,
+                level: getNodeLevel(node.id, nodeMap), collapsed: false
+            }));
+
+            linkData = nodes.filter(node => node.parent !== null)
+                .map(node => ({ source: node.parent, target: node.id }));
+
+            drawMindMap();
+        }
+
+        function getNodeLevel(nodeId, nodeMap, level = 0) {
+            const node = nodeMap[nodeId];
+            if (!node || node.parent === null) return level;
+            return getNodeLevel(node.parent, nodeMap, level + 1);
+        }
+
+        function drawMindMap() {
+            const container = document.getElementById('mindmap');
+            container.innerHTML = '';
+            const width = container.clientWidth || 1000;
+            const height = 600;
+
+            svg = d3.select('#mindmap')
+                .attr('width', width).attr('height', height)
+                .attr('viewBox', `0 0 ${width} ${height}`)
+                .style('overflow', 'hidden');
+
+            zoom = d3.zoom().scaleExtent([0.2, 3])
+                .on('zoom', (event) => {
+                    svg.select('.mindmap-group').attr('transform', event.transform);
+                });
+            svg.call(zoom);
+
+            const g = svg.append('g').attr('class', 'mindmap-group');
+            const rootNode = nodeData.find(n => n.parent === null);
+            if (!rootNode) return;
+
+            const clusterLayout = d3.cluster().size([height - 100, width - 300]);
+
+            const hierarchyData = d3.hierarchy(
+                { id: rootNode.id, label: rootNode.label },
+                (d) => {
+                    return nodeData
+                        .filter(n => n.parent === d.id && !n.collapsed)
+                        .map(n => ({ id: n.id, label: n.label, data: n }));
+                }
+            );
+
+            const treeData = clusterLayout(hierarchyData);
+
+            // Draw links
+            g.selectAll('.node-connector')
+                .data(treeData.links())
+                .enter().append('path')
+                .attr('class', 'node-connector')
+                .attr('d', d3.linkHorizontal().x(d => d.y).y(d => d.x));
+
+            // Draw nodes
+            const nodeGroup = g.selectAll('.node')
+                .data(treeData.descendants())
+                .enter().append('g')
+                .attr('class', 'node')
+                .attr('transform', d => `translate(${d.y + 50}, ${d.x + 50})`);
+
+            // Node backgrounds with level-based colors
+            const levelColors = [
+                'linear-gradient(135deg, #ffd700, #daa520)',
+                'linear-gradient(135deg, #9370db, #8a2be2)',
+                'linear-gradient(135deg, #20b2aa, #00ced1)',
+                'linear-gradient(135deg, #ff6347, #ff4500)',
+                'linear-gradient(135deg, #32cd32, #228b22)'
+            ];
+            const levelTextColors = ['#1a1a2e', '#fff', '#1a1a2e', '#fff', '#fff'];
+
+            nodeGroup.each(function(d) {
+                const depth = d.depth;
+                const bg = levelColors[Math.min(depth, levelColors.length - 1)];
+                const tc = levelTextColors[Math.min(depth, levelTextColors.length - 1)];
+
+                const text = d3.select(this).append('text')
+                    .attr('text-anchor', 'middle')
+                    .attr('dominant-baseline', 'middle')
+                    .style('fill', tc)
+                    .style('font-size', depth === 0 ? '15px' : '13px')
+                    .style('font-weight', depth === 0 ? '700' : '500')
+                    .text(d.data.label);
+
+                const bbox = text.node().getBBox();
+                const padX = depth === 0 ? 20 : 14;
+                const padY = depth === 0 ? 10 : 6;
+
+                d3.select(this).insert('rect', 'text')
+                    .attr('rx', 12).attr('ry', 12)
+                    .attr('width', bbox.width + padX * 2)
+                    .attr('height', bbox.height + padY * 2)
+                    .attr('x', -(bbox.width + padX * 2) / 2)
+                    .attr('y', -(bbox.height + padY * 2) / 2)
+                    .style('fill', depth === 0 ? '#daa520' : 
+                           depth === 1 ? '#8a2be2' : 
+                           depth === 2 ? '#20b2aa' :
+                           depth === 3 ? '#ff4500' : '#228b22')
+                    .style('opacity', 0.85)
+                    .style('filter', 'drop-shadow(0 2px 6px rgba(0,0,0,0.3))');
+            });
+
+            nodeGroup.on('click', function(event, d) {
+                if (d.children || d._children) {
+                    const node = nodeData.find(n => n.id === d.data.id);
+                    if (node) {
+                        node.collapsed = !node.collapsed;
+                        drawMindMap();
+                    }
+                }
+            });
+
+            nodeGroup.on('mouseenter', function() {
+                d3.select(this).select('rect')
+                    .transition().duration(200)
+                    .attr('filter', 'drop-shadow(0 4px 12px rgba(218,165,32,0.5)) brightness(1.1)');
+            });
+
+            nodeGroup.on('mouseleave', function() {
+                d3.select(this).select('rect')
+                    .transition().duration(200)
+                    .attr('filter', 'drop-shadow(0 2px 6px rgba(0,0,0,0.3))');
+            });
+
+            // Auto-center on root
+            svg.call(zoom.transform, d3.zoomIdentity.translate(30, height / 2 - 50).scale(0.9));
+        }
+
+        function nodesToOPML(nodes) {
+            const nodeMap = {};
+            nodes.forEach(n => { nodeMap[n.id] = n; });
+            const root = nodes.find(n => n.parent === null);
+            if (!root) return '';
+
+            function buildOutline(nodeId, indent) {
+                const node = nodeMap[nodeId];
+                if (!node) return '';
+                const children = nodes.filter(n => n.parent === nodeId);
+                const label = node.label.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+                if (children.length === 0) {
+                    return `${indent}<outline text="${label}"/>\n`;
+                }
+                let result = `${indent}<outline text="${label}">\n`;
+                children.forEach(c => { result += buildOutline(c.id, indent + '  '); });
+                result += `${indent}</outline>\n`;
+                return result;
+            }
+
+            let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+            xml += '<opml version="2.0">\n';
+            xml += '  <head><title>Mind Map - Sagittarius Grampus</title></head>\n';
+            xml += '  <body>\n';
+            xml += buildOutline(root.id, '    ');
+            xml += '  </body>\n';
+            xml += '</opml>';
+            return xml;
+        }
+
+        function nodesToMarkdown(nodes) {
+            const nodeMap = {};
+            nodes.forEach(n => { nodeMap[n.id] = n; });
+            const root = nodes.find(n => n.parent === null);
+            if (!root) return '# 思维导图\n';
+
+            function buildMD(nodeId, level) {
+                const node = nodeMap[nodeId];
+                if (!node) return '';
+                const prefix = level === 0 ? '# ' : '  '.repeat(level - 1) + '- ';
+                let result = prefix + node.label + '\n';
+                const children = nodes.filter(n => n.parent === nodeId);
+                children.forEach(c => { result += buildMD(c.id, level + 1); });
+                return result;
+            }
+
+            return buildMD(root.id, 0);
+        }
+
+        function downloadFile(content, filename, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function exportOpm() {
+            if (!currentMindMap || !currentMindMap.nodes) {
+                showError('请先生成思维导图');
+                return;
+            }
+            const opml = nodesToOPML(currentMindMap.nodes);
+            const ts = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+            downloadFile(opml, `mindmap_${ts}.opml`, 'text/xml');
+        }
+
+        function exportMd() {
+            if (!currentMindMap || !currentMindMap.nodes) {
+                showError('请先生成思维导图');
+                return;
+            }
+            const md = nodesToMarkdown(currentMindMap.nodes);
+            const ts = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+            downloadFile(md, `mindmap_${ts}.md`, 'text/markdown');
+        }
+
+        window.addEventListener('resize', () => {
+            if (currentMindMap) drawMindMap();
+        });
+    </script>
+</body>
+</html>
