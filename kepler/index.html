@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sagittarius Kepler-22 b</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #2d1b4e 100%);
+            min-height: 100vh;
+            color: #e0d5e6;
+            overflow-x: hidden;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #ffffff, transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 90px 40px, #ffffff, transparent),
+                radial-gradient(2px 2px at 160px 120px, rgba(255,255,255,0.9), transparent),
+                radial-gradient(1px 1px at 230px 80px, #ffffff, transparent),
+                radial-gradient(2px 2px at 300px 150px, rgba(255,255,255,0.7), transparent),
+                radial-gradient(1px 1px at 370px 50px, #ffffff, transparent),
+                radial-gradient(2px 2px at 450px 180px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 80px 250px, #ffffff, transparent),
+                radial-gradient(2px 2px at 200px 300px, rgba(255,255,255,0.6), transparent),
+                radial-gradient(1px 1px at 350px 250px, #ffffff, transparent),
+                radial-gradient(2px 2px at 500px 350px, rgba(255,255,255,0.7), transparent);
+            background-size: 500px 400px;
+            animation: twinkle 5s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* 返回按钮 */
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            padding: 10px 20px;
+            background: rgba(30, 20, 50, 0.85);
+            border: 1px solid rgba(147, 51, 234, 0.4);
+            border-radius: 25px;
+            color: #c4b5fd;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            letter-spacing: 1px;
+        }
+
+        .back-btn:hover {
+            background: rgba(139, 92, 246, 0.3);
+            border-color: #a855f7;
+            transform: translateX(-3px);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+        }
+
+        /* 页面头部 */
+        .header {
+            text-align: center;
+            padding: 30px 20px 20px;
+            background: linear-gradient(to bottom, rgba(45, 27, 78, 0.8), transparent);
+            border-bottom: 1px solid rgba(147, 51, 234, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #a855f7, #ec4899, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(168, 85, 247, 0.5);
+            letter-spacing: 8px;
+        }
+
+        .header .tagline {
+            color: #a78bfa;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            letter-spacing: 2px;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 步骤指示器 */
+        .steps-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .step-wrap {
+            text-align: center;
+        }
+
+        .step {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+            margin: 0 auto;
+        }
+
+        .step.active {
+            background: linear-gradient(135deg, #ec4899, #f472b6);
+            box-shadow: 0 0 30px rgba(236, 72, 153, 0.6);
+            transform: scale(1.15);
+        }
+
+        .step-label {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: #a78bfa;
+        }
+
+        /* 面板样式 */
+        .panel {
+            background: rgba(30, 20, 50, 0.8);
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            border-radius: 16px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        /* 人物卡片 */
+        .character-section {
+            margin-top: 20px;
+        }
+
+        .character-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(147, 51, 234, 0.4);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            position: relative;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .character-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.3);
+        }
+
+        .character-card .name-badge {
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .character-card .info-content {
+            margin-top: 15px;
+            padding-left: 10px;
+            border-left: 3px solid #a855f7;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: #c4b5fd;
+            white-space: pre-wrap;
+        }
+
+        .character-card .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(236, 72, 153, 0.3);
+            color: #f472b6;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .character-card .delete-btn:hover {
+            background: rgba(236, 72, 153, 0.6);
+            transform: scale(1.1);
+        }
+
+        /* 输入区域 */
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #c4b5fd;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid rgba(147, 51, 234, 0.4);
+            border-radius: 10px;
+            background: rgba(20, 15, 35, 0.8);
+            color: #e0d5e6;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #a855f7;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+        }
+
+        .input-group textarea {
+            min-height: 150px;
+        }
+
+        /* 按钮样式 */
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            color: white;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(168, 85, 247, 0.6);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: rgba(147, 51, 234, 0.3);
+            color: #c4b5fd;
+            border: 1px solid rgba(147, 51, 234, 0.5);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(147, 51, 234, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        /* 剧情展示区 */
+        .story-area {
+            display: none;
+        }
+
+        .story-messages {
+            height: 500px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding-right: 10px;
+        }
+
+        .story-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .story-messages::-webkit-scrollbar-track {
+            background: rgba(147, 51, 234, 0.1);
+            border-radius: 3px;
+        }
+
+        .story-messages::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            border-radius: 3px;
+        }
+
+        /* 对话气泡 */
+        .message-bubble {
+            margin-bottom: 20px;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-bubble .speaker {
+            font-weight: bold;
+            color: #a855f7;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .message-bubble .content {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(139, 92, 246, 0.15));
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            border-radius: 0 15px 15px 15px;
+            padding: 15px 20px;
+            line-height: 1.7;
+            color: #e0d5e6;
+            font-size: 1rem;
+            white-space: pre-wrap;
+        }
+
+        .message-bubble.ending .content {
+            border-color: #ec4899;
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(244, 114, 182, 0.1));
+        }
+
+        .message-bubble.ending .speaker {
+            color: #ec4899;
+        }
+
+        .ending-mark {
+            text-align: center;
+            font-size: 3rem;
+            color: #ec4899;
+            text-shadow: 0 0 30px rgba(236, 72, 153, 0.5);
+            margin: 30px 0;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* 选项按钮 */
+        .options-area {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .option-btn {
+            width: 100%;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(147, 51, 234, 0.4);
+            border-radius: 10px;
+            background: rgba(30, 20, 50, 0.8);
+            color: #c4b5fd;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #a855f7, #ec4899);
+            transition: width 0.3s ease;
+        }
+
+        .option-btn:hover {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: #a855f7;
+            transform: translateX(5px);
+        }
+
+        .option-btn:hover::before {
+            width: 8px;
+        }
+
+        .option-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .loading-circle {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(147, 51, 234, 0.3);
+            border-top-color: #a855f7;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 提示信息 */
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            color: #93c5fd;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+        }
+
+        /* 步骤区域切换 */
+        .step-section {
+            display: none;
+        }
+
+        .step-section.active {
+            display: block;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* 页面底部 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(45, 27, 78, 0.8), transparent);
+            border-top: 1px solid rgba(147, 51, 234, 0.3);
+            margin-top: 50px;
+            color: #7c3aed;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer .dev-info {
+            color: #a78bfa;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        /* 人物预览标签 */
+        .preview-tag {
+            background: rgba(168, 85, 247, 0.3);
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-right: 10px;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        /* 响应式 */
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.8rem;
+                letter-spacing: 4px;
+            }
+            .main-content {
+                padding: 15px;
+            }
+            .steps-indicator {
+                gap: 15px;
+            }
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.85rem;
+            }
+            .story-messages {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+
+    <!-- 返回大门按钮 -->
+    <a href="../" class="back-btn">← 返回大门</a>
+    
+    <div class="header">
+        <h1>Sagittarius Kepler-22 b</h1>
+        <p class="tagline">交互式故事生成器 · AI 驱动的无限叙事</p>
+    </div>
+
+    <div class="main-content">
+        <!-- 步骤指示器 -->
+        <div class="steps-indicator">
+            <div class="step-wrap">
+                <div class="step active" id="step1">1</div>
+                <div class="step-label">设定人物</div>
+            </div>
+            <div class="step-wrap">
+                <div class="step" id="step2">2</div>
+                <div class="step-label">世界观</div>
+            </div>
+            <div class="step-wrap">
+                <div class="step" id="step3">3</div>
+                <div class="step-label">剧情</div>
+            </div>
+        </div>
+
+        <!-- 步骤1：人物设定 -->
+        <div class="step-section active" id="section1">
+            <div class="panel">
+                <div class="alert alert-info">
+                    <strong>提示：</strong>首先设定主角，然后可无限添加配角。输入人物名字后，系统会自动检索该人物的背景资料。
+                </div>
+                
+                <div class="input-group">
+                    <label>人物名称</label>
+                    <input type="text" id="characterName" placeholder="请输入人物名称（如：孙悟空）" onkeydown="if(event.key==='Enter')addCharacter()">
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="addCharacter()" id="addCharBtn">添加人物</button>
+                    <button class="btn btn-secondary" onclick="nextStep()" id="nextStepBtn">下一步</button>
+                </div>
+                
+                <div class="character-section" id="characterList">
+                    <!-- 人物卡片将动态添加到这里 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 步骤2：世界观设定 -->
+        <div class="step-section" id="section2">
+            <div class="panel">
+                <div class="alert alert-info">
+                    <strong>提示：</strong>请详细描述您想象中的世界观，包括社会发展程度、世界状态、科技水平、人文环境、是否存在魔法或特殊规则等。
+                </div>
+                
+                <div class="input-group">
+                    <label>世界观设定</label>
+                    <textarea id="worldSetting" placeholder="例如：公元3045年，人类已殖民火星，人工智能获得意识觉醒，星际联邦与反叛军陷入对峙..."></textarea>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="prevStep()">上一步</button>
+                    <button class="btn btn-primary" onclick="startStory()" id="startStoryBtn">开始生成剧情</button>
+                </div>
+                
+                <!-- 人物概览 -->
+                <div style="margin-top: 20px;">
+                    <h3 style="color: #a855f7; margin-bottom: 10px;">已添加人物：</h3>
+                    <div id="charactersPreview"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 步骤3：剧情展示 -->
+        <div class="step-section" id="section3">
+            <div class="panel story-area" id="storyPanel">
+                <div class="story-messages" id="storyMessages">
+                    <!-- 剧情对话将动态添加到这里 -->
+                </div>
+                
+                <div class="options-area" id="optionsArea">
+                    <!-- 选项按钮将动态添加到这里 -->
+                </div>
+                
+                <div class="loading" id="loading" style="display: none;">
+                    <div class="loading-circle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="dev-info">@张潮洋 · 2006 · 江苏南京 · 南财红山 · Sagittarius Kepler-22b</div>
+    </div>
+
+    <script>
+        // ============ 前端 Session 管理（替代 Flask 后端） ============
+        const characters = [];
+        const storySession = {
+            characters: [],
+            worldSetting: '',
+            history: [],
+            turn: 1,
+            sessionId: ''
+        };
+        const MAX_TURNS = 12; // 12轮后自动结局
+
+        // 生成唯一 session id
+        function generateSessionId() {
+            return 'sk-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // ============ DeepSeek API 直调 ============
+        const DEEPSEEK_API = 'https://api.deepseek.com/v1/chat/completions';
+        const DEEPSEEK_KEY = 'sk-73d9b88bc3524ff9b844cedb03430789';
+        const MODEL = 'deepseek-chat';
+
+        async function callDeepSeek(systemPrompt, userPrompt, temperature = 0.8, maxTokens = 1500) {
+            const response = await fetch(DEEPSEEK_API, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + DEEPSEEK_KEY
+                },
+                body: JSON.stringify({
+                    model: MODEL,
+                    messages: [
+                        { role: 'system', content: systemPrompt },
+                        { role: 'user', content: userPrompt }
+                    ],
+                    temperature: temperature,
+                    max_tokens: maxTokens
+                })
+            });
+
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error('API 请求失败: ' + response.status + ' ' + errText);
+            }
+
+            const data = await response.json();
+            if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+                throw new Error('API 返回格式异常: ' + JSON.stringify(data));
+            }
+            return data.choices[0].message.content;
+        }
+
+        // 从 LLM 响应中提取 JSON（处理可能的 markdown 代码块包裹）
+        function extractJSON(text) {
+            // 尝试直接解析
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                // 尝试提取 ```json ... ``` 中的内容
+                const jsonMatch = text.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/);
+                if (jsonMatch) {
+                    try {
+                        return JSON.parse(jsonMatch[1].trim());
+                    } catch (e2) {
+                        // 继续尝试
+                    }
+                }
+                // 尝试找到第一个 { 和最后一个 }
+                const braceMatch = text.match(/\{[\s\S]*\}/);
+                if (braceMatch) {
+                    try {
+                        return JSON.parse(braceMatch[0]);
+                    } catch (e3) {
+                        throw new Error('无法解析 LLM 返回的 JSON: ' + text.substring(0, 200));
+                    }
+                }
+                throw new Error('无法解析 LLM 返回的 JSON: ' + text.substring(0, 200));
+            }
+        }
+
+        // ============ 人物管理（纯前端） ============
+        async function addCharacter() {
+            const name = document.getElementById('characterName').value.trim();
+            if (!name) {
+                showAlert('请输入人物名称', 'error');
+                return;
+            }
+            
+            if (characters.some(c => c.name === name)) {
+                showAlert('该人物已存在', 'error');
+                return;
+            }
+            
+            const addBtn = document.getElementById('addCharBtn');
+            addBtn.disabled = true;
+            addBtn.textContent = '检索中...';
+            document.getElementById('characterName').value = '';
+            
+            // 创建占位卡片
+            const card = document.createElement('div');
+            card.className = 'character-card';
+            card.id = 'char-card-' + name.replace(/[^a-zA-Z\u4e00-\u9fa5]/g, '');
+            card.innerHTML = `
+                <div class="name-badge">${characters.length === 0 ? '主角' : '配角' + characters.length}</div>
+                <div class="delete-btn" onclick="removeCharacter('${name.replace(/'/g, "\\'")}')">×</div>
+                <div class="info-content">
+                    <div class="loading" style="padding:10px"><div class="loading-circle"></div></div>
+                </div>
+            `;
+            document.getElementById('characterList').appendChild(card);
+            
+            try {
+                // 直调 DeepSeek 获取人物百科
+                const systemPrompt = '你是一个富有创造力的故事生成助手，擅长创作引人入胜的剧情。';
+                const userPrompt = `请以知识百科的方式，简要介绍人物「${name}」的核心信息。
+要求：
+1. 性格特点（2-3个关键词）
+2. 背景身份
+3. 经典事迹或代表作品
+4. 整体保持客观中立，语言简洁
+
+输出格式：
+姓名：${name}
+性格：xxx、xxx、xxx
+背景：xxx
+事迹：xxx`;
+
+                const info = await callDeepSeek(systemPrompt, userPrompt, 0.3, 500);
+                
+                card.querySelector('.info-content').innerHTML = info;
+                characters.push({ name, info });
+            } catch (error) {
+                card.querySelector('.info-content').innerHTML = '获取人物资料失败：' + error.message;
+            } finally {
+                addBtn.disabled = false;
+                addBtn.textContent = '添加人物';
+            }
+        }
+
+        // 删除人物
+        function removeCharacter(name) {
+            const index = characters.findIndex(c => c.name === name);
+            if (index !== -1) {
+                characters.splice(index, 1);
+                renderCharacterList();
+            }
+        }
+
+        // 重新渲染人物列表
+        function renderCharacterList() {
+            const container = document.getElementById('characterList');
+            container.innerHTML = '';
+            
+            characters.forEach((char, index) => {
+                const card = document.createElement('div');
+                card.className = 'character-card';
+                card.innerHTML = `
+                    <div class="name-badge">${index === 0 ? '主角' : '配角' + index}</div>
+                    <div class="delete-btn" onclick="removeCharacter('${char.name.replace(/'/g, "\\'")}')">×</div>
+                    <div class="info-content">${char.info}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // 简易提示
+        function showAlert(msg, type) {
+            const existingAlert = document.querySelector('.temp-alert');
+            if (existingAlert) existingAlert.remove();
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-' + (type === 'error' ? 'error' : 'info') + ' temp-alert';
+            alertDiv.textContent = msg;
+            alertDiv.style.marginTop = '10px';
+            const section = document.querySelector('.step-section.active .panel');
+            if (!section) {
+                // fallback: insert before characterList
+                const charList = document.getElementById('characterList');
+                if (charList) charList.parentNode.insertBefore(alertDiv, charList);
+            } else {
+                section.insertBefore(alertDiv, section.firstChild);
+            }
+            setTimeout(() => alertDiv.remove(), 3000);
+        }
+
+        // ============ 步骤导航 ============
+        function nextStep() {
+            if (characters.length === 0) {
+                showAlert('请至少添加一个人物', 'error');
+                return;
+            }
+            
+            document.getElementById('section1').classList.remove('active');
+            document.getElementById('section2').classList.add('active');
+            document.getElementById('step1').classList.remove('active');
+            document.getElementById('step2').classList.add('active');
+            
+            updateCharactersPreview();
+        }
+
+        function prevStep() {
+            document.getElementById('section2').classList.remove('active');
+            document.getElementById('section1').classList.add('active');
+            document.getElementById('step2').classList.remove('active');
+            document.getElementById('step1').classList.add('active');
+        }
+
+        function updateCharactersPreview() {
+            const preview = document.getElementById('charactersPreview');
+            preview.innerHTML = characters.map((c, i) => 
+                '<span class="preview-tag">' + (i === 0 ? '主角' : '配角') + ': ' + c.name + '</span>'
+            ).join('');
+        }
+
+        // ============ 剧情生成（纯前端 + DeepSeek） ============
+        async function startStory() {
+            const worldSetting = document.getElementById('worldSetting').value.trim();
+            if (!worldSetting) {
+                showAlert('请输入世界观设定', 'error');
+                return;
+            }
+            
+            // 切换到剧情页面
+            document.getElementById('section2').classList.remove('active');
+            document.getElementById('section3').classList.add('active');
+            document.getElementById('step2').classList.remove('active');
+            document.getElementById('step3').classList.add('active');
+            document.getElementById('storyPanel').style.display = 'block';
+            
+            const loading = document.getElementById('loading');
+            const storyMessages = document.getElementById('storyMessages');
+            const optionsArea = document.getElementById('optionsArea');
+            const startBtn = document.getElementById('startStoryBtn');
+            
+            loading.style.display = 'flex';
+            storyMessages.innerHTML = '';
+            optionsArea.style.display = 'none';
+            startBtn.disabled = true;
+            
+            try {
+                // 初始化前端 session
+                storySession.characters = characters.map(c => c.name);
+                storySession.worldSetting = worldSetting;
+                storySession.history = [];
+                storySession.turn = 1;
+                storySession.sessionId = generateSessionId();
+
+                const systemPrompt = '你是一位资深的故事创作大师。请根据以下人物设定和世界观，创作一段引人入胜的科幻/奇幻剧情。你的回答必须是严格的JSON格式，不要包含任何额外的文字或解释。';
+                const userPrompt = `人物列表：
+${JSON.stringify(storySession.characters, null, 2)}
+
+世界观设定：
+${worldSetting}
+
+创作要求：
+1. 生成3-5句对话或内心独白，每句30-60字
+2. 对话要符合人物性格特点
+3. 语言自然流畅，有画面感
+4. 在适当的位置设置悬念或冲突点
+
+请输出JSON格式：
+{
+    "dialogues": [
+        {"speaker": "角色名", "content": "对话内容"},
+        ...
+    ],
+    "options": [
+        "选项1",
+        "选项2",
+        "选项3",
+        "选项4"
+    ],
+    "is_ending": false
+}
+
+注意：options必须是3-4个与当前剧情紧密相关的选项，推动故事发展，而非无意义分支。`;
+
+                const result = await callDeepSeek(systemPrompt, userPrompt, 0.8, 1500);
+                const storyData = extractJSON(result);
+                
+                // 存入 history
+                storySession.history.push(storyData);
+                
+                await displayDialogues(storyData.dialogues);
+                
+                if (!storyData.is_ending && storyData.options && storyData.options.length > 0) {
+                    displayOptions(storyData.options);
+                }
+            } catch (error) {
+                storyMessages.innerHTML = '<div class="alert alert-error" style="margin:20px">剧情生成失败：' + error.message + '</div>';
+            } finally {
+                loading.style.display = 'none';
+                startBtn.disabled = false;
+            }
+        }
+
+        // 逐条显示对话（带延迟动画）
+        async function displayDialogues(dialogues) {
+            if (!dialogues || dialogues.length === 0) return;
+            const storyMessages = document.getElementById('storyMessages');
+            
+            for (let i = 0; i < dialogues.length; i++) {
+                await new Promise(resolve => setTimeout(resolve, 800));
+                
+                const d = dialogues[i];
+                const isEnding = storySession.history.length > 0 && 
+                    storySession.history[storySession.history.length - 1].is_ending;
+                
+                const bubble = document.createElement('div');
+                bubble.className = 'message-bubble' + (isEnding ? ' ending' : '');
+                bubble.innerHTML = `
+                    <div class="speaker">${escapeHTML(d.speaker)}</div>
+                    <div class="content">${escapeHTML(d.content)}</div>
+                `;
+                storyMessages.appendChild(bubble);
+                storyMessages.scrollTop = storyMessages.scrollHeight;
+            }
+        }
+
+        // 显示选项按钮
+        function displayOptions(options) {
+            const optionsArea = document.getElementById('optionsArea');
+            optionsArea.innerHTML = '';
+            optionsArea.style.display = 'block';
+            
+            options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = (index + 1) + '. ' + escapeHTML(option);
+                btn.onclick = () => selectOption(option);
+                optionsArea.appendChild(btn);
+            });
+        }
+
+        // 选择选项，推进剧情
+        async function selectOption(choice) {
+            const loading = document.getElementById('loading');
+            const optionsArea = document.getElementById('optionsArea');
+            
+            // 禁用所有选项按钮
+            optionsArea.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+            loading.style.display = 'flex';
+            
+            try {
+                storySession.turn++;
+                
+                let systemPrompt, userPrompt;
+                
+                if (storySession.turn >= MAX_TURNS) {
+                    // 生成结局
+                    systemPrompt = '你是一位资深的故事创作大师。你的回答必须是严格的JSON格式，不要包含任何额外的文字或解释。';
+                    userPrompt = `根据以下故事背景和发展，创作一个出人意料但不恐怖、不血腥的史诗结局。
+
+人物列表：
+${JSON.stringify(storySession.characters, null, 2)}
+
+世界观设定：
+${storySession.worldSetting}
+
+之前的剧情发展：
+${JSON.stringify(storySession.history, null, 2)}
+
+上一轮选择：${choice}
+
+创作要求：
+1. 生成4-6句结局对话或内心独白，每句30-60字
+2. 结局可以悲壮或出人意料，但不得恐怖、血腥、宣扬负面价值观
+3. 语言风格应为史诗或哲思
+4. 结尾要有"终"字
+
+请输出JSON格式：
+{
+    "dialogues": [
+        {"speaker": "角色名", "content": "对话内容"},
+        ...
+    ],
+    "options": [],
+    "is_ending": true
+}`;
+                } else {
+                    // 继续生成剧情
+                    systemPrompt = '你是一位资深的故事创作大师。你的回答必须是严格的JSON格式，不要包含任何额外的文字或解释。';
+                    userPrompt = `根据以下故事背景和之前的选择，继续创作剧情。
+
+人物列表：
+${JSON.stringify(storySession.characters, null, 2)}
+
+世界观设定：
+${storySession.worldSetting}
+
+之前的剧情发展：
+${JSON.stringify(storySession.history, null, 2)}
+
+上一轮选择：${choice}
+
+创作要求：
+1. 生成3-5句对话或内心独白，每句30-60字
+2. 对话要符合人物性格特点
+3. 语言自然流畅，有画面感
+4. 在适当的位置设置悬念或冲突点
+
+请输出JSON格式：
+{
+    "dialogues": [
+        {"speaker": "角色名", "content": "对话内容"},
+        ...
+    ],
+    "options": [
+        "选项1",
+        "选项2",
+        "选项3",
+        "选项4"
+    ],
+    "is_ending": false
+}
+
+注意：options必须是3-4个与当前剧情紧密相关的选项，推动故事发展。`;
+                }
+                
+                const result = await callDeepSeek(systemPrompt, userPrompt, 0.8, 1500);
+                const storyData = extractJSON(result);
+                
+                storySession.history.push(storyData);
+                optionsArea.style.display = 'none';
+                optionsArea.innerHTML = '';
+                
+                await displayDialogues(storyData.dialogues);
+                
+                if (storyData.is_ending) {
+                    // 显示结局标志
+                    const endingMark = document.createElement('div');
+                    endingMark.className = 'ending-mark';
+                    endingMark.textContent = '终';
+                    document.getElementById('storyMessages').appendChild(endingMark);
+                    
+                    // 添加重新开始按钮
+                    const restartDiv = document.createElement('div');
+                    restartDiv.style.textAlign = 'center';
+                    restartDiv.style.marginTop = '30px';
+                    restartDiv.style.marginBottom = '20px';
+                    restartDiv.innerHTML = '<button class="btn btn-primary" onclick="restartStory()">重新开始</button>';
+                    document.getElementById('storyMessages').appendChild(restartDiv);
+                } else if (storyData.options && storyData.options.length > 0) {
+                    displayOptions(storyData.options);
+                }
+            } catch (error) {
+                const storyMessages = document.getElementById('storyMessages');
+                const errDiv = document.createElement('div');
+                errDiv.className = 'alert alert-error';
+                errDiv.textContent = '剧情推进失败：' + error.message;
+                errDiv.style.margin = '10px 0';
+                storyMessages.appendChild(errDiv);
+                storyMessages.scrollTop = storyMessages.scrollHeight;
+                
+                // 恢复选项
+                displayOptions(storySession.history[storySession.history.length - 1]?.options || []);
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        // 重新开始
+        function restartStory() {
+            storySession.characters = [];
+            storySession.worldSetting = '';
+            storySession.history = [];
+            storySession.turn = 1;
+            storySession.sessionId = '';
+            
+            document.getElementById('section3').classList.remove('active');
+            document.getElementById('section1').classList.add('active');
+            document.getElementById('step3').classList.remove('active');
+            document.getElementById('step1').classList.add('active');
+            document.getElementById('storyPanel').style.display = 'none';
+            document.getElementById('storyMessages').innerHTML = '';
+            document.getElementById('optionsArea').innerHTML = '';
+            document.getElementById('optionsArea').style.display = 'none';
+            document.getElementById('worldSetting').value = '';
+            
+            // 滚动到顶部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // HTML 转义
+        function escapeHTML(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // 回车键添加人物
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('characterName');
+            if (input) {
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addCharacter();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
