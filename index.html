@@ -16,7 +16,8 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   position: relative;
 }
 
@@ -80,6 +81,7 @@ body::before {
 
 .card {
   width: 300px;
+  max-width: 85vw;
   padding: 40px 30px;
   border-radius: 20px;
   background: rgba(255,255,255,0.04);
@@ -150,6 +152,17 @@ body::before {
   font-size: 0.85rem;
   color: rgba(255,255,255,0.35);
   letter-spacing: 0.05em;
+}
+
+@media (max-width: 640px) {
+  .container { padding: 30px 10px; }
+  .subtitle { margin-bottom: 30px; }
+  .cards { gap: 16px; }
+  .card { padding: 28px 20px; }
+  .card-icon { font-size: 2.2rem; margin-bottom: 10px; }
+  .card-title { font-size: 1.2rem; }
+  .card-desc { font-size: 0.8rem; }
+  .footer { margin-top: 40px; }
 }
 </style>
 </head>
