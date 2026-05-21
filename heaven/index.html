@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sagittarius Heaven - 置信度裁定</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f4a 50%, #2d1b4e 100%);
+            min-height: 100vh;
+            color: #e0e6ff;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, rgba(255, 215, 0, 0.8), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255, 215, 0, 0.6), transparent),
+                radial-gradient(1px 1px at 90px 40px, rgba(255, 215, 0, 0.9), transparent),
+                radial-gradient(2px 2px at 160px 120px, rgba(255, 215, 0, 0.7), transparent),
+                radial-gradient(1px 1px at 230px 80px, rgba(255, 215, 0, 0.8), transparent),
+                radial-gradient(2px 2px at 300px 150px, rgba(255, 215, 0, 0.6), transparent),
+                radial-gradient(1px 1px at 380px 100px, rgba(255, 215, 0, 0.9), transparent),
+                radial-gradient(2px 2px at 450px 200px, rgba(255, 215, 0, 0.7), transparent),
+                radial-gradient(1px 1px at 520px 50px, rgba(255, 215, 0, 0.8), transparent),
+                radial-gradient(2px 2px at 600px 180px, rgba(255, 215, 0, 0.6), transparent);
+            background-repeat: repeat;
+            background-size: 650px 250px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-bottom: 100px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 2.8em;
+            font-weight: 700;
+            background: linear-gradient(90deg, #ffd700, #4a9eff, #ffd700);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shine 3s linear infinite;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .title-icon {
+            font-size: 1.2em;
+            margin-right: 15px;
+        }
+
+        @keyframes shine {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        .input-section {
+            background: rgba(20, 25, 60, 0.85);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            color: #ffd700;
+            font-weight: 600;
+        }
+
+        .input-label span {
+            color: #4a9eff;
+            margin-right: 8px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(74, 158, 255, 0.3);
+            border-radius: 12px;
+            background: rgba(10, 15, 40, 0.8);
+            color: #e0e6ff;
+            font-size: 1em;
+            resize: vertical;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+        }
+
+        textarea::placeholder {
+            color: rgba(224, 230, 255, 0.4);
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4a9eff 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.2em;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(74, 158, 255, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(74, 158, 255, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .loading-container {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .loading-container.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            border: 4px solid rgba(74, 158, 255, 0.2);
+            border-top: 4px solid #ffd700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.2em;
+            color: #ffd700;
+        }
+
+        .report-section {
+            display: none;
+            margin-top: 40px;
+        }
+
+        .report-section.active {
+            display: block;
+        }
+
+        .card {
+            background: rgba(20, 25, 60, 0.85);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-title {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(74, 158, 255, 0.3);
+        }
+
+        .score-display {
+            text-align: center;
+        }
+
+        .score-value {
+            font-size: 4em;
+            font-weight: 800;
+            margin: 20px 0;
+            background: linear-gradient(90deg, #ff4444, #ffaa00, #44ff44);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .score-level {
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff4444, #ffaa00, #44ff44);
+            border-radius: 15px;
+            transition: width 1.5s ease-out;
+        }
+
+        .reason-list, .suggestion-list {
+            list-style: none;
+        }
+
+        .reason-list li, .suggestion-list li {
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background: rgba(74, 158, 255, 0.1);
+            border-left: 4px solid #ffd700;
+            border-radius: 0 10px 10px 0;
+            line-height: 1.6;
+        }
+
+        .predictions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .prediction-card {
+            background: rgba(74, 158, 255, 0.1);
+            border: 1px solid rgba(74, 158, 255, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .prediction-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .probability-circle {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 15px;
+            position: relative;
+        }
+
+        .probability-circle svg {
+            transform: rotate(-90deg);
+        }
+
+        .probability-circle .bg {
+            fill: none;
+            stroke: rgba(74, 158, 255, 0.2);
+            stroke-width: 10;
+        }
+
+        .probability-circle .progress {
+            fill: none;
+            stroke: #ffd700;
+            stroke-width: 10;
+            stroke-linecap: round;
+            stroke-dasharray: 283;
+            stroke-dashoffset: 283;
+            transition: stroke-dashoffset 1.5s ease-out;
+        }
+
+        .probability-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #ffd700;
+        }
+
+        .prediction-text {
+            line-height: 1.6;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            padding: 20px;
+            background: rgba(10, 15, 40, 0.95);
+            border-top: 1px solid rgba(255, 215, 0, 0.3);
+            z-index: 10;
+        }
+
+        footer p {
+            color: #4a9eff;
+            font-size: 0.95em;
+        }
+
+        footer span {
+            color: #ffd700;
+        }
+
+        .error-message {
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid #ff4444;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #ff8888;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        .analysis-text {
+            line-height: 1.8;
+            color: #d0d8ff;
+        }
+
+        @media (max-width: 600px) {
+            .title {
+                font-size: 1.8em;
+            }
+
+            .input-section {
+                padding: 20px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .score-value {
+                font-size: 3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="title">
+                <span class="title-icon">⚖️</span>
+                Sagittarius Heaven
+            </h1>
+        </header>
+
+        <div class="input-section">
+            <div class="error-message" id="errorMessage"></div>
+            
+            <div class="input-group">
+                <label class="input-label">
+                    <span>🌍</span>环境/背景
+                </label>
+                <textarea id="environment" rows="4" placeholder="深夜审讯室，嫌疑人已被讯问3小时，室内无窗，空调温度极低"></textarea>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">
+                    <span>👤</span>人物设定
+                </label>
+                <textarea id="character" rows="4" placeholder="张三，45岁，公司财务总监，性格圆滑谨慎，有轻微口吃，曾因财务造假被调查但未被起诉"></textarea>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">
+                    <span>💬</span>人物说的话
+                </label>
+                <textarea id="statement" rows="3" placeholder="我可以保证，这批货昨天下午就发走了。"></textarea>
+            </div>
+
+            <div class="btn-container">
+                <button class="btn" id="checkBtn" onclick="checkCredibility()">开始裁定</button>
+            </div>
+        </div>
+
+        <div class="loading-container" id="loadingContainer">
+            <div class="spinner"></div>
+            <p class="loading-text">正在交叉分析...</p>
+        </div>
+
+        <div class="report-section" id="reportSection">
+            <div class="card">
+                <div class="card-title">🎯 置信度评分</div>
+                <div class="score-display">
+                    <div class="score-value" id="scoreValue">0%</div>
+                    <div class="score-level" id="scoreLevel">--</div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🔍 分析过程</div>
+                <p class="analysis-text" id="analysisProcess"></p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📋 裁定理由</div>
+                <ul class="reason-list" id="reasonsList"></ul>
+            </div>
+
+            <div class="card">
+                <div class="card-title">💡 建议</div>
+                <ul class="suggestion-list" id="suggestionsList"></ul>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🔮 多种情况预测</div>
+                <div class="predictions-grid" id="predictionsGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>@<span>张潮洋</span>·Sagittarius Heaven开发</p>
+    </footer>
+
+    <script>
+        async function checkCredibility() {
+            const environment = document.getElementById('environment').value.trim();
+            const character = document.getElementById('character').value.trim();
+            const statement = document.getElementById('statement').value.trim();
+            const errorMessage = document.getElementById('errorMessage');
+            const btn = document.getElementById('checkBtn');
+            const loadingContainer = document.getElementById('loadingContainer');
+            const reportSection = document.getElementById('reportSection');
+
+            errorMessage.classList.remove('active');
+            reportSection.classList.remove('active');
+
+            if (!environment || !character || !statement) {
+                errorMessage.textContent = '请填写所有必填字段！';
+                errorMessage.classList.add('active');
+                return;
+            }
+
+            btn.disabled = true;
+            loadingContainer.classList.add('active');
+
+            try {
+                const response = await fetch('/api/credibility_check', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        environment: environment,
+                        character: character,
+                        statement: statement
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || '请求失败');
+                }
+
+                displayReport(data);
+                reportSection.classList.add('active');
+                
+                setTimeout(() => {
+                    reportSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+
+            } catch (error) {
+                errorMessage.textContent = error.message;
+                errorMessage.classList.add('active');
+            } finally {
+                btn.disabled = false;
+                loadingContainer.classList.remove('active');
+            }
+        }
+
+        function displayReport(data) {
+            document.getElementById('scoreValue').textContent = data.credibility_score + '%';
+            document.getElementById('scoreLevel').textContent = data.credibility_level;
+
+            const progressBar = document.getElementById('progressBar');
+            setTimeout(() => {
+                progressBar.style.width = data.credibility_score + '%';
+            }, 100);
+
+            document.getElementById('analysisProcess').textContent = data.analysis_process;
+
+            const reasonsList = document.getElementById('reasonsList');
+            reasonsList.innerHTML = data.reasons.map(reason => `<li>${reason}</li>`).join('');
+
+            const suggestionsList = document.getElementById('suggestionsList');
+            suggestionsList.innerHTML = data.suggestions.map(suggestion => `<li>${suggestion}</li>`).join('');
+
+            const predictionsGrid = document.getElementById('predictionsGrid');
+            predictionsGrid.innerHTML = data.predictions.map(pred => `
+                <div class="prediction-card">
+                    <div class="probability-circle">
+                        <svg width="100" height="100" viewBox="0 0 100 100">
+                            <circle class="bg" cx="50" cy="50" r="45"></circle>
+                            <circle class="progress" cx="50" cy="50" r="45" data-probability="${pred.probability}"></circle>
+                        </svg>
+                        <div class="probability-value">${pred.probability}%</div>
+                    </div>
+                    <p class="prediction-text">${pred.scenario}</p>
+                </div>
+            `).join('');
+
+            setTimeout(() => {
+                document.querySelectorAll('.prediction-card .progress').forEach(circle => {
+                    const prob = parseFloat(circle.getAttribute('data-probability'));
+                    const offset = 283 - (283 * prob / 100);
+                    circle.style.strokeDashoffset = offset;
+                });
+            }, 300);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                checkCredibility();
+            }
+        });
+    </script>
+</body>
+</html>
