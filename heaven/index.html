@@ -44,6 +44,20 @@
             z-index: 0;
         }
 
+        .back-link {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            color: rgba(255, 215, 0, 0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+        .back-link:hover {
+            color: #ffd700;
+        }
+
         .container {
             max-width: 900px;
             margin: 0 auto;
@@ -396,6 +410,8 @@
     </style>
 </head>
 <body>
+    <a href=".." class="back-link">← Portal</a>
+
     <div class="container">
         <header>
             <h1 class="title">
@@ -477,6 +493,35 @@
     </footer>
 
     <script>
+        const API_KEY = 'sk-73d9b88bc3524ff9b844cedb03430789';
+        const API_URL = 'https://api.deepseek.com/v1/chat/completions';
+
+        const SYSTEM_PROMPT = `你是一位专业的置信度裁定专家。根据用户提供的环境背景、人物设定和说话内容，进行深入分析并输出置信度裁定报告。
+
+请严格按照以下JSON格式输出结果，不要包含任何其他说明文字：
+
+{
+  "credibility_score": 85,
+  "credibility_level": "高度可信",
+  "analysis_process": "详细分析文本...",
+  "reasons": ["理由1", "理由2", "理由3"],
+  "suggestions": ["建议1", "建议2"],
+  "predictions": [
+    {"scenario": "可能情况1描述", "probability": 60},
+    {"scenario": "可能情况2描述", "probability": 25},
+    {"scenario": "可能情况3描述", "probability": 15}
+  ]
+}
+
+置信度等级说明：
+- 90-100%: 高度可信
+- 70-89%: 比较可信
+- 50-69%: 存疑
+- 30-49%: 高度可疑
+- 0-29%: 虚假
+
+请确保predictions中的probability总和为100%。`;
+
         async function checkCredibility() {
             const environment = document.getElementById('environment').value.trim();
             const character = document.getElementById('character').value.trim();
@@ -498,26 +543,64 @@
             btn.disabled = true;
             loadingContainer.classList.add('active');
 
+            const userPrompt = `环境/背景:
+${environment}
+
+人物设定:
+${character}
+
+人物说的话:
+${statement}
+
+请根据以上信息，进行置信度裁定。`;
+
             try {
-                const response = await fetch('/api/credibility_check', {
+                const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + API_KEY
                     },
                     body: JSON.stringify({
-                        environment: environment,
-                        character: character,
-                        statement: statement
+                        model: 'deepseek-chat',
+                        messages: [
+                            { role: 'system', content: SYSTEM_PROMPT },
+                            { role: 'user', content: userPrompt }
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 2000
                     })
                 });
 
-                const data = await response.json();
-
                 if (!response.ok) {
-                    throw new Error(data.error || '请求失败');
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.error?.message || 'API 请求失败: ' + response.status);
                 }
 
-                displayReport(data);
+                const apiResult = await response.json();
+                const text = apiResult.choices[0].message.content.trim();
+
+                let result;
+                try {
+                    result = JSON.parse(text);
+                } catch {
+                    // Try to extract JSON from markdown code block
+                    const jsonMatch = text.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/) || text.match(/(\{[\s\S]*\})/);
+                    if (jsonMatch) {
+                        result = JSON.parse(jsonMatch[1]);
+                    } else {
+                        throw new Error('AI 返回格式无法解析');
+                    }
+                }
+
+                const requiredFields = ['credibility_score', 'credibility_level', 'analysis_process', 'reasons', 'suggestions', 'predictions'];
+                for (const field of requiredFields) {
+                    if (!(field in result)) {
+                        throw new Error('缺少必要字段: ' + field);
+                    }
+                }
+
+                displayReport(result);
                 reportSection.classList.add('active');
                 
                 setTimeout(() => {
