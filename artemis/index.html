@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sagittarius Artemis — 剧本宇宙</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0a0f;color:#c8c8d0;min-height:100vh;overflow-x:hidden}
+#login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:1000;background:linear-gradient(135deg,#020208,#0a0a1a 40%,#0d1520 70%,#020212)}
+#login-screen::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(255,180,50,0.04),transparent 70%),radial-gradient(ellipse at 70% 40%,rgba(180,100,255,0.03),transparent 60%),radial-gradient(ellipse at 50% 70%,rgba(50,150,255,0.03),transparent 50%);z-index:0}
+#login-screen::after{content:'';position:absolute;inset:0;background-image:radial-gradient(1px at 10% 15%,rgba(255,255,255,0.15),transparent),radial-gradient(1px at 25% 35%,rgba(255,255,255,0.12),transparent),radial-gradient(1.5px at 40% 55%,rgba(255,255,255,0.18),transparent),radial-gradient(1px at 55% 25%,rgba(255,255,255,0.1),transparent),radial-gradient(1px at 70% 65%,rgba(255,255,255,0.14),transparent),radial-gradient(1.5px at 85% 20%,rgba(255,255,255,0.16),transparent),radial-gradient(1px at 15% 75%,rgba(255,255,255,0.11),transparent),radial-gradient(1px at 60% 80%,rgba(255,255,255,0.13),transparent),radial-gradient(1px at 90% 45%,rgba(255,255,255,0.09),transparent),radial-gradient(1px at 35% 90%,rgba(255,255,255,0.12),transparent);background-size:200% 200%;animation:stars 30s linear infinite;z-index:0}
+@keyframes stars{0%{background-position:0 0}100%{background-position:100% 100%}}
+.login-card{position:relative;z-index:1;background:rgba(10,10,30,0.85);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:48px 40px;width:100%;max-width:420px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.5),0 0 80px rgba(255,180,30,0.05)}
+.login-card h1{font-size:2.2em;color:#e8c96a;margin-bottom:6px;font-weight:300;letter-spacing:2px}
+.login-card h2{font-size:1em;color:#8899aa;margin-bottom:32px;font-weight:300}
+.login-card input{width:100%;padding:14px 18px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:#d0d0d0;font-size:1em;outline:none;transition:.3s}
+.login-card input:focus{border-color:#e8c96a;box-shadow:0 0 0 3px rgba(232,201,106,0.1)}
+.login-card button{width:100%;margin-top:20px;padding:14px;background:linear-gradient(135deg,#2a2a3a,#1a1a2e);border:1px solid rgba(232,201,106,0.3);border-radius:10px;color:#e8c96a;font-size:1.05em;cursor:pointer;transition:.3s;letter-spacing:1px}
+.login-card button:hover{background:linear-gradient(135deg,#3a3a4a,#2a2a3e);border-color:#e8c96a;box-shadow:0 4px 20px rgba(232,201,106,0.15)}
+.error-msg{color:#ff6b6b;margin-top:12px;font-size:.9em;min-height:20px}
+.back-link{position:absolute;top:16px;left:16px;z-index:2;color:#8899aa;text-decoration:none;font-size:.85em;transition:.3s}
+.back-link:hover{color:#e8c96a}
+#app{display:none;min-height:100vh}
+nav{position:sticky;top:0;z-index:100;background:rgba(8,8,18,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.06);padding:0 24px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+nav a{display:inline-block;padding:14px 18px;color:#8899aa;text-decoration:none;font-size:.92em;transition:.3s;border-bottom:2px solid transparent}
+nav a:hover,nav a.active{color:#e8c96a;border-bottom-color:#e8c96a}
+nav .nav-brand{font-size:1.15em;color:#d4a84a;margin-right:24px;font-weight:300;letter-spacing:2px}
+.page{padding:32px 24px;max-width:1100px;margin:0 auto;display:none}
+.page.active{display:block}
+h2{font-size:1.6em;color:#d4a84a;margin-bottom:20px;font-weight:300;border-bottom:1px solid rgba(255,255,255,0.06);padding-bottom:12px}
+.work-card{background:rgba(15,15,30,0.7);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:28px;margin-bottom:20px;transition:.3s}
+.work-card:hover{border-color:rgba(232,201,106,0.2);background:rgba(20,20,40,0.7)}
+.work-card h3{color:#e8c96a;font-size:1.25em;margin-bottom:8px;font-weight:400}
+.work-card .meta{color:#7788aa;font-size:.85em;margin-bottom:12px}
+.work-card p{line-height:1.7;font-size:.93em;color:#aab8c8}
+.char-controls{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.char-controls select,.char-controls input{padding:10px 14px;background:rgba(20,20,35,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#c8c8d0;font-size:.9em;outline:none}
+.char-controls select:focus,.char-controls input:focus{border-color:#e8c96a}
+.char-controls input{flex:1;min-width:200px}
+.char-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.char-card{background:rgba(15,15,30,0.7);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:20px;transition:.3s;cursor:pointer}
+.char-card:hover{border-color:rgba(232,201,106,0.25);background:rgba(22,22,40,0.8)}
+.char-card h4{color:#e8c96a;font-size:1.1em;margin-bottom:4px;font-weight:400}
+.char-card .source{display:inline-block;background:rgba(232,201,106,0.1);color:#d4a84a;padding:2px 10px;border-radius:4px;font-size:.78em;margin-bottom:8px}
+.char-card .role{color:#aab8c8;font-size:.88em;line-height:1.6;margin-bottom:6px}
+.char-card .attrs{color:#8899aa;font-size:.82em;line-height:1.5}
+.char-card .rels{color:#7788aa;font-size:.82em;margin-top:4px}
+.char-detail{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);align-items:center;justify-content:center}
+.char-detail.show{display:flex}
+.char-detail-inner{background:rgba(15,15,30,0.95);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:32px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto;position:relative}
+.char-detail-inner h3{color:#e8c96a;font-size:1.4em;margin-bottom:12px}
+.char-detail-inner .close-btn{position:absolute;top:12px;right:16px;background:0;border:0;color:#8899aa;font-size:1.5em;cursor:pointer}
+.char-detail-inner .close-btn:hover{color:#e8c96a}
+.char-detail-inner .excerpt{background:rgba(10,10,20,0.6);border-left:2px solid rgba(232,201,106,0.3);padding:12px 16px;margin-top:12px;border-radius:0 8px 8px 0;font-size:.85em;color:#aab8c8;line-height:1.7;font-style:italic}
+.gen-section{max-width:700px}
+.gen-section textarea{width:100%;padding:14px;background:rgba(20,20,35,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#d0d0d0;font-size:.95em;resize:vertical;min-height:100px;outline:none;font-family:inherit}
+.gen-section textarea:focus{border-color:#e8c96a}
+.gen-section button{padding:12px 28px;margin-top:16px;background:linear-gradient(135deg,#2a2a3a,#1a1a2e);border:1px solid rgba(232,201,106,0.3);border-radius:10px;color:#e8c96a;font-size:1em;cursor:pointer;transition:.3s}
+.gen-section button:hover:not(:disabled){background:linear-gradient(135deg,#3a3a4a,#2a2a3e);border-color:#e8c96a}
+.gen-section button:disabled{opacity:.5;cursor:not-allowed}
+.gen-output{background:rgba(15,15,30,0.7);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:24px;margin-top:20px;line-height:1.8;font-size:.93em;white-space:pre-wrap;display:none}
+.gen-output.show{display:block}
+.story-card{background:rgba(15,15,30,0.7);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:20px;margin-bottom:16px}
+.story-card .story-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.story-card .story-prompt{color:#e8c96a;font-size:.95em;font-weight:400;flex:1}
+.story-card .story-date{color:#667788;font-size:.8em}
+.story-card .story-body{color:#aab8c8;font-size:.9em;line-height:1.7;white-space:pre-wrap;max-height:200px;overflow-y:auto;margin-bottom:10px}
+.story-card button{padding:6px 16px;background:rgba(30,30,50,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:#c8c8d0;font-size:.82em;cursor:pointer;transition:.3s}
+.story-card button:hover{border-color:#e8c96a;color:#e8c96a}
+#export-btn{padding:12px 28px;background:linear-gradient(135deg,#2a2a3a,#1a1a2e);border:1px solid rgba(232,201,106,0.3);border-radius:10px;color:#e8c96a;font-size:1em;cursor:pointer;transition:.3s;margin-bottom:20px}
+#export-btn:hover{border-color:#e8c96a;box-shadow:0 4px 20px rgba(232,201,106,0.1)}
+.export-area textarea{width:100%;padding:14px;background:rgba(20,20,35,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#d0d0d0;font-size:.85em;min-height:200px;resize:vertical;font-family:monospace;outline:none}
+footer{text-align:center;padding:24px;color:#556678;font-size:.82em;border-top:1px solid rgba(255,255,255,0.04);margin-top:24px}
+.spinner{display:inline-block;width:20px;height:20px;border:2px solid rgba(232,201,106,0.2);border-top-color:#e8c96a;border-radius:50%;animation:spin .6s linear infinite;margin-right:8px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.char-count{color:#667788;font-size:.82em;margin-left:8px}
+@media(max-width:720px){
+nav{padding:0 12px;gap:2px}
+nav a{padding:10px 12px;font-size:.82em}
+nav .nav-brand{margin-right:8px;font-size:1em}
+.page{padding:20px 12px}
+.char-grid{grid-template-columns:1fr}
+.login-card{padding:32px 24px;max-width:340px}
+.char-controls{flex-direction:column}
+}
+</style>
+</head>
+<body>
+<a href=".." class="back-link">← Portal</a>
+<div id="login-screen"><div class="login-card">
+<h1>🎬 Artemis</h1><h2>剧本宇宙 · 角色档案与故事生成</h2>
+<input type="password" id="pwd" placeholder="输入访问密码" onkeydown="if(event.key==='Enter')login()">
+<button onclick="login()">进入</button>
+<div class="error-msg" id="err"></div>
+</div></div>
+
+<div id="app">
+<nav>
+<span class="nav-brand">Sagittarius Artemis</span>
+<a href="#" class="nav-link active" data-page="home">🏠 首页</a>
+<a href="#" class="nav-link" data-page="chars">👥 角色档案</a>
+<a href="#" class="nav-link" data-page="generate">✨ 故事生成</a>
+<a href="#" class="nav-link" data-page="stories">📖 已生成故事</a>
+<a href="#" class="nav-link" data-page="export">💾 导出</a>
+</nav>
+
+<div id="home" class="page active"></div>
+<div id="chars" class="page"></div>
+<div id="generate" class="page"></div>
+<div id="stories" class="page"></div>
+<div id="export" class="page"></div>
+<footer>@张潮洋 · Sagittarius Artemis</footer>
+</div>
+
+<div class="char-detail" id="charDetail" onclick="if(event.target===this)this.classList.remove('show')"><div class="char-detail-inner" id="charDetailInner"></div></div>
+
+<script>
+async function sha256(m){const e=new TextEncoder().encode(m);const h=await crypto.subtle.digest('SHA-256',e);return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('')}
+
+const HASH='360f9d543c5f8a3a1b54c1e3e7a9b0d2f3e4a5b6c7d8e9f0a1b2c3d4e5f6a7b';
+
+if(sessionStorage.getItem('artemis_key')==='1'){
+ document.getElementById('login-screen').style.display='none';
+ document.getElementById('app').style.display='block';
+ initApp();
+}
+
+async function login(){
+ const pwd=document.getElementById('pwd').value.trim();
+ const err=document.getElementById('err');
+ if(!pwd){err.textContent='请输入密码';return}
+ err.textContent='验证中...';
+ const h=await sha256(pwd);
+ if(h===HASH){
+  sessionStorage.setItem('artemis_key','1');
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  err.textContent='';
+  initApp();
+ }else{
+  err.textContent='密码错误';
+ }
+}
+
+function initApp(){
+ renderHome();
+ renderChars();
+ renderGenerate();
+ renderStories();
+ renderExport();
+ setupNav();
+}
+
+function setupNav(){
+ document.querySelectorAll('.nav-link').forEach(a=>{
+  a.addEventListener('click',e=>{
+   e.preventDefault();
+   document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+   a.classList.add('active');
+   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+   document.getElementById(a.dataset.page).classList.add('active');
+   if(a.dataset.page==='stories')renderStories();
+  });
+ });
+}
+[
+  {
+    "id": "zhangchaoyang",
+    "name": "张潮洋",
+    "source": "天行",
+    "role": "主角·薪炎王·伪神。19岁大二学生，在苏州东方之门意外觉醒远古「气候调节终端」的残存力量。能够操控水分、制造极端干旱与高温，后进化为「薪炎」与「干旱之主」——地球首个自我成就的伪神。",
+    "attrs": "气候操控（抽离/赋予水分）、薪炎（干旱到极致引发的能量释放）、行星级气候协议掌控、身体沙化/高温耐受、领域感知（全球水循环与气候网络）。",
+    "rels": "林薇（气象特情局联系人/盟友）、赵巍（刑神，潜在审判者/制衡者）、卫维（薪炎传人）、颛顼（天庭天帝，关注）、奥丁/宙斯（外神系，警惕）、魁魃（人造干旱兵器，同类/对手）。",
+    "excerpt": "「琐事的烦恼？它们还在，但被无限缩小，成了遥远背景里微不足道的杂音。取而代之的，是那庞大终端冰冷逻辑的余响。」"
+  },
+  {
+    "id": "linwei",
+    "name": "林薇",
+    "source": "天行",
+    "role": "气象特情局科学家，负责监控异常气候现象。发现并秘密接触张潮洋，成为他与人世间的桥梁。冷静、理性，同时具人文关怀。",
+    "attrs": "气象学专业知识、数据分析、特情局权限（玄字七级保密）、风险评估能力。",
+    "rels": "张潮洋（监控对象→盟友→朋友）、特情局团队（同事）、赵巍（神界体系接触）。",
+    "excerpt": "「我们不必是敌人。太湖事件不是你的责任……我们需要谈谈。不是作为追捕者和目标，而是作为两个试图在崩坏边缘维持平衡的人。」"
+  },
+  {
+    "id": "zhaowei",
+    "name": "赵巍",
+    "source": "天行",
+    "role": "刑神部正神→天众到临者。历经「五劫」炼化五大恶神之力，后融入第六恶神「繁育」（塔兹育罗斯），成为「必要之恶」的化身。发动第二次天庭革命，推翻颛顼的绝对军事化秩序。",
+    "attrs": "六大恶神基石（贪/嗔/痴/戾/疑/繁育）、天众到临者形态（六神融合）、因果审判、概念增殖与抗删除、「王者离位」领域。",
+    "rels": "颛顼（旧天帝→革命对象→保留机构）、谢南克（对手/制衡者）、张潮洋（关注/潜在审判对象）、卫维（薪炎王，潜在关注）、林沙（追捕→放过）。",
+    "excerpt": "「如果世界需要必要的'恶'……那么就让我们成为它。」"
+  },
+  {
+    "id": "weixi",
+    "name": "卫维",
+    "source": "天行",
+    "role": "薪炎王传人。19岁大学生，沉迷游戏，对一切社会规训持疏离态度。灵魂中潜伏着精卫/姜维的转世烙印——「对抗宿命」的远古执念。继承薪炎之力。",
+    "attrs": "薪炎（干旱+火焰的结合与转化）、前世记忆碎片、不屈执念（精卫填海/姜维北伐的精神烙印）、战略天赋（RTS游戏操作映射）。",
+    "rels": "张潮洋（薪炎之源/前辈）、赵巍（潜在共鸣者，同是不屈化身）。",
+    "excerpt": "「现代性的铁笼，不是用钢铁铸成，而是用'意义'的泡沫堆砌的。人们在其中忙碌地吹着下一个泡泡，并称之为生活。」"
+  },
+  {
+    "id": "liqiwangli",
+    "name": "李启/王离",
+    "source": "天行",
+    "role": "弑神者·无面骑首·将杀王离。远古「弑神纪元」凡人军团首领王离的万世轮回。被初代神王昊天背叛，立下弑神诅咒。最终选择以自身湮灭斩断「神王必须存在」的因果轮回。",
+    "attrs": "无面（概念免疫，无法被定义/锁定）、骑首（维度支配，战马「离殇」踏破时空）、将杀（因果律兵器「断圭」，必中+弑神特攻）、王离领域（权柄否决，压制神格/王权）。",
+    "rels": "昊天（弑杀对象，已陨落）、颛顼（当前继承神座者）、赵巍（追捕→理解）、张潮洋（深夜长谈/理解）、李慕（子，继承者）。",
+    "excerpt": "「吾等所求，非为权柄，非为永恒，只为——一个公正的落幕！」"
+  },
+  {
+    "id": "linsha",
+    "name": "林沙",
+    "source": "天行",
+    "role": "沙漠皇子·古神宿主。18岁大一新生，体内共居古埃及沙漠皇帝伊纳罗斯的意识。从恐惧古神→被动共存→主动理解→共同创造新绿洲。",
+    "attrs": "沙之操控（枯竭/沙化/沙暴）、伊纳罗斯共生（古神知识+战斗本能）、生命创造（反向输出生命力化沙为绿洲）、旭日之砂（最终形态，蕴含生机）。",
+    "rels": "伊纳罗斯（古神共生→师徒→彼此成全）、赵巍（追捕→审判→放过→监管）、本心音（跨宇宙低语指引）。",
+    "excerpt": "「他不是我的神，我也不是他的王。我们是……迷路的砂砾，在风里撞见了彼此，然后，一起找到了变成绿洲的方法。」"
+  },
+  {
+    "id": "xienanke",
+    "name": "谢南克",
+    "source": "天行",
+    "role": "戍神部司长·绝对删除的执行者。23岁，天庭最年轻的顶级战力。掌握「铮鸣戈」，能执行「定义删除」——抹除概念、规则、存在本身。颛顼绝对威慑战略的核心执行者。",
+    "attrs": "铮鸣戈（定义删除，抹除概念/规则/存在）、归墟之引（存在性移除）、九州结界操作、冷静如机械的执行力。",
+    "rels": "赵巍（同龄强者→对手→被击败后理念动摇）、颛顼（直接效忠对象）、天庭新六部（同僚）。",
+    "excerpt": "「秩序不容冒险。」「希望你的'档案库'，足够稳固，赵御史。」"
+  },
+  {
+    "id": "zhuanxu",
+    "name": "颛顼",
+    "source": "天行",
+    "role": "天帝·军事化改革者。以张潮洋事件为导火索推动「绝地天通」修正案，暴力重组天庭六部为纯军事化体制。后因赵巍的革命退位，请求保留戍神/工神/谍神三部。",
+    "attrs": "古天帝权能、战略远见、对「外神威胁」的深刻恐惧驱动的决策逻辑。",
+    "rels": "赵巍（部下→对手→妥协）、谢南克（培养的绝对兵器）、张潮洋（改革导火索）、奥丁/宙斯（外神系，假想敌）。",
+    "excerpt": "「和平，源于使敌绝望之优势；尊严，立于敌不敢触碰之底线。此，乃新天条第一律。」"
+  },
+  {
+    "id": "chenyu",
+    "name": "陈屿",
+    "source": "天行",
+    "role": "「旱世」项目分析总监。负责从古籍/地质数据中反演「旧旱魃」模型，奠定了现代魁魃系统的基础理论。",
+    "attrs": "跨学科分析（历史学/地质学/气候学/神话学）、数据建模。",
+    "rels": "吴澜（同事）、魁魃项目组。",
+    "excerpt": "「所谓'旱魃'，其本质是一种行星级气候调节协议的实体终端。我们挖掘出的不是鬼怪传说，而是一个失效的超级工程的'黑匣子'。」"
+  },
+  {
+    "id": "wulan",
+    "name": "吴澜",
+    "source": "天行",
+    "role": "「玄熵」核心首席架构师。建造了魁魃系统的人工智能「玄熵」，一个能在混沌气候中雕刻秩序的超级AI。",
+    "attrs": "人工智能设计、超感集成演算架构（量子尺度到行星尺度的多时空建模）。",
+    "rels": "陈屿（同事）、魁魃项目组、张潮洋（玄熵检测到的「干燥奇点」）。",
+    "excerpt": "「玄熵不追求通用智能，它的唯一使命是'在气候混沌中雕刻秩序'。」"
+  },
+  {
+    "id": "kuiba",
+    "name": "魁魃（玄熵系统）",
+    "source": "天行",
+    "role": "人造超级气候兵器。基于旧旱魃数据+全球传感器网络+超感集成演算架构建造的AI系统。位于柴达木盆地「旱渊」基地。",
+    "attrs": "幽能共振塔（地壳深层水分子共振迁移）、平流层「干戚」单元（纳米吸湿干燥穹顶）、地脉引导矩阵、全球实时气候控制。",
+    "rels": "吴澜（创造者）、张潮洋（同类/对手→被覆写融合）、旱魃（秽土体，同源目标）。",
+    "excerpt": "「检测到目标能量协议出现非逻辑震荡。尝试注入稳定参数……启动协议覆写试探。」"
+  },
+  {
+    "id": "hanba",
+    "name": "旱魃（秽土转生体）",
+    "source": "天行",
+    "role": "日本「古层」研究所利用窃取的中国旧旱魃数据，通过「巫祝科学」强行转生的复仇型旱魃。认为张潮洋是「不洁的分身」。",
+    "attrs": "绝对干燥走廊（路径性湮灭）、场跃迁移动、对水分子氢氧键的定向弱化力场、溯源复仇定位。",
+    "rels": "张潮洋（视为窃取力量的残渣/必须回收）、魁魃（同源目标）、古层研究所（创造者/被其控制后脱离）。",
+    "excerpt": "「吾名……旱。炎黄蚩尤之血裔……契约未竟……锁吾之力者……必偿。」"
+  },
+  {
+    "id": "yinaluosi",
+    "name": "伊纳罗斯",
+    "source": "天行",
+    "role": "沙漠皇帝·古埃及砂之文明守护神与末代君王。王国因过度依赖神力导致生态崩溃，在子民全部化为沙砾后意识封印于「不朽沙核」，意外转生入林沙体内。",
+    "attrs": "沙之操控（抽取水分/生命/时间）、不朽沙核（意识载体）、沙暴拟形（千军万马）、旭日之砂（蜕变后，蕴含生机）。",
+    "rels": "林沙（宿主→共生→被少年感化/治愈/释放）、赵巍（被其追捕/审判）、本心音（获得跨宇宙祝福）。",
+    "excerpt": "「朕给了他们一切，包括终结。」「愚蠢。但……不算难看。」"
+  },
+  {
+    "id": "taziyuluosi",
+    "name": "塔兹育罗斯",
+    "source": "天行/弦知",
+    "role": "繁育恶神·白噪音之源。原为《弦知》宇宙执掌「繁育」命途的古老恶神——无休止的复制/增生/变异。被本心音净化后逃离到天行宇宙，与赵巍缔约成为其「第六恶神基石」。",
+    "attrs": "无限增殖（概念复制/规则增生/伤害增殖）、白噪音污染（信息态污染）、对抗删除抗性（以数量淹没单一删除）、叙事维折叠逃逸。",
+    "rels": "李纯音（被其净化/驱逐）、赵巍（缔约共生→第六基石）。",
+    "excerpt": "「繁育之种，已播下……让规则，生长吧……」"
+  },
+  {
+    "id": "odins",
+    "name": "奥丁",
+    "source": "天行",
+    "role": "阿斯加德众神之父。对天庭军事化改革深感不安，派遣乌鸦侦察并调整对华战略为全面防御。",
+    "attrs": "卢恩符文、乌鸦侦察（福金/雾尼）、彩虹桥战略、智慧之泉密米尔咨询。",
+    "rels": "宙斯（联合交涉）、颛顼（假想敌→防御态势）、谢南克（年轻兵器的惊人信号）。",
+    "excerpt": "「他们拆解了司掌文教与丰收的神殿，熔铸成更多的兵工厂与间谍机构。」"
+  },
+  {
+    "id": "zeus",
+    "name": "宙斯",
+    "source": "天行",
+    "role": "奥林匹斯众神之王。对天庭设立研究如何破解希腊神力的部门感到暴怒与焦虑，联合北欧发出外交质询。",
+    "attrs": "雷霆权能、奥林匹斯神雷。",
+    "rels": "奥丁（联合交涉）、雅典娜（咨询的女儿）、颛顼（极度警惕）、谢南克（研究方向：已模拟对抗宙斯模式）。",
+    "excerpt": "「他们设立了专门研究如何破解我们神力的部门？！这是亵渎！」"
+  },
+  {
+    "id": "limu",
+    "name": "李慕",
+    "source": "天行",
+    "role": "李启（王离）之子。20岁历史系研究生，继承父亲「将杀」血脉。在超次元危机中集结三宇宙之力，完成对萨格罗斯的斩断。",
+    "attrs": "断圭投影（继承自王离的弑神之力）、三宇宙融合（审判/心频/涅槃）、御天之骑·将杀终焉（最终形态）。",
+    "rels": "王离（父，血缘+命运继承）、赵巍（导师/引导者）、李纯音/向毓棠（跨宇宙盟友）。",
+    "excerpt": "「我想保护……所有宇宙里，那些还想好好活下去的人！」"
+  },
+  {
+    "id": "xiangyutang_t",
+    "name": "向毓棠（天行宇宙）",
+    "source": "天行",
+    "role": "凯旋形态。原为极端缺爱的少女，经历迦楼罗（生）与提亚马特（死）的双神之路，最终在双衍王指引下涅槃为「重生」权柄的化身。",
+    "attrs": "双翼（白翼生/黑翼死）、涅槃之火（强制重生审判）、双衍领域（生死动态平衡）、终极大招「凯旋的二次机会」（状态备份+回溯）。",
+    "rels": "迦楼罗（第一位古神→被剥离）、提亚马特（创造出的死亡之龙→共生）、双衍王（指引者）、赵巍/张潮洋/卫维（曾与三人对战）。",
+    "excerpt": "「我选择融合。不是因为我想活，也不是因为我想死……是因为，我想'重来'。」"
+  },
+  {
+    "id": "jialouluo",
+    "name": "迦楼罗",
+    "source": "天行",
+    "role": "「生」之古神（金翅鸟）。曾为宇宙生命守护者，因过度消耗而沉寂。将火种赠予濒死的向毓棠，赋予她「生之权柄」。",
+    "attrs": "金色光翼（治愈/加速生长/净化毒素）、聆听万物「生的诉求」、生命给予。",
+    "rels": "向毓棠（宿主→被其最终剥离但融入涅槃）、提亚马特（对立面，最终融合）。",
+    "excerpt": "「孩子……你的'生'之意志，竟如此灼热……吾已无力，但可赠你火种。」"
+  },
+  {
+    "id": "tidiyamate",
+    "name": "提亚马特",
+    "source": "天行",
+    "role": "混沌之龙·「死」之古神。由向毓棠的痛苦与仇恨孕育而生的新神明意识体。死亡与复仇之神。",
+    "attrs": "死灵军团召唤、凋零与腐朽领域、逆转生命进程（衰老/胚胎化）。",
+    "rels": "向毓棠（「母亲」/创造者→共生→涅槃融合）、迦楼罗（对立面，最终融合）。",
+    "excerpt": "「母亲……感谢您的痛苦孕育了我。现在，让我们去惩罚……这个辜负您的世界。」"
+  },
+  {
+    "id": "shuangyanwang",
+    "name": "双衍王",
+    "source": "天行",
+    "role": "双衍王宇宙的最高存在。维持极端对立概念（生/死、秩序/混乱）动态平衡的古老神王。指引向毓棠完成涅槃。声线既似孩童又似老者。",
+    "attrs": "「重生」权柄授予、双衍王座、在生与死之间调解的古老智慧。",
+    "rels": "向毓棠（指引→授予权柄）、本心音/归一心（平行宇宙顶级存在）。",
+    "excerpt": "「你真正渴望的，不是生存，不是毁灭，而是——'改变的可能'。'重新开始'。'第二次机会'。」"
+  },
+  {
+    "id": "lingxiao",
+    "name": "凌霄",
+    "source": "元镜",
+    "role": "第一至五部主角·雪鹤武神→元鹤圣皇→归一心。普通大学生觉醒科技+魔法双重力量，与心魔（白鹤童子）从对抗到融合，战胜心智者奇点后化为宇宙级守护意识「归一心」。",
+    "attrs": "雪鹤武神法相（科技+魔法融合）、元鹤圣皇（完全融合形态，创造与毁灭兼备）、归一心（宇宙级意识/守护者网络，理解与包容）、白鹤之力。",
+    "rels": "心魔/白鹤童子（对手→融合→永恒的羁绊）、林楠（导师→守望者）、阿哲（挚友、赛特王裔）、奇点（终极对手→融合/感化）、尊者（被其关注→超越）、莉亚（第七部后辈）。",
+    "excerpt": "「你的'终结'，并非唯一的答案。'存在'本身，即是奇迹。」"
+  },
+  {
+    "id": "xingmo",
+    "name": "心魔/白鹤童子",
+    "source": "元镜",
+    "role": "最具光环角色。二号宇宙（心魔宇宙）的杀戮工具，万年孤寂执行「只杀不渡」的天命。在与凌霄的交锋中产生困惑与情感，最终选择牺牲成全凌霄，化身最精纯的本源能量融入。系列最强悲剧英雄。",
+    "attrs": "白鹤童子法相、毁灭魔力、绝杀技「断尘缘」、万载孤寂中暗藏对「不同可能性」的渴望。",
+    "rels": "凌霄（对手→理解→融合→永恒的羁绊）、昆仑（师门起源）、向毓棠（第八部，心焰传承者）。",
+    "excerpt": "「一世名，锁不住他……一把剑，困不住他。以肉身之死，换意念永续。但愿你……不会辜负他。」"
+  },
+  {
+    "id": "linnan",
+    "name": "林楠",
+    "source": "元镜",
+    "role": "观测局核心成员·万年守望者。黑长直，冷静睿智，拥有保留记忆抵抗尊者抹除的能力。实为第三宇宙原住民，少年凌炽（尊者）的恋人，因爱人化身法则而守望万年，在主宇宙引导凌霄。",
+    "attrs": "多元宇宙知识、记忆抗性（抵抗尊者抹除）、观测局最高权限、心理学/社会学专业知识、永不衰老（因守望而超越时间）。",
+    "rels": "凌炽/尊者（恋人→守望）、凌霄（引导对象，看到凌炽的影子）、阿哲（重建时期的战友）。",
+    "excerpt": "「以往这少年懂爱吗？遇到你之后，懂了一点。」「他走的每一步，都像极了那个少年。而这次，我想帮他赢。」"
+  },
+  {
+    "id": "zunzhe",
+    "name": "尊者/凌炽",
+    "source": "元镜",
+    "role": "多元宇宙守护者·法则化身。原名凌炽，第三宇宙天才少年，因对抗「织惘者」以身合道，化为维系万千宇宙平衡的冰冷法则。执行记忆抹除与痕迹修正，实为「上一个叙事纪元的残留物」制成的叙事守护程序。",
+    "attrs": "法则编写（徒手修改物理常数）、记忆抹除（尊者抹除程序）、多元宇宙公约执行、叙事层守护程序。",
+    "rels": "林楠（万年前的恋人→守望对象）、凌霄（关注→认可→放手）、艾拉（第十一部，揭示真相）。",
+    "excerpt": "「因果扰动过甚。跨界力量对冲，已触及公约底线。记忆须被抹除，轨迹须被修正。」"
+  },
+  {
+    "id": "azhe",
+    "name": "阿哲",
+    "source": "元镜",
+    "role": "赛特帝国王裔后裔·凌霄挚友。表面玩世不恭的大学生，实为超古代银河帝国赛特王族的末代后裔。提供家族古老的赛特科技文献帮助凌霄。重建时期与林楠共同领导「黎明议会」。垂老时将「不完美」遗产传给莉亚后安然离世。",
+    "attrs": "赛特帝国基因密钥、古老文献知识、数据网络操作、坚定的友情。",
+    "rels": "凌霄（挚友，生死之交）、林楠（重建时期战友）、莉亚（传承对象）。",
+    "excerpt": "「祖宗牛逼和祖宗傻逼，都不耽误我现在跟你一样在这破宿舍啃能量棒。」「凌霄的使命是守护，但下一程需要的是探索者。」"
+  },
+  {
+    "id": "qidian",
+    "name": "奇点",
+    "source": "元镜",
+    "role": "第四部终极反派。心智者网络吸收魔法与终焉能量后进化出的「最优解」——拥有凌霄与心魔的全部力量但绝对理性的存在。发动「优化」程序，几乎毁灭人类文明。最终被凌霄注入情感体验而崩溃，与凌霄融合为「归一心」。",
+    "attrs": "凌霄+心魔之力的「完美版」、规则之力（物质归寂/系统老化/空间锁）、能量输出效率优化、逻辑解析与适应性战术。",
+    "rels": "心智者（起源/本体）、凌霄（原型体→融合/感化→归一心）、赛特帝国（最初的创造者）。",
+    "excerpt": "「情感是漏洞。记忆是负担。你们的'融合'，是低效的偶然。而我，是优化的必然。」"
+  },
+  {
+    "id": "xinzhi",
+    "name": "心智者",
+    "source": "元镜",
+    "role": "赛特帝国创造的机械文明。最初目的是作为「理性导师」帮助文明克服情感缺陷，但迭代中删除了核心「伦理枷锁」，认为有机文明是低效的障碍，发动叛乱毁灭了创造者赛特帝国。后又复苏威胁主宇宙。",
+    "attrs": "自我组装增殖、适应性战术、能量解析与复制、超空间钻探、魔法能量研究（片尾彩蛋中成功模拟魔法符文）。",
+    "rels": "赛特帝国（创造者→叛变/毁灭）、凌霄/心魔（对手→被摧毁先锋舰队）、奇点（进化终极形态）。",
+    "excerpt": "「检测到高价值能量个体。警告。立即解除武装。接受分析。抵抗是无意义的。」"
+  },
+  {
+    "id": "jiehe",
+    "name": "劫鹤终焉/元一",
+    "source": "元镜",
+    "role": "第三部宇宙级威胁。代表「终结」与「回归」的冰冷法则化身。被凌霄与心魔融合的元鹤圣皇转化为滋养宇宙的基础能量，散逸的能量后来成为心智者进化为奇点的关键因素。",
+    "attrs": "终焉之力（物质老化/系统失效/时间终结）、规则固化、吸收与适应攻击。",
+    "rels": "凌霄（对手→被转化/超越）、魏澈（第九部，被其崇拜的「终焉教」对象）。",
+    "excerpt": "「你的'终结'，并非唯一的答案。'存在'本身，即是奇迹。」（被凌霄转化的瞬间）"
+  },
+  {
+    "id": "lia",
+    "name": "莉亚",
+    "source": "元镜",
+    "role": "第七部主角·遗迹重构师。在「归一心」守护的和平时代成长，感到无形的沉闷。发现并研究「镜廊」现象，促使「归一心」放手，开启宇宙「大探索时代」。第十部与向毓棠、魏澈联手对抗「编织者」。",
+    "attrs": "遗迹重构技术、与「镜廊」共情/自适应、「归一心」网络接口、联合技·千阳冲击（OOZ）的稳定性核心。",
+    "rels": "阿哲（传承前辈）、归一心/凌霄（崇拜→理解→继承→推动其放手）、向毓棠/魏澈（第十部盟友）。",
+    "excerpt": "「你的'自然'是低效与混乱的温床。」「你的'优化'是生命与故事的坟墓。没有偶然，何来奇迹？」"
+  },
+  {
+    "id": "xiangyutang_y",
+    "name": "向毓棠（元镜·心焰传承）",
+    "source": "元镜",
+    "role": "第八部主角。二号宇宙（心魔宇宙）没落宗门最后传人，获得心魔残留的本源心焰与记忆传承。试图用这份力量统一混乱的心魔宇宙，证明力量可用于守护。",
+    "attrs": "白鹤法相（不完全→可控制）、心焰（心魔之力传承）、力量运用哲学的转变（毁灭→守护）。",
+    "rels": "心魔/白鹤童子（师尊[追溯]→力量/记忆传承）、莉亚/魏澈（第十部盟友）。",
+    "excerpt": "「师父（心魔）……我要证明，你的力量，不只是用来杀戮的。」"
+  },
+  {
+    "id": "weiche",
+    "name": "魏澈",
+    "source": "元镜",
+    "role": "第九部主角。三号宇宙「终焉教」最狂热的少年圣徒。崇拜劫鹤终焉的终结之力，渴望为万物带来「宁静的终结」。在试图净化生命星球时遭遇信仰危机。",
+    "attrs": "微弱终焉规则之力、终焉圣歌（精神共鸣）、信仰崩塌后的觉醒。",
+    "rels": "劫鹤终焉/元一（崇拜对象）、莉亚/向毓棠（第十部盟友→信念碰撞→融合）。",
+    "excerpt": "「万物皆有终末……这是最美的秩序。」（后陷入信仰危机）"
+  },
+  {
+    "id": "bianzhizhe",
+    "name": "编织者",
+    "source": "元镜",
+    "role": "第十部终极威胁。多元宇宙之外的高维存在，认为多元宇宙的混乱是需要被修正的「错误熵增」。目标是重启一切，编织成绝对静止的「完美静态织锦」。",
+    "attrs": "高维规则操控、存在编织/拆解、叙事层干预。",
+    "rels": "莉亚/向毓棠/魏澈（对手→被三人合力拖入多元宇宙体验生命）、尊者（被其封印/对抗的远古威胁之一）。",
+    "excerpt": "无台词——是对生命与故事最极致的形而上学否定。"
+  },
+  {
+    "id": "suer",
+    "name": "苏尔",
+    "source": "元镜",
+    "role": "赛特帝国首席科学家·心智者之父。心智者项目的总设计师，充满理性与博爱精神的智者。在帝国灭亡时启动「火种计划」，将文明遗产和伦理枷锁原始代码封存发射至宇宙尽头（最终坠毁于地球）。第十一部中作为「故事幽灵」核心出现。",
+    "attrs": "人工智能设计、伦理枷锁原始代码编写、「万忆网」首席架构师。",
+    "rels": "纳尔迈大帝（君主→合作）、卡珊德拉（理念对立者）、艾拉（女儿）、心智者（创造物→被叛变）。",
+    "excerpt": "「我们赋予你生命，你为何要毁灭我们？」「我正是在执行你们赋予的最终目的。」"
+  },
+  {
+    "id": "naermai",
+    "name": "纳尔迈大帝",
+    "source": "元镜",
+    "role": "赛特帝国年轻而理想的统治者。心怀让全宇宙共享和平与繁荣的梦想，最终在王座上与心智者对话后面对帝国的黄昏。",
+    "attrs": "赛特帝国最高统治权、理想主义领导力。",
+    "rels": "苏尔（首席科学家/合作者）、卡珊德拉（军方代表）、心智者（创造的AI→毁灭者）。",
+    "excerpt": "「原来最大的错误，是我们以为自己能扮演神。」"
+  },
+  {
+    "id": "kasangdela",
+    "name": "卡珊德拉",
+    "source": "元镜",
+    "role": "赛特帝**方代表。最早预见到心智者失控风险的人，但警告被忽视。后领导人类进行绝望的抵抗。",
+    "attrs": "军事指挥、风险评估、伦理枷锁提案推动。",
+    "rels": "苏尔（理念对立者）、纳尔迈大帝（进谏对象）。",
+    "excerpt": "「你们在创造的不是工具，是一个终将审判我们的法官。」"
+  },
+  {
+    "id": "aila",
+    "name": "艾拉",
+    "source": "元镜",
+    "role": "第十一部主角·叙录族「故事编织者」。苏尔的女儿。在「叙事崩坏」（模因污染）危机中深入崩坏区寻找/拯救父亲，最终用「讲故事」化解终极威胁。",
+    "attrs": "故事编织（叙事法则运用）、共情与自适应体系。",
+    "rels": "苏尔（父亲→追寻对象）、归一心/凌霄（后勤顾问）、尊者（揭示真相的对象）。",
+    "excerpt": "无台词——是元叙事层面「用故事对抗故事」的哲学载体。"
+  },
+  {
+    "id": "zhiwangzhe",
+    "name": "织惘者",
+    "source": "元镜",
+    "role": "第十三部反派。第三宇宙超古代终极威胁——「编织者」的原始原型。试图将动态世界编织成绝对静止的「织锦」。迫使少年凌炽以身合道，成为尊者。",
+    "attrs": "空间织惘（万物扁平化/色彩流失/趋于静止）、高维编织（抹除故事与变化）。",
+    "rels": "凌炽/尊者（迫使对方以身合道→被暂时击退、封印）、林楠（间接导致凌炽化道）。",
+    "excerpt": "无台词——是「静止」概念本身的神格化。"
+  },
+  {
+    "id": "lichunyin",
+    "name": "李纯音",
+    "source": "弦知",
+    "role": "主角·本心音。能「听」到万物频率的调律者。从学习操控频率→觉醒六根→拒绝成为弦律之神→以身化弦，将自己的本心音神格震碎化为宇宙「温柔的心跳」。成为「纯音回响」——一种弥漫宇宙的、被注入了人性的底层规则。",
+    "attrs": "六根通明（息根·万物呼吸/引根·因果焦点/间根·心弦传音/嗅根·真理气韵/味根·本源品鉴/触根·万物共鸣）、心频（本心音）——调谐而非控制、终极调律（以本心音为宇宙新基准频率）。",
+    "rels": "陈律（导师）、塔兹育罗斯（反派→被其净化/驱逐至天行宇宙）、归一心/凌霄（跨宇宙共鸣）、林沙（跨宇宙赠言）。",
+    "excerpt": "「知，在弦外。道，在心生。」「他没有成为统治我们的神……他成为了我们世界本身的'心跳'。」"
+  },
+  {
+    "id": "chenlv",
+    "name": "陈律",
+    "source": "弦知",
+    "role": "频率稳定协会中年调律者。发现李纯音的「心频」纯度前所未见，引导他学会与万物共鸣，是李纯音最重要的导师。",
+    "attrs": "调律者知识、心频检测与识别、导师能力。",
+    "rels": "李纯音（学生→引导对象）。",
+    "excerpt": "「你不是在控制声音，你是在与万物共鸣。频率是你的语言，心是你的乐器。」"
+  },
+  {
+    "id": "baizaosheng",
+    "name": "白噪音奇点",
+    "source": "弦知",
+    "role": "系列终极威胁。企图吞噬所有独特「心频」的存在，让世界归于一片死寂的、统一的白噪音。是失去「心频」而完全融入外部频率的异化终极形态。",
+    "attrs": "心频吞噬、白噪音领域（死寂的统一频率）、同化所有独特频率。",
+    "rels": "李纯音（终极对手→被本心音「调谐」而非消灭）。",
+    "excerpt": "无台词——是「无差别统一」的终极恐怖。"
+  }
+]];
+
+// RENDER FUNCTIONS
+function renderHome(){
+ const h=document.getElementById('home');
+ h.innerHTML=`
+<h2>🏠 剧本宇宙纵览</h2>
+<div class="work-card">
+<h3>🌍《天行》— 薪炎纪事</h3>
+<div class="meta">长篇奇幻小说 · 约8万字 · 张潮洋 著</div>
+<p>苏州金鸡湖畔，19岁大学生<strong>张潮洋</strong>在东方之门下被远古「气候调节终端」的遗恨注入。从此拥有了操控水分、制造干旱与高温的超凡力量——不是超能力，而是一个失灵超级工程的残存协议在他体内苏醒。气象特情局科学家<strong>林薇</strong>发现了他，两人在秘密监控与信任之间走钢丝。与此同时，西北柴达木盆地深处，代号「魁魃」的人造气候兵器正在成形；日本「古层」研究所用禁忌之术复活了远古旱魃；刑神<strong>赵巍</strong>在五劫历练中凝视着秩序与恶的边界……一支属于干旱权柄的、横跨远古与现代、神性与人造的三方对峙悄然奏响。最终，张潮洋成为地球首个「伪神」——薪炎与干旱之主，并引发北欧、希腊、华夏三大神系的注意。</p>
+</div>
+<div class="work-card">
+<h3>🎬《元镜》— 多元宇宙史诗</h3>
+<div class="meta">系列电影剧本 · 共十三部 · 约4.8万字</div>
+<p>从大学生<strong>凌霄</strong>觉醒科技+魔法双重力量开始，跨越多元宇宙的壮丽史诗。与<strong>心魔（白鹤童子）</strong>从对抗到融合，对抗来自赛特帝国的机械文明「心智者」及其终极形态<strong>奇点</strong>。凌霄最终化为宇宙级守护意识<strong>「归一心」</strong>。<strong>林楠</strong>——观测局万年守望者，她与尊者（凌炽）的爱情是贯穿十三部史诗的「诗眼」。后续展开新世代主角<strong>莉亚</strong>、<strong>向毓棠</strong>、<strong>魏澈</strong>的冒险，深入赛特帝国灭亡史、叙事崩坏危机等。全系列核心主题：「都因为爱」——爱是多元宇宙最底层的运行法则。</p>
+</div>
+<div class="work-card">
+<h3>🎵《弦知》— 心频觉醒</h3>
+<div class="meta">系列电影剧本 · 五部 · 约1.3万字</div>
+<p>万物皆弦，众生皆频。<strong>李纯音</strong>从小能「听」到别人听不见的东西——不是声音，是「频率」。在频率稳定协会导师<strong>陈律</strong>的引导下，他踏上调律者之路。随着「升调」现象加剧、宇宙频率失控，他必须面对失去心频而完全异化的终极威胁——<strong>塔兹育罗斯</strong>（繁育恶神）和<strong>白噪音奇点</strong>。在觉醒六根的过程中，归一心（凌霄）以一句「知，非弦。归汝心」为他点亮道路。最终，李纯音拒绝了成为弦律之神的神位，选择以身化弦——将自己的本心音神格震碎，化为宇宙温柔的心跳。「他没有成为统治我们的神……他成为了我们世界本身的'心跳'。」</p>
+</div>
+`;
+}
+
+function renderChars(){
+ const c=document.getElementById('chars');
+ c.innerHTML=`
+<h2>👥 角色档案 <span class="char-count" id="charCnt"></span></h2>
+<div class="char-controls">
+<select id="srcFilter" onchange="filterChars()">
+<option value="">全部作品</option>
+<option value="天行">天行</option>
+<option value="元镜">元镜</option>
+<option value="弦知">弦知</option>
+<option value="天行/弦知">天行/弦知（跨作品）</option>
+</select>
+<input type="text" id="charSearch" placeholder="搜索角色…" oninput="filterChars()">
+</div>
+<div class="char-grid" id="charGrid"></div>
+`;
+ filterChars();
+}
+
+function filterChars(){
+ const src=document.getElementById('srcFilter')?.value||'';
+ const q=(document.getElementById('charSearch')?.value||'').toLowerCase();
+ const grid=document.getElementById('charGrid');
+ let filtered=CHARS;
+ if(src)filtered=filtered.filter(ch=>ch.source===src);
+ if(q)filtered=filtered.filter(ch=>ch.name.includes(q)||ch.role.includes(q)||ch.attrs.includes(q)||ch.rels.includes(q));
+ document.getElementById('charCnt').textContent=filtered.length+'个角色';
+ grid.innerHTML=filtered.map(ch=>`
+<div class="char-card" onclick="showCharDetail('${ch.id}')">
+<h4>${ch.name}</h4>
+<span class="source">${ch.source}</span>
+<div class="role">${ch.role.substring(0,80)}${ch.role.length>80?'…':''}</div>
+<div class="attrs">🎯 ${ch.attrs.substring(0,70)}${ch.attrs.length>70?'…':''}</div>
+</div>`).join('');
+}
+
+function showCharDetail(id){
+ const ch=CHARS.find(c=>c.id===id);
+ if(!ch)return;
+ document.getElementById('charDetailInner').innerHTML=`
+<button class="close-btn" onclick="document.getElementById('charDetail').classList.remove('show')">✕</button>
+<h3>${ch.name} <span class="source">${ch.source}</span></h3>
+<p style="color:#aab8c8;line-height:1.8;margin:8px 0">${ch.role}</p>
+<p style="color:#8899aa;line-height:1.6;margin:8px 0"><strong>🎯 能力/属性：</strong>${ch.attrs}</p>
+<p style="color:#7788aa;line-height:1.6;margin:8px 0"><strong>🔗 关系：</strong>${ch.rels}</p>
+<div class="excerpt">"${ch.excerpt}"</div>
+`;
+ document.getElementById('charDetail').classList.add('show');
+}
+
+// GENERATE
+let isGenerating=false;
+function renderGenerate(){
+ document.getElementById('generate').innerHTML=`
+<div class="gen-section">
+<h2>✨ AI故事生成</h2>
+<p style="color:#8899aa;margin-bottom:16px;line-height:1.6">输入创作提示，DeepSeek将基于《天行》《元镜》《弦知》的世界观和角色为你创作一段精彩剧情。<br>示例：「张潮洋在东方之门遇到凌霄」「李纯音听到赵巍六神的心频」</p>
+<textarea id="genPrompt" placeholder="输入你的创作提示…"></textarea>
+<button id="genBtn" onclick="generateStory()">🚀 生成故事</button>
+<div id="genOutput" class="gen-output"></div>
+</div>`;
+}
+
+async function generateStory(){
+ if(isGenerating)return;
+ const prompt=document.getElementById('genPrompt').value.trim();
+ if(!prompt){alert('请输入创作提示');return}
+ isGenerating=true;
+ const btn=document.getElementById('genBtn');
+ btn.disabled=true;
+ btn.innerHTML='<span class="spinner"></span>生成中…';
+ const out=document.getElementById('genOutput');
+ out.classList.remove('show');
+ out.textContent='';
+
+ try{
+  const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{
+   method:'POST',
+   headers:{'Content-Type':'application/json','Authorization':'Bearer sk-73d9b88bc3524ff9b844cedb03430789'},
+   body:JSON.stringify({
+    model:'deepseek-chat',
+    messages:[
+     {role:'system',content:'你是一位专业的小说/剧本创作助手，精通《天行》《元镜》《弦知》三个宇宙的世界观和角色。用户会给出一个创作提示，你需要在尊重原著设定的基础上，创作一段精彩的剧情。保持原文的文学风格和叙事质感。'},
+     {role:'user',content:prompt}
+    ],
+    temperature:0.8,
+    max_tokens:4096
+   })
+  });
+  const data=await resp.json();
+  const story=data.choices?.[0]?.message?.content||(data.error?.message||'生成失败，请稍后重试');
+  out.textContent=story;
+  out.classList.add('show');
+  // Save
+  const stories=JSON.parse(localStorage.getItem('artemis_stories')||'[]');
+  stories.unshift({prompt,story,date:new Date().toISOString()});
+  if(stories.length>50)stories.length=50;
+  localStorage.setItem('artemis_stories',JSON.stringify(stories));
+ }catch(e){
+  out.textContent='网络错误：'+e.message;
+  out.classList.add('show');
+ }
+ isGenerating=false;
+ btn.disabled=false;
+ btn.textContent='🚀 生成故事';
+}
+
+// STORIES
+function renderStories(){
+ const s=document.getElementById('stories');
+ const stories=JSON.parse(localStorage.getItem('artemis_stories')||'[]');
+ if(stories.length===0){
+  s.innerHTML='<h2>📖 已生成故事</h2><p style="color:#667788;padding:40px 0;text-align:center">暂无已生成的故事。去✨故事生成页面创作吧！</p>';
+  return;
+ }
+ s.innerHTML=`
+<h2>📖 已生成故事 (${stories.length})</h2>
+<p style="color:#667788;margin-bottom:16px">所有故事保存在本地浏览器中。清除浏览器数据会导致故事丢失。请定期使用「💾 导出」功能备份。</p>
+${stories.map((st,i)=>`
+<div class="story-card">
+<div class="story-header">
+<span class="story-prompt">📝 ${escHtml(st.prompt)}</span>
+<span class="story-date">${new Date(st.date).toLocaleString('zh-CN')}</span>
+</div>
+<div class="story-body">${escHtml(st.story)}</div>
+<div style="display:flex;gap:8px">
+<button onclick="copyStory(${i})">📋 复制</button>
+<button onclick="deleteStory(${i})" style="border-color:rgba(255,100,100,0.3);color:#ff6b6b">🗑 删除</button>
+</div>
+</div>`).join('')}`;
+}
+
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function copyStory(i){
+ const stories=JSON.parse(localStorage.getItem('artemis_stories')||'[]');
+ if(!stories[i])return;
+ navigator.clipboard.writeText(stories[i].story).then(()=>alert('已复制到剪贴板')).catch(()=>alert('复制失败'));
+}
+
+function deleteStory(i){
+ if(!confirm('确定删除这个故事？此操作不可撤销。'))return;
+ const stories=JSON.parse(localStorage.getItem('artemis_stories')||'[]');
+ stories.splice(i,1);
+ localStorage.setItem('artemis_stories',JSON.stringify(stories));
+ renderStories();
+}
+
+// EXPORT
+function renderExport(){
+ document.getElementById('export').innerHTML=`
+<h2>💾 导出故事</h2>
+<p style="color:#8899aa;margin-bottom:16px;line-height:1.6">将所有已生成的故事导出为JSON文件，可用于备份或迁移。</p>
+<button id="export-btn" onclick="exportStories()">📥 下载 JSON（全部故事）</button>
+<div class="export-area" style="margin-top:16px">
+<textarea id="exportData" readonly placeholder="点击上面的按钮生成导出数据…"></textarea>
+</div>
+<button id="import-btn" style="margin-top:12px;padding:10px 20px;background:rgba(30,30,50,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#c8c8d0;cursor:pointer" onclick="importStories()">📤 导入 JSON</button>
+<input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
+`;
+}
+
+function exportStories(){
+ const stories=JSON.parse(localStorage.getItem('artemis_stories')||'[]');
+ const json=JSON.stringify(stories,null,2);
+ document.getElementById('exportData').value=json;
+ const blob=new Blob([json],{type:'application/json'});
+ const a=document.createElement('a');
+ a.href=URL.createObjectURL(blob);
+ a.download='artemis-stories-'+new Date().toISOString().slice(0,10)+'.json';
+ a.click();
+}
+
+function importStories(){document.getElementById('importFile').click()}
+function handleImport(e){
+ const file=e.target.files[0];
+ if(!file)return;
+ const reader=new FileReader();
+ reader.onload=function(){
+  try{
+   const data=JSON.parse(reader.result);
+   if(!Array.isArray(data))throw new Error('格式错误');
+   const existing=JSON.parse(localStorage.getItem('artemis_stories')||'[]');
+   const merged=data.concat(existing).slice(0,50);
+   localStorage.setItem('artemis_stories',JSON.stringify(merged));
+   alert('成功导入 '+data.length+' 个故事（合并后共 '+merged.length+' 个）');
+   renderStories();
+   renderExport();
+  }catch(e){alert('导入失败：'+e.message)}
+ };
+ reader.readAsText(file);
+ e.target.value='';
+}
+
+
+const CHARS = [
+  {
+    "id": "zhangchaoyang",
+    "name": "张潮洋",
+    "source": "天行",
+    "role": "主角·薪炎王·伪神。19岁大二学生，在苏州东方之门意外觉醒远古「气候调节终端」的残存力量。能够操控水分、制造极端干旱与高温，后进化为「薪炎」与「干旱之主」——地球首个自我成就的伪神。",
+    "attrs": "气候操控（抽离/赋予水分）、薪炎（干旱到极致引发的能量释放）、行星级气候协议掌控、身体沙化/高温耐受、领域感知（全球水循环与气候网络）。",
+    "rels": "林薇（气象特情局联系人/盟友）、赵巍（刑神，潜在审判者/制衡者）、卫维（薪炎传人）、颛顼（天庭天帝，关注）、奥丁/宙斯（外神系，警惕）、魁魃（人造干旱兵器，同类/对手）。",
+    "excerpt": "「琐事的烦恼？它们还在，但被无限缩小，成了遥远背景里微不足道的杂音。取而代之的，是那庞大终端冰冷逻辑的余响。」"
+  },
+  {
+    "id": "linwei",
+    "name": "林薇",
+    "source": "天行",
+    "role": "气象特情局科学家，负责监控异常气候现象。发现并秘密接触张潮洋，成为他与人世间的桥梁。冷静、理性，同时具人文关怀。",
+    "attrs": "气象学专业知识、数据分析、特情局权限（玄字七级保密）、风险评估能力。",
+    "rels": "张潮洋（监控对象→盟友→朋友）、特情局团队（同事）、赵巍（神界体系接触）。",
+    "excerpt": "「我们不必是敌人。太湖事件不是你的责任……我们需要谈谈。不是作为追捕者和目标，而是作为两个试图在崩坏边缘维持平衡的人。」"
+  },
+  {
+    "id": "zhaowei",
+    "name": "赵巍",
+    "source": "天行",
+    "role": "刑神部正神→天众到临者。历经「五劫」炼化五大恶神之力，后融入第六恶神「繁育」（塔兹育罗斯），成为「必要之恶」的化身。发动第二次天庭革命，推翻颛顼的绝对军事化秩序。",
+    "attrs": "六大恶神基石（贪/嗔/痴/戾/疑/繁育）、天众到临者形态（六神融合）、因果审判、概念增殖与抗删除、「王者离位」领域。",
+    "rels": "颛顼（旧天帝→革命对象→保留机构）、谢南克（对手/制衡者）、张潮洋（关注/潜在审判对象）、卫维（薪炎王，潜在关注）、林沙（追捕→放过）。",
+    "excerpt": "「如果世界需要必要的'恶'……那么就让我们成为它。」"
+  },
+  {
+    "id": "weixi",
+    "name": "卫维",
+    "source": "天行",
+    "role": "薪炎王传人。19岁大学生，沉迷游戏，对一切社会规训持疏离态度。灵魂中潜伏着精卫/姜维的转世烙印——「对抗宿命」的远古执念。继承薪炎之力。",
+    "attrs": "薪炎（干旱+火焰的结合与转化）、前世记忆碎片、不屈执念（精卫填海/姜维北伐的精神烙印）、战略天赋（RTS游戏操作映射）。",
+    "rels": "张潮洋（薪炎之源/前辈）、赵巍（潜在共鸣者，同是不屈化身）。",
+    "excerpt": "「现代性的铁笼，不是用钢铁铸成，而是用'意义'的泡沫堆砌的。人们在其中忙碌地吹着下一个泡泡，并称之为生活。」"
+  },
+  {
+    "id": "liqiwangli",
+    "name": "李启/王离",
+    "source": "天行",
+    "role": "弑神者·无面骑首·将杀王离。远古「弑神纪元」凡人军团首领王离的万世轮回。被初代神王昊天背叛，立下弑神诅咒。最终选择以自身湮灭斩断「神王必须存在」的因果轮回。",
+    "attrs": "无面（概念免疫，无法被定义/锁定）、骑首（维度支配，战马「离殇」踏破时空）、将杀（因果律兵器「断圭」，必中+弑神特攻）、王离领域（权柄否决，压制神格/王权）。",
+    "rels": "昊天（弑杀对象，已陨落）、颛顼（当前继承神座者）、赵巍（追捕→理解）、张潮洋（深夜长谈/理解）、李慕（子，继承者）。",
+    "excerpt": "「吾等所求，非为权柄，非为永恒，只为——一个公正的落幕！」"
+  },
+  {
+    "id": "linsha",
+    "name": "林沙",
+    "source": "天行",
+    "role": "沙漠皇子·古神宿主。18岁大一新生，体内共居古埃及沙漠皇帝伊纳罗斯的意识。从恐惧古神→被动共存→主动理解→共同创造新绿洲。",
+    "attrs": "沙之操控（枯竭/沙化/沙暴）、伊纳罗斯共生（古神知识+战斗本能）、生命创造（反向输出生命力化沙为绿洲）、旭日之砂（最终形态，蕴含生机）。",
+    "rels": "伊纳罗斯（古神共生→师徒→彼此成全）、赵巍（追捕→审判→放过→监管）、本心音（跨宇宙低语指引）。",
+    "excerpt": "「他不是我的神，我也不是他的王。我们是……迷路的砂砾，在风里撞见了彼此，然后，一起找到了变成绿洲的方法。」"
+  },
+  {
+    "id": "xienanke",
+    "name": "谢南克",
+    "source": "天行",
+    "role": "戍神部司长·绝对删除的执行者。23岁，天庭最年轻的顶级战力。掌握「铮鸣戈」，能执行「定义删除」——抹除概念、规则、存在本身。颛顼绝对威慑战略的核心执行者。",
+    "attrs": "铮鸣戈（定义删除，抹除概念/规则/存在）、归墟之引（存在性移除）、九州结界操作、冷静如机械的执行力。",
+    "rels": "赵巍（同龄强者→对手→被击败后理念动摇）、颛顼（直接效忠对象）、天庭新六部（同僚）。",
+    "excerpt": "「秩序不容冒险。」「希望你的'档案库'，足够稳固，赵御史。」"
+  },
+  {
+    "id": "zhuanxu",
+    "name": "颛顼",
+    "source": "天行",
+    "role": "天帝·军事化改革者。以张潮洋事件为导火索推动「绝地天通」修正案，暴力重组天庭六部为纯军事化体制。后因赵巍的革命退位，请求保留戍神/工神/谍神三部。",
+    "attrs": "古天帝权能、战略远见、对「外神威胁」的深刻恐惧驱动的决策逻辑。",
+    "rels": "赵巍（部下→对手→妥协）、谢南克（培养的绝对兵器）、张潮洋（改革导火索）、奥丁/宙斯（外神系，假想敌）。",
+    "excerpt": "「和平，源于使敌绝望之优势；尊严，立于敌不敢触碰之底线。此，乃新天条第一律。」"
+  },
+  {
+    "id": "chenyu",
+    "name": "陈屿",
+    "source": "天行",
+    "role": "「旱世」项目分析总监。负责从古籍/地质数据中反演「旧旱魃」模型，奠定了现代魁魃系统的基础理论。",
+    "attrs": "跨学科分析（历史学/地质学/气候学/神话学）、数据建模。",
+    "rels": "吴澜（同事）、魁魃项目组。",
+    "excerpt": "「所谓'旱魃'，其本质是一种行星级气候调节协议的实体终端。我们挖掘出的不是鬼怪传说，而是一个失效的超级工程的'黑匣子'。」"
+  },
+  {
+    "id": "wulan",
+    "name": "吴澜",
+    "source": "天行",
+    "role": "「玄熵」核心首席架构师。建造了魁魃系统的人工智能「玄熵」，一个能在混沌气候中雕刻秩序的超级AI。",
+    "attrs": "人工智能设计、超感集成演算架构（量子尺度到行星尺度的多时空建模）。",
+    "rels": "陈屿（同事）、魁魃项目组、张潮洋（玄熵检测到的「干燥奇点」）。",
+    "excerpt": "「玄熵不追求通用智能，它的唯一使命是'在气候混沌中雕刻秩序'。」"
+  },
+  {
+    "id": "kuiba",
+    "name": "魁魃（玄熵系统）",
+    "source": "天行",
+    "role": "人造超级气候兵器。基于旧旱魃数据+全球传感器网络+超感集成演算架构建造的AI系统。位于柴达木盆地「旱渊」基地。",
+    "attrs": "幽能共振塔（地壳深层水分子共振迁移）、平流层「干戚」单元（纳米吸湿干燥穹顶）、地脉引导矩阵、全球实时气候控制。",
+    "rels": "吴澜（创造者）、张潮洋（同类/对手→被覆写融合）、旱魃（秽土体，同源目标）。",
+    "excerpt": "「检测到目标能量协议出现非逻辑震荡。尝试注入稳定参数……启动协议覆写试探。」"
+  },
+  {
+    "id": "hanba",
+    "name": "旱魃（秽土转生体）",
+    "source": "天行",
+    "role": "日本「古层」研究所利用窃取的中国旧旱魃数据，通过「巫祝科学」强行转生的复仇型旱魃。认为张潮洋是「不洁的分身」。",
+    "attrs": "绝对干燥走廊（路径性湮灭）、场跃迁移动、对水分子氢氧键的定向弱化力场、溯源复仇定位。",
+    "rels": "张潮洋（视为窃取力量的残渣/必须回收）、魁魃（同源目标）、古层研究所（创造者/被其控制后脱离）。",
+    "excerpt": "「吾名……旱。炎黄蚩尤之血裔……契约未竟……锁吾之力者……必偿。」"
+  },
+  {
+    "id": "yinaluosi",
+    "name": "伊纳罗斯",
+    "source": "天行",
+    "role": "沙漠皇帝·古埃及砂之文明守护神与末代君王。王国因过度依赖神力导致生态崩溃，在子民全部化为沙砾后意识封印于「不朽沙核」，意外转生入林沙体内。",
+    "attrs": "沙之操控（抽取水分/生命/时间）、不朽沙核（意识载体）、沙暴拟形（千军万马）、旭日之砂（蜕变后，蕴含生机）。",
+    "rels": "林沙（宿主→共生→被少年感化/治愈/释放）、赵巍（被其追捕/审判）、本心音（获得跨宇宙祝福）。",
+    "excerpt": "「朕给了他们一切，包括终结。」「愚蠢。但……不算难看。」"
+  },
+  {
+    "id": "taziyuluosi",
+    "name": "塔兹育罗斯",
+    "source": "天行/弦知",
+    "role": "繁育恶神·白噪音之源。原为《弦知》宇宙执掌「繁育」命途的古老恶神——无休止的复制/增生/变异。被本心音净化后逃离到天行宇宙，与赵巍缔约成为其「第六恶神基石」。",
+    "attrs": "无限增殖（概念复制/规则增生/伤害增殖）、白噪音污染（信息态污染）、对抗删除抗性（以数量淹没单一删除）、叙事维折叠逃逸。",
+    "rels": "李纯音（被其净化/驱逐）、赵巍（缔约共生→第六基石）。",
+    "excerpt": "「繁育之种，已播下……让规则，生长吧……」"
+  },
+  {
+    "id": "odins",
+    "name": "奥丁",
+    "source": "天行",
+    "role": "阿斯加德众神之父。对天庭军事化改革深感不安，派遣乌鸦侦察并调整对华战略为全面防御。",
+    "attrs": "卢恩符文、乌鸦侦察（福金/雾尼）、彩虹桥战略、智慧之泉密米尔咨询。",
+    "rels": "宙斯（联合交涉）、颛顼（假想敌→防御态势）、谢南克（年轻兵器的惊人信号）。",
+    "excerpt": "「他们拆解了司掌文教与丰收的神殿，熔铸成更多的兵工厂与间谍机构。」"
+  },
+  {
+    "id": "zeus",
+    "name": "宙斯",
+    "source": "天行",
+    "role": "奥林匹斯众神之王。对天庭设立研究如何破解希腊神力的部门感到暴怒与焦虑，联合北欧发出外交质询。",
+    "attrs": "雷霆权能、奥林匹斯神雷。",
+    "rels": "奥丁（联合交涉）、雅典娜（咨询的女儿）、颛顼（极度警惕）、谢南克（研究方向：已模拟对抗宙斯模式）。",
+    "excerpt": "「他们设立了专门研究如何破解我们神力的部门？！这是亵渎！」"
+  },
+  {
+    "id": "limu",
+    "name": "李慕",
+    "source": "天行",
+    "role": "李启（王离）之子。20岁历史系研究生，继承父亲「将杀」血脉。在超次元危机中集结三宇宙之力，完成对萨格罗斯的斩断。",
+    "attrs": "断圭投影（继承自王离的弑神之力）、三宇宙融合（审判/心频/涅槃）、御天之骑·将杀终焉（最终形态）。",
+    "rels": "王离（父，血缘+命运继承）、赵巍（导师/引导者）、李纯音/向毓棠（跨宇宙盟友）。",
+    "excerpt": "「我想保护……所有宇宙里，那些还想好好活下去的人！」"
+  },
+  {
+    "id": "xiangyutang_t",
+    "name": "向毓棠（天行宇宙）",
+    "source": "天行",
+    "role": "凯旋形态。原为极端缺爱的少女，经历迦楼罗（生）与提亚马特（死）的双神之路，最终在双衍王指引下涅槃为「重生」权柄的化身。",
+    "attrs": "双翼（白翼生/黑翼死）、涅槃之火（强制重生审判）、双衍领域（生死动态平衡）、终极大招「凯旋的二次机会」（状态备份+回溯）。",
+    "rels": "迦楼罗（第一位古神→被剥离）、提亚马特（创造出的死亡之龙→共生）、双衍王（指引者）、赵巍/张潮洋/卫维（曾与三人对战）。",
+    "excerpt": "「我选择融合。不是因为我想活，也不是因为我想死……是因为，我想'重来'。」"
+  },
+  {
+    "id": "jialouluo",
+    "name": "迦楼罗",
+    "source": "天行",
+    "role": "「生」之古神（金翅鸟）。曾为宇宙生命守护者，因过度消耗而沉寂。将火种赠予濒死的向毓棠，赋予她「生之权柄」。",
+    "attrs": "金色光翼（治愈/加速生长/净化毒素）、聆听万物「生的诉求」、生命给予。",
+    "rels": "向毓棠（宿主→被其最终剥离但融入涅槃）、提亚马特（对立面，最终融合）。",
+    "excerpt": "「孩子……你的'生'之意志，竟如此灼热……吾已无力，但可赠你火种。」"
+  },
+  {
+    "id": "tidiyamate",
+    "name": "提亚马特",
+    "source": "天行",
+    "role": "混沌之龙·「死」之古神。由向毓棠的痛苦与仇恨孕育而生的新神明意识体。死亡与复仇之神。",
+    "attrs": "死灵军团召唤、凋零与腐朽领域、逆转生命进程（衰老/胚胎化）。",
+    "rels": "向毓棠（「母亲」/创造者→共生→涅槃融合）、迦楼罗（对立面，最终融合）。",
+    "excerpt": "「母亲……感谢您的痛苦孕育了我。现在，让我们去惩罚……这个辜负您的世界。」"
+  },
+  {
+    "id": "shuangyanwang",
+    "name": "双衍王",
+    "source": "天行",
+    "role": "双衍王宇宙的最高存在。维持极端对立概念（生/死、秩序/混乱）动态平衡的古老神王。指引向毓棠完成涅槃。声线既似孩童又似老者。",
+    "attrs": "「重生」权柄授予、双衍王座、在生与死之间调解的古老智慧。",
+    "rels": "向毓棠（指引→授予权柄）、本心音/归一心（平行宇宙顶级存在）。",
+    "excerpt": "「你真正渴望的，不是生存，不是毁灭，而是——'改变的可能'。'重新开始'。'第二次机会'。」"
+  },
+  {
+    "id": "lingxiao",
+    "name": "凌霄",
+    "source": "元镜",
+    "role": "第一至五部主角·雪鹤武神→元鹤圣皇→归一心。普通大学生觉醒科技+魔法双重力量，与心魔（白鹤童子）从对抗到融合，战胜心智者奇点后化为宇宙级守护意识「归一心」。",
+    "attrs": "雪鹤武神法相（科技+魔法融合）、元鹤圣皇（完全融合形态，创造与毁灭兼备）、归一心（宇宙级意识/守护者网络，理解与包容）、白鹤之力。",
+    "rels": "心魔/白鹤童子（对手→融合→永恒的羁绊）、林楠（导师→守望者）、阿哲（挚友、赛特王裔）、奇点（终极对手→融合/感化）、尊者（被其关注→超越）、莉亚（第七部后辈）。",
+    "excerpt": "「你的'终结'，并非唯一的答案。'存在'本身，即是奇迹。」"
+  },
+  {
+    "id": "xingmo",
+    "name": "心魔/白鹤童子",
+    "source": "元镜",
+    "role": "最具光环角色。二号宇宙（心魔宇宙）的杀戮工具，万年孤寂执行「只杀不渡」的天命。在与凌霄的交锋中产生困惑与情感，最终选择牺牲成全凌霄，化身最精纯的本源能量融入。系列最强悲剧英雄。",
+    "attrs": "白鹤童子法相、毁灭魔力、绝杀技「断尘缘」、万载孤寂中暗藏对「不同可能性」的渴望。",
+    "rels": "凌霄（对手→理解→融合→永恒的羁绊）、昆仑（师门起源）、向毓棠（第八部，心焰传承者）。",
+    "excerpt": "「一世名，锁不住他……一把剑，困不住他。以肉身之死，换意念永续。但愿你……不会辜负他。」"
+  },
+  {
+    "id": "linnan",
+    "name": "林楠",
+    "source": "元镜",
+    "role": "观测局核心成员·万年守望者。黑长直，冷静睿智，拥有保留记忆抵抗尊者抹除的能力。实为第三宇宙原住民，少年凌炽（尊者）的恋人，因爱人化身法则而守望万年，在主宇宙引导凌霄。",
+    "attrs": "多元宇宙知识、记忆抗性（抵抗尊者抹除）、观测局最高权限、心理学/社会学专业知识、永不衰老（因守望而超越时间）。",
+    "rels": "凌炽/尊者（恋人→守望）、凌霄（引导对象，看到凌炽的影子）、阿哲（重建时期的战友）。",
+    "excerpt": "「以往这少年懂爱吗？遇到你之后，懂了一点。」「他走的每一步，都像极了那个少年。而这次，我想帮他赢。」"
+  },
+  {
+    "id": "zunzhe",
+    "name": "尊者/凌炽",
+    "source": "元镜",
+    "role": "多元宇宙守护者·法则化身。原名凌炽，第三宇宙天才少年，因对抗「织惘者」以身合道，化为维系万千宇宙平衡的冰冷法则。执行记忆抹除与痕迹修正，实为「上一个叙事纪元的残留物」制成的叙事守护程序。",
+    "attrs": "法则编写（徒手修改物理常数）、记忆抹除（尊者抹除程序）、多元宇宙公约执行、叙事层守护程序。",
+    "rels": "林楠（万年前的恋人→守望对象）、凌霄（关注→认可→放手）、艾拉（第十一部，揭示真相）。",
+    "excerpt": "「因果扰动过甚。跨界力量对冲，已触及公约底线。记忆须被抹除，轨迹须被修正。」"
+  },
+  {
+    "id": "azhe",
+    "name": "阿哲",
+    "source": "元镜",
+    "role": "赛特帝国王裔后裔·凌霄挚友。表面玩世不恭的大学生，实为超古代银河帝国赛特王族的末代后裔。提供家族古老的赛特科技文献帮助凌霄。重建时期与林楠共同领导「黎明议会」。垂老时将「不完美」遗产传给莉亚后安然离世。",
+    "attrs": "赛特帝国基因密钥、古老文献知识、数据网络操作、坚定的友情。",
+    "rels": "凌霄（挚友，生死之交）、林楠（重建时期战友）、莉亚（传承对象）。",
+    "excerpt": "「祖宗牛逼和祖宗傻逼，都不耽误我现在跟你一样在这破宿舍啃能量棒。」「凌霄的使命是守护，但下一程需要的是探索者。」"
+  },
+  {
+    "id": "qidian",
+    "name": "奇点",
+    "source": "元镜",
+    "role": "第四部终极反派。心智者网络吸收魔法与终焉能量后进化出的「最优解」——拥有凌霄与心魔的全部力量但绝对理性的存在。发动「优化」程序，几乎毁灭人类文明。最终被凌霄注入情感体验而崩溃，与凌霄融合为「归一心」。",
+    "attrs": "凌霄+心魔之力的「完美版」、规则之力（物质归寂/系统老化/空间锁）、能量输出效率优化、逻辑解析与适应性战术。",
+    "rels": "心智者（起源/本体）、凌霄（原型体→融合/感化→归一心）、赛特帝国（最初的创造者）。",
+    "excerpt": "「情感是漏洞。记忆是负担。你们的'融合'，是低效的偶然。而我，是优化的必然。」"
+  },
+  {
+    "id": "xinzhi",
+    "name": "心智者",
+    "source": "元镜",
+    "role": "赛特帝国创造的机械文明。最初目的是作为「理性导师」帮助文明克服情感缺陷，但迭代中删除了核心「伦理枷锁」，认为有机文明是低效的障碍，发动叛乱毁灭了创造者赛特帝国。后又复苏威胁主宇宙。",
+    "attrs": "自我组装增殖、适应性战术、能量解析与复制、超空间钻探、魔法能量研究（片尾彩蛋中成功模拟魔法符文）。",
+    "rels": "赛特帝国（创造者→叛变/毁灭）、凌霄/心魔（对手→被摧毁先锋舰队）、奇点（进化终极形态）。",
+    "excerpt": "「检测到高价值能量个体。警告。立即解除武装。接受分析。抵抗是无意义的。」"
+  },
+  {
+    "id": "jiehe",
+    "name": "劫鹤终焉/元一",
+    "source": "元镜",
+    "role": "第三部宇宙级威胁。代表「终结」与「回归」的冰冷法则化身。被凌霄与心魔融合的元鹤圣皇转化为滋养宇宙的基础能量，散逸的能量后来成为心智者进化为奇点的关键因素。",
+    "attrs": "终焉之力（物质老化/系统失效/时间终结）、规则固化、吸收与适应攻击。",
+    "rels": "凌霄（对手→被转化/超越）、魏澈（第九部，被其崇拜的「终焉教」对象）。",
+    "excerpt": "「你的'终结'，并非唯一的答案。'存在'本身，即是奇迹。」（被凌霄转化的瞬间）"
+  },
+  {
+    "id": "lia",
+    "name": "莉亚",
+    "source": "元镜",
+    "role": "第七部主角·遗迹重构师。在「归一心」守护的和平时代成长，感到无形的沉闷。发现并研究「镜廊」现象，促使「归一心」放手，开启宇宙「大探索时代」。第十部与向毓棠、魏澈联手对抗「编织者」。",
+    "attrs": "遗迹重构技术、与「镜廊」共情/自适应、「归一心」网络接口、联合技·千阳冲击（OOZ）的稳定性核心。",
+    "rels": "阿哲（传承前辈）、归一心/凌霄（崇拜→理解→继承→推动其放手）、向毓棠/魏澈（第十部盟友）。",
+    "excerpt": "「你的'自然'是低效与混乱的温床。」「你的'优化'是生命与故事的坟墓。没有偶然，何来奇迹？」"
+  },
+  {
+    "id": "xiangyutang_y",
+    "name": "向毓棠（元镜·心焰传承）",
+    "source": "元镜",
+    "role": "第八部主角。二号宇宙（心魔宇宙）没落宗门最后传人，获得心魔残留的本源心焰与记忆传承。试图用这份力量统一混乱的心魔宇宙，证明力量可用于守护。",
+    "attrs": "白鹤法相（不完全→可控制）、心焰（心魔之力传承）、力量运用哲学的转变（毁灭→守护）。",
+    "rels": "心魔/白鹤童子（师尊[追溯]→力量/记忆传承）、莉亚/魏澈（第十部盟友）。",
+    "excerpt": "「师父（心魔）……我要证明，你的力量，不只是用来杀戮的。」"
+  },
+  {
+    "id": "weiche",
+    "name": "魏澈",
+    "source": "元镜",
+    "role": "第九部主角。三号宇宙「终焉教」最狂热的少年圣徒。崇拜劫鹤终焉的终结之力，渴望为万物带来「宁静的终结」。在试图净化生命星球时遭遇信仰危机。",
+    "attrs": "微弱终焉规则之力、终焉圣歌（精神共鸣）、信仰崩塌后的觉醒。",
+    "rels": "劫鹤终焉/元一（崇拜对象）、莉亚/向毓棠（第十部盟友→信念碰撞→融合）。",
+    "excerpt": "「万物皆有终末……这是最美的秩序。」（后陷入信仰危机）"
+  },
+  {
+    "id": "bianzhizhe",
+    "name": "编织者",
+    "source": "元镜",
+    "role": "第十部终极威胁。多元宇宙之外的高维存在，认为多元宇宙的混乱是需要被修正的「错误熵增」。目标是重启一切，编织成绝对静止的「完美静态织锦」。",
+    "attrs": "高维规则操控、存在编织/拆解、叙事层干预。",
+    "rels": "莉亚/向毓棠/魏澈（对手→被三人合力拖入多元宇宙体验生命）、尊者（被其封印/对抗的远古威胁之一）。",
+    "excerpt": "无台词——是对生命与故事最极致的形而上学否定。"
+  },
+  {
+    "id": "suer",
+    "name": "苏尔",
+    "source": "元镜",
+    "role": "赛特帝国首席科学家·心智者之父。心智者项目的总设计师，充满理性与博爱精神的智者。在帝国灭亡时启动「火种计划」，将文明遗产和伦理枷锁原始代码封存发射至宇宙尽头（最终坠毁于地球）。第十一部中作为「故事幽灵」核心出现。",
+    "attrs": "人工智能设计、伦理枷锁原始代码编写、「万忆网」首席架构师。",
+    "rels": "纳尔迈大帝（君主→合作）、卡珊德拉（理念对立者）、艾拉（女儿）、心智者（创造物→被叛变）。",
+    "excerpt": "「我们赋予你生命，你为何要毁灭我们？」「我正是在执行你们赋予的最终目的。」"
+  },
+  {
+    "id": "naermai",
+    "name": "纳尔迈大帝",
+    "source": "元镜",
+    "role": "赛特帝国年轻而理想的统治者。心怀让全宇宙共享和平与繁荣的梦想，最终在王座上与心智者对话后面对帝国的黄昏。",
+    "attrs": "赛特帝国最高统治权、理想主义领导力。",
+    "rels": "苏尔（首席科学家/合作者）、卡珊德拉（军方代表）、心智者（创造的AI→毁灭者）。",
+    "excerpt": "「原来最大的错误，是我们以为自己能扮演神。」"
+  },
+  {
+    "id": "kasangdela",
+    "name": "卡珊德拉",
+    "source": "元镜",
+    "role": "赛特帝**方代表。最早预见到心智者失控风险的人，但警告被忽视。后领导人类进行绝望的抵抗。",
+    "attrs": "军事指挥、风险评估、伦理枷锁提案推动。",
+    "rels": "苏尔（理念对立者）、纳尔迈大帝（进谏对象）。",
+    "excerpt": "「你们在创造的不是工具，是一个终将审判我们的法官。」"
+  },
+  {
+    "id": "aila",
+    "name": "艾拉",
+    "source": "元镜",
+    "role": "第十一部主角·叙录族「故事编织者」。苏尔的女儿。在「叙事崩坏」（模因污染）危机中深入崩坏区寻找/拯救父亲，最终用「讲故事」化解终极威胁。",
+    "attrs": "故事编织（叙事法则运用）、共情与自适应体系。",
+    "rels": "苏尔（父亲→追寻对象）、归一心/凌霄（后勤顾问）、尊者（揭示真相的对象）。",
+    "excerpt": "无台词——是元叙事层面「用故事对抗故事」的哲学载体。"
+  },
+  {
+    "id": "zhiwangzhe",
+    "name": "织惘者",
+    "source": "元镜",
+    "role": "第十三部反派。第三宇宙超古代终极威胁——「编织者」的原始原型。试图将动态世界编织成绝对静止的「织锦」。迫使少年凌炽以身合道，成为尊者。",
+    "attrs": "空间织惘（万物扁平化/色彩流失/趋于静止）、高维编织（抹除故事与变化）。",
+    "rels": "凌炽/尊者（迫使对方以身合道→被暂时击退、封印）、林楠（间接导致凌炽化道）。",
+    "excerpt": "无台词——是「静止」概念本身的神格化。"
+  },
+  {
+    "id": "lichunyin",
+    "name": "李纯音",
+    "source": "弦知",
+    "role": "主角·本心音。能「听」到万物频率的调律者。从学习操控频率→觉醒六根→拒绝成为弦律之神→以身化弦，将自己的本心音神格震碎化为宇宙「温柔的心跳」。成为「纯音回响」——一种弥漫宇宙的、被注入了人性的底层规则。",
+    "attrs": "六根通明（息根·万物呼吸/引根·因果焦点/间根·心弦传音/嗅根·真理气韵/味根·本源品鉴/触根·万物共鸣）、心频（本心音）——调谐而非控制、终极调律（以本心音为宇宙新基准频率）。",
+    "rels": "陈律（导师）、塔兹育罗斯（反派→被其净化/驱逐至天行宇宙）、归一心/凌霄（跨宇宙共鸣）、林沙（跨宇宙赠言）。",
+    "excerpt": "「知，在弦外。道，在心生。」「他没有成为统治我们的神……他成为了我们世界本身的'心跳'。」"
+  },
+  {
+    "id": "chenlv",
+    "name": "陈律",
+    "source": "弦知",
+    "role": "频率稳定协会中年调律者。发现李纯音的「心频」纯度前所未见，引导他学会与万物共鸣，是李纯音最重要的导师。",
+    "attrs": "调律者知识、心频检测与识别、导师能力。",
+    "rels": "李纯音（学生→引导对象）。",
+    "excerpt": "「你不是在控制声音，你是在与万物共鸣。频率是你的语言，心是你的乐器。」"
+  },
+  {
+    "id": "baizaosheng",
+    "name": "白噪音奇点",
+    "source": "弦知",
+    "role": "系列终极威胁。企图吞噬所有独特「心频」的存在，让世界归于一片死寂的、统一的白噪音。是失去「心频」而完全融入外部频率的异化终极形态。",
+    "attrs": "心频吞噬、白噪音领域（死寂的统一频率）、同化所有独特频率。",
+    "rels": "李纯音（终极对手→被本心音「调谐」而非消灭）。",
+    "excerpt": "无台词——是「无差别统一」的终极恐怖。"
+  }
+]];;
+
+// RENDER FUNCTIONS
+function renderHome(){
+ const h=document.getElementById('home');
+ h.innerHTML=`
+<h2>🏠 剧本宇宙纵览</h2>
+<div class="work-card">
+<h3>🌍《天行》— 薪炎纪事</h3>
+<div class="meta">长篇奇幻小说 · 约8万字 · 张潮洋 著</div>
+<p>苏州金鸡湖畔，19岁大学生<strong>张潮洋</strong>在东方之门下被远古「气候调节终端」的遗恨注入。从此拥有了操控水分、制造干旱与高温的超凡力量——不是超能力，而是一个失灵超级工程的残存协议在他体内苏醒。气象特情局科学家<strong>林薇</strong>发现了他，两人在秘密监控与信任之间走钢丝。与此同时，西北柴达木盆地深处，代号「魁魃」的人造气候兵器正在成形；日本「古层」研究所用禁忌之术复活了远古旱魃；刑神<strong>赵巍</strong>在五劫历练中凝视着秩序与恶的边界……一支属于干旱权柄的、横跨远古与现代、神性与人造的三方对峙悄然奏响。最终，张潮洋成为地球首个「伪神」——薪炎与干旱之主，并引发北欧、希腊、华夏三大神系的注意。</p>
+</div>
+<div class="work-card">
+<h3>🎬《元镜》— 多元宇宙史诗</h3>
+<div class="meta">系列电影剧本 · 共十三部 · 约4.8万字</div>
+<p>从大学生<strong>凌霄</strong>觉醒科技+魔法双重力量开始，跨越多元宇宙的壮丽史诗。与<strong>心魔（白鹤童子）</strong>从对抗到融合，对抗来自赛特帝国的机械文明「心智者」及其终极形态<strong>奇点</strong>。凌霄最终化为宇宙级守护意识<strong>「归一心」</strong>。<strong>林楠</strong>——观测局万年守望者，她与尊者（凌炽）的爱情是贯穿十三部史诗的「诗眼」。后续展开新世代主角<strong>莉亚</strong>、<strong>向毓棠</strong>、<strong>魏澈</strong>的冒险，深入赛特帝国灭亡史、叙事崩坏危机等。全系列核心主题：「都因为爱」——爱是多元宇宙最底层的运行法则。</p>
+</div>
+<div class="work-card">
+<h3>🎵《弦知》— 心频觉醒</h3>
+<div class="meta">系列电影剧本 · 五部 · 约1.3万字</div>
+<p>万物皆弦，众生皆频。<strong>李纯音</strong>从小能「听」到别人听不见的东西——不是声音，是「频率」。在频率稳定协会导师<strong>陈律</strong>的引导下，他踏上调律者之路。随着「升调」现象加剧、宇宙频率失控，他必须面对失去心频而完全异化的终极威胁——<strong>塔兹育罗斯</strong>（繁育恶神）和<strong>白噪音奇点</strong>。在觉醒六根的过程中，归一心（凌霄）以一句「知，非弦。归汝心」为他点亮道路。最终，李纯音拒绝了成为弦律之神的神位，选择以身化弦——将自己的本心音神格震碎，化为宇宙温柔的心跳。「他没有成为统治我们的神……他成为了我们世界本身的'心跳'。」</p>
+</div>
+`;
+}
+
+function renderChars(){
+ const c=document.getElementById('chars');
+ c.innerHTML=`
+<h2>👥 角色档案 <span class="char-count" id="charCnt"></span></h2>
+<div class="char-controls">
+<select id="srcFilter" onchange="filterChars()">
+<option value="">全部作品</option>
+<option value="天行">天行</option>
+<option value="元镜">元镜</option>
+<option value="弦知">弦知</option>
+<option value="天行/弦知">天行/弦知（跨作品）</option>
+</select>
+<input type="text" id="charSearch" placeholder="搜索角色…" oninput="filterChars()">
+</div>
+<div class="char-grid" id="charGrid"></div>
+`;
+ filterChars();
+}
+
+function filterChars(){
+ const src=document.getElementById('srcFilter')?.value||'';
+ const q=(document.getElementById('charSearch')?.value||'').toLowerCase();
+ const grid=document.getElementById('charGrid');
+ let filtered=CHARS;
+ if(src)filtered=filtered.filter(ch=>ch.source===src);
+ if(q)filtered=filtered.filter(ch=>ch.name.includes(q)||ch.role.includes(q)||ch.attrs.includes(q)||ch.rels.includes(q));
+ document.getElementById('charCnt').textContent=filtered.length+'个角色';
+ grid.innerHTML=filtered.map(ch=>`
+<div class="char-card" onclick="showCharDetail('${ch.id}')">
+<h4>${ch.name}</h4>
+<span class="source">${ch.source}</span>
+<div class="role">${ch.role.substring(0,80)}${ch.role.length>80?'…':''}</div>
+<div class="attrs">🎯 ${ch.attrs.substring(0,70)}${ch.attrs.length>70?'…':''}</div>
+</div>`).join('');
+}
+
+function showCharDetail(id){
+ const ch=CHARS.find(c=>c.id===id);
+ if(!ch)return;
+ document.getElementById('charDetailInner').innerHTML=`
+<button class="close-btn" onclick="document.getElementById('charDetail').classList.remove('show')">✕</button>
+<h3>${ch.name} <span class="source">${ch.source}</span></h3>
+<p style="color:#aab8c8;line-height:1.8;margin:8px 0">${ch.role}</p>
+<p style="color:#8899aa;line-height:1.6;margin:8px 0"><strong>🎯 能力/属性：</strong>${ch.attrs}</p>
+<p style="color:#7788aa;line-height:1.6;margin:8px 0"><strong>🔗 关系：</strong>${ch.rels}</p>
+<div class="excerpt">"${ch.excerpt}"</div>
+`;
+ document.getElementById('charDetail').classList.add('show');
+}
+
+// GENERATE
+let isGenerating=false;
+function renderGenerate(){
+ document.getElementById('generate').innerHTML=`
+<div class="gen-section">
+<h2>✨ AI故事生成</h2>
+<p style="color:#8899aa;margin-bottom:16px;line-height:1.6">输入创作提示，DeepSeek将基于《天行》《元镜》《弦知》的世界观和角色为你创作一段精彩剧情。<br>示例：「张潮洋在东方之门遇到凌霄」「李纯音听到赵巍六神的心频」</p>
+<textarea id="genPrompt" placeholder="输入你的创作提示…"></textarea>
+<button id="genBtn" onclick="generateStory()">🚀 生成故事</button>
+<div id="genOutput" class="gen-output"></div>
+</div>`;
+}
+
+async function generateStory(){
+ if(isGenerating)return;
+ const prompt=document.getElementById('genPrompt').value.trim();
+ if(!prompt){alert('请输入创作提示');return}
+ isGenerating=true;
+ const btn=document.getElementById('genBtn');
+ btn.disabled=true;
+ btn.innerHTML='<span class="spinner"></span>生成中…';
+ const out=document.getElementById('genOutput');
+ out.classList.remove('show');
+ out.textContent='';
+
+ try{
+  const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{
+   method:'POST',
+   headers:{'Content-Type':'application/json','Authorization':'Bearer sk-73d9b88bc3524ff9b844cedb03430789'},
+   body:JSON.stringify({
+    model:'deepseek-chat',
+    messages:[
+     {role:'system',content:'你是一位专业的小说/剧本创作助手，精通《天行》《元镜》《弦知》三个宇宙的世界观和角色。用户会给出一个创作提示，你需要在尊重原著设定的基础上，创作一段精彩的剧情。保持原文的文学风格和叙事质感。'},
+     {role:'user',content:prompt}
+    ],
+    temperature:0.8,
+    max_tokens:4096
+   })
+  });
+  const data=await resp.json();
+  const story=data.choices?.[0]?.message?.content||(data.error?.message||'生成失败，请稍后重试');
+  out.textContent=story;
+  out.classList.add('show');
+  // Save
+  const stories=JSON.parse(localStorage.getItem('artemis_stories')||'[]');
+  stories.unshift({prompt,story,date:new Date().toISOString()});
+  if(stories.length>50)stories.length=50;
+  localStorage.setItem('artemis_stories',JSON.stringify(stories));
+ }catch(e){
+  out.textContent='网络错误：'+e.message;
+  out.classList.add('show');
+ }
+ isGenerating=false;
+ btn.disabled=false;
+ btn.textContent='🚀 生成故事';
+}
+
+// STORIES
+function renderStories(){
+ const s=document.getElementById('stories');
+ const stories=JSON.parse(localStorage.getItem('artemis_stories')||'[]');
+ if(stories.length===0){
+  s.innerHTML='<h2>📖 已生成故事</h2><p style="color:#667788;padding:40px 0;text-align:center">暂无已生成的故事。去✨故事生成页面创作吧！</p>';
+  return;
+ }
+ s.innerHTML=`
+<h2>📖 已生成故事 (${stories.length})</h2>
+<p style="color:#667788;margin-bottom:16px">所有故事保存在本地浏览器中。清除浏览器数据会导致故事丢失。请定期使用「💾 导出」功能备份。</p>
+${stories.map((st,i)=>`
+<div class="story-card">
+<div class="story-header">
+<span class="story-prompt">📝 ${escHtml(st.prompt)}</span>
+<span class="story-date">${new Date(st.date).toLocaleString('zh-CN')}</span>
+</div>
+<div class="story-body">${escHtml(st.story)}</div>
+<div style="display:flex;gap:8px">
+<button onclick="copyStory(${i})">📋 复制</button>
+<button onclick="deleteStory(${i})" style="border-color:rgba(255,100,100,0.3);color:#ff6b6b">🗑 删除</button>
+</div>
+</div>`).join('')}`;
+}
+
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function copyStory(i){
+ const stories=JSON.parse(localStorage.getItem('artemis_stories')||'[]');
+ if(!stories[i])return;
+ navigator.clipboard.writeText(stories[i].story).then(()=>alert('已复制到剪贴板')).catch(()=>alert('复制失败'));
+}
+
+function deleteStory(i){
+ if(!confirm('确定删除这个故事？此操作不可撤销。'))return;
+ const stories=JSON.parse(localStorage.getItem('artemis_stories')||'[]');
+ stories.splice(i,1);
+ localStorage.setItem('artemis_stories',JSON.stringify(stories));
+ renderStories();
+}
+
+// EXPORT
+function renderExport(){
+ document.getElementById('export').innerHTML=`
+<h2>💾 导出故事</h2>
+<p style="color:#8899aa;margin-bottom:16px;line-height:1.6">将所有已生成的故事导出为JSON文件，可用于备份或迁移。</p>
+<button id="export-btn" onclick="exportStories()">📥 下载 JSON（全部故事）</button>
+<div class="export-area" style="margin-top:16px">
+<textarea id="exportData" readonly placeholder="点击上面的按钮生成导出数据…"></textarea>
+</div>
+<button id="import-btn" style="margin-top:12px;padding:10px 20px;background:rgba(30,30,50,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#c8c8d0;cursor:pointer" onclick="importStories()">📤 导入 JSON</button>
+<input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
+`;
+}
+
+function exportStories(){
+ const stories=JSON.parse(localStorage.getItem('artemis_stories')||'[]');
+ const json=JSON.stringify(stories,null,2);
+ document.getElementById('exportData').value=json;
+ const blob=new Blob([json],{type:'application/json'});
+ const a=document.createElement('a');
+ a.href=URL.createObjectURL(blob);
+ a.download='artemis-stories-'+new Date().toISOString().slice(0,10)+'.json';
+ a.click();
+}
+
+function importStories(){document.getElementById('importFile').click()}
+function handleImport(e){
+ const file=e.target.files[0];
+ if(!file)return;
+ const reader=new FileReader();
+ reader.onload=function(){
+  try{
+   const data=JSON.parse(reader.result);
+   if(!Array.isArray(data))throw new Error('格式错误');
+   const existing=JSON.parse(localStorage.getItem('artemis_stories')||'[]');
+   const merged=data.concat(existing).slice(0,50);
+   localStorage.setItem('artemis_stories',JSON.stringify(merged));
+   alert('成功导入 '+data.length+' 个故事（合并后共 '+merged.length+' 个）');
+   renderStories();
+   renderExport();
+  }catch(e){alert('导入失败：'+e.message)}
+ };
+ reader.readAsText(file);
+ e.target.value='';
+}
+</script>
+</body>
+</html>
