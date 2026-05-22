@@ -16,8 +16,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
   position: relative;
 }
 
@@ -31,6 +30,7 @@ body::before {
   z-index: 0;
 }
 
+/* Starfield canvas */
 #starfield {
   position: fixed;
   top: 0; left: 0;
@@ -46,6 +46,7 @@ body::before {
   padding: 20px;
 }
 
+/* Title */
 .title {
   font-size: clamp(2rem, 6vw, 4.5rem);
   font-weight: 900;
@@ -64,6 +65,23 @@ body::before {
   100% { filter: drop-shadow(0 0 20px rgba(255,215,0,0.6)); }
 }
 
+/* Gate-top inscription */
+.gate-inscription {
+  font-size: clamp(0.9rem, 2vw, 1.15rem);
+  color: rgba(255,215,0,0.45);
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  margin-bottom: 18px;
+  font-style: italic;
+  animation: inscriptionFade 4s ease-in-out infinite alternate;
+  font-family: 'STKaiti', 'KaiTi', '楷体', 'PingFang SC', serif;
+}
+
+@keyframes inscriptionFade {
+  0% { opacity: 0.35; }
+  100% { opacity: 0.7; }
+}
+
 .subtitle {
   font-size: clamp(1rem, 2.5vw, 1.4rem);
   color: rgba(255,255,255,0.7);
@@ -72,6 +90,7 @@ body::before {
   margin-bottom: 60px;
 }
 
+/* Cards */
 .cards {
   display: flex;
   gap: 30px;
@@ -81,7 +100,6 @@ body::before {
 
 .card {
   width: 300px;
-  max-width: 85vw;
   padding: 40px 30px;
   border-radius: 20px;
   background: rgba(255,255,255,0.04);
@@ -145,6 +163,7 @@ body::before {
   color: rgba(255,215,0,0.9);
 }
 
+/* Footer */
 .footer {
   position: relative;
   z-index: 1;
@@ -153,67 +172,36 @@ body::before {
   color: rgba(255,255,255,0.35);
   letter-spacing: 0.05em;
 }
-
-@media (max-width: 640px) {
-  .container { padding: 30px 10px; }
-  .subtitle { margin-bottom: 30px; }
-  .cards { gap: 16px; }
-  .card { padding: 28px 20px; }
-  .card-icon { font-size: 2.2rem; margin-bottom: 10px; }
-  .card-title { font-size: 1.2rem; }
-  .card-desc { font-size: 0.8rem; }
-  .footer { margin-top: 40px; }
-}
 </style>
 </head>
 <body>
 <canvas id="starfield"></canvas>
 
 <div class="container">
+  <p class="gate-inscription">我爱你 因为你是我的青春</p>
   <h1 class="title">Sagittarius Portal</h1>
-  <p class="subtitle">人机共生 · AI 双子星</p>
+  <p class="subtitle">人马座 · AI 双子星</p>
 
   <div class="cards">
     <a href="chat/" class="card">
-      <div class="card-icon">🜎</div>
+      <div class="card-icon">🌞</div>
       <div class="card-title">Third Sun</div>
       <div class="card-desc">AI 智能对话助手</div>
       <span class="card-tag">DeepSeek 驱动</span>
     </a>
 
     <a href="debate/" class="card">
-      <div class="card-icon">🞮</div>
+      <div class="card-icon">🔮</div>
       <div class="card-title">Witchcraft</div>
       <div class="card-desc">深度辩论分析引擎</div>
-      <span class="card-tag">双人观点对撞 + AI 研判</span>
+      <span class="card-tag">双人观点对抗 + AI 裁判</span>
     </a>
 
     <a href="grampus/" class="card">
       <div class="card-icon">♐</div>
       <div class="card-title">Grampus</div>
-      <div class="card-desc">AI 思维链图生成器</div>
-      <span class="card-tag">智能推理链可视化</span>
-    </a>
-
-    <a href="kepler/" class="card">
-      <div class="card-icon">🪐</div>
-      <div class="card-title">Kepler-22b</div>
-      <div class="card-desc">AI 交互式故事生成器</div>
-      <span class="card-tag">DeepSeek 驱动 · 无限叙事</span>
-    </a>
-
-    <a href="heaven/" class="card">
-      <div class="card-icon">⚖️</div>
-      <div class="card-title">Heaven</div>
-      <div class="card-desc">AI 置信度裁定工具</div>
-      <span class="card-tag">DeepSeek 驱动 · 交叉分析</span>
-    </a>
-
-    <a href="artemis/" class="card">
-      <div class="card-icon">🎬</div>
-      <div class="card-title">Artemis</div>
-      <div class="card-desc">剧本宇宙 · 角色档案与故事生成</div>
-      <span class="card-tag">DeepSeek 驱动 · 密码保护</span>
+      <div class="card-desc">AI 思维导图生成器</div>
+      <span class="card-tag">智能梳理逻辑层级</span>
     </a>
   </div>
 
@@ -221,6 +209,7 @@ body::before {
 </div>
 
 <script>
+// Starfield particle animation
 const canvas = document.getElementById('starfield');
 const ctx = canvas.getContext('2d');
 let stars = [];
@@ -257,6 +246,8 @@ function draw() {
     ctx.fillStyle = `rgba(255,255,255,${alpha})`;
     ctx.fill();
   }
+
+  // Draw a few gold-tinted stars
   for (let i = 0; i < stars.length; i += 37) {
     const s = stars[i];
     const alpha = s.opacity * 0.4 * (0.6 + 0.4 * Math.sin(s.pulse * 1.3));
@@ -265,6 +256,7 @@ function draw() {
     ctx.fillStyle = `rgba(255,215,0,${alpha})`;
     ctx.fill();
   }
+
   requestAnimationFrame(draw);
 }
 
