@@ -998,7 +998,19 @@ resize();
 
 draw();
 
-</script>
+
+    
+    /* ── 技能面板折叠/展开 ── */
+    function toggleCategory(id) {
+      var body = document.getElementById(id);
+      var btn = document.querySelector('[onclick="toggleCategory(\'' + id + '\')"]');
+      if (!body || !btn) return;
+      var isOpen = body.style.display === 'block';
+      body.style.display = isOpen ? 'none' : 'block';
+      btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+    }
+
+  </script>
 
 </body>
 
