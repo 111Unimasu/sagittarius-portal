@@ -1,9 +1,15 @@
 <!DOCTYPE html>
+
 <html lang="zh-CN">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Sagittarius Portal</title>
+
 <style>
 @font-face {
   font-family: 'ZiTiGuanJiaFangSongTi';
@@ -11,307 +17,630 @@
   font-display: swap;
 }
 
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+
+
 body {
+
   min-height: 100vh;
+
   background: url('bg.jpg') center/cover no-repeat fixed #0a0a1a;
+
   color: #fff;
+
   font-family: 'ZiTiGuanJiaFangSongTi', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+
   display: flex;
+
   flex-direction: column;
+
   align-items: center;
+
   justify-content: center;
+
   overflow-x: hidden;
+
   position: relative;
+
 }
+
+
 
 body::before {
+
   content: '';
+
   position: fixed;
+
   top: 0; left: 0;
+
   width: 100%; height: 100%;
+
   background: rgba(10, 10, 26, 0.5);
+
   pointer-events: none;
+
   z-index: 0;
+
 }
+
+
 
 /* Starfield canvas */
+
 #starfield {
+
   position: fixed;
+
   top: 0; left: 0;
+
   width: 100%; height: 100%;
+
   pointer-events: none;
+
   z-index: 0;
+
 }
+
+
 
 .container {
+
   position: relative;
+
   z-index: 1;
+
   text-align: center;
+
   padding: 20px;
+
 }
+
+
 
 /* Title */
+
 .title {
+
   font-size: clamp(2rem, 6vw, 4.5rem);
+
   font-weight: 900;
+
   letter-spacing: 0.05em;
+
   background: linear-gradient(135deg, #ffd700 0%, #ffaa00 30%, #ffd700 60%, #ff8c00 100%);
+
   -webkit-background-clip: text;
+
   background-clip: text;
+
   -webkit-text-fill-color: transparent;
+
   margin-bottom: 12px;
+
   text-shadow: none;
+
   animation: titleGlow 3s ease-in-out infinite alternate;
+
 }
+
+
 
 @keyframes titleGlow {
+
   0% { filter: drop-shadow(0 0 8px rgba(255,215,0,0.3)); }
+
   100% { filter: drop-shadow(0 0 20px rgba(255,215,0,0.6)); }
+
 }
+
+
 
 /* Gate-top inscription */
+
 .gate-inscription {
+
   font-size: clamp(0.9rem, 2vw, 1.15rem);
+
   color: rgba(255,215,0,0.45);
+
   font-weight: 300;
+
   letter-spacing: 0.2em;
+
   margin-bottom: 18px;
+
   font-style: italic;
+
   animation: inscriptionFade 4s ease-in-out infinite alternate;
+
   font-family: 'ZiTiGuanJiaFangSongTi', 'KaiTi', '楷体', 'PingFang SC', serif;
+
 }
+
+
 
 @keyframes inscriptionFade {
+
   0% { opacity: 0.35; }
+
   100% { opacity: 0.7; }
+
 }
+
+
 
 .subtitle {
+
   font-size: clamp(1rem, 2.5vw, 1.4rem);
+
   color: rgba(255,255,255,0.7);
+
   font-weight: 300;
+
   letter-spacing: 0.15em;
+
   margin-bottom: 20px;
+
 }
+
+
 
 .intro {
+
   max-width: 680px;
+
   margin: 0 auto 40px;
+
   font-size: clamp(0.85rem, 2vw, 1rem);
+
   color: rgba(255,255,255,0.55);
+
   line-height: 1.8;
+
   letter-spacing: 0.05em;
+
 }
+
+
 
 /* Cards */
-.cards {
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-  justify-content: center;
+
+.video-section {
+  max-width: 640px;
+  margin: 0 auto 30px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255,215,0,0.2);
+  box-shadow: 0 0 20px rgba(255,215,0,0.08);
 }
+
+.video-section video {
+  width: 100%;
+  display: block;
+}
+
+.cards {
+
+  display: flex;
+
+  gap: 14px;
+
+  flex-wrap: wrap;
+
+  justify-content: center;
+
+}
+
+
 
 .card {
+
   width: 200px;
+
   max-width: 85vw;
+
   padding: 22px 16px;
+
   border-radius: 20px;
+
   background: rgba(255,255,255,0.04);
+
   backdrop-filter: blur(10px);
+
   border: 1px solid rgba(255,215,0,0.15);
+
   text-decoration: none;
+
   color: inherit;
+
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
   position: relative;
+
   overflow: hidden;
+
 }
+
+
 
 .card::before {
+
   content: '';
+
   position: absolute;
+
   top: -50%;
+
   left: -50%;
+
   width: 200%;
+
   height: 200%;
+
   background: radial-gradient(circle, rgba(255,215,0,0.08) 0%, transparent 60%);
+
   opacity: 0;
+
   transition: opacity 0.4s;
+
 }
+
+
 
 .card:hover {
+
   transform: translateY(-12px);
+
   border-color: #ffd700;
+
   box-shadow: 0 0 30px rgba(255,215,0,0.2), 0 0 60px rgba(255,215,0,0.08), inset 0 0 30px rgba(255,215,0,0.03);
+
 }
+
+
 
 .card:hover::before {
+
   opacity: 1;
+
 }
+
+
 
 .card-icon {
+
   font-size: 2rem;
+
   margin-bottom: 10px;
+
 }
+
+
 
 .card-title {
+
   font-size: 1.1rem;
+
   font-weight: 700;
+
   color: #ffd700;
+
   margin-bottom: 6px;
+
 }
+
+
 
 .card-desc {
+
   font-size: 0.78rem;
+
   color: rgba(255,255,255,0.6);
+
   line-height: 1.6;
+
 }
+
+
 
 .card-tag {
+
   display: inline-block;
+
   margin-top: 14px;
+
   padding: 3px 10px;
+
   border-radius: 12px;
+
   background: rgba(255,215,0,0.1);
+
   border: 1px solid rgba(255,215,0,0.25);
+
   font-size: 0.7rem;
+
   color: rgba(255,215,0,0.9);
+
 }
+
+
 
 /* Footer */
+
 .footer {
+
   position: relative;
+
   z-index: 1;
+
   margin-top: 70px;
+
   font-size: 0.85rem;
+
   color: rgba(255,255,255,0.35);
+
   letter-spacing: 0.05em;
+
 }
+
+
 
 @media (max-width: 640px) {
+
   .container { padding: 30px 10px; }
+
   .subtitle { margin-bottom: 30px; }
+
   .cards { gap: 16px; }
+
   .card { padding: 18px 14px; }
+
   .card-icon { font-size: 1.6rem; margin-bottom: 10px; }
+
   .card-title { font-size: 1rem; }
+
   .card-desc { font-size: 0.72rem; }
+
   .footer { margin-top: 40px; }
+
 }
+
 </style>
+
 </head>
+
 <body>
+
 <canvas id="starfield"></canvas>
 
+
+
 <div class="container">
+
   <p class="gate-inscription">我爱你 因为你是我的青春</p>
+
   <h1 class="title">Sagittarius Portal</h1>
+
   <p class="subtitle">人马座 · AI 双子星</p>
+
   <p class="intro">本网页是由张潮洋及其AI助手Sagittarius A*开发的AI分身网页 承载了人马座的部分AI功能 一共六个子页面 每个都接入了DeepSeek大模型 以下是它们各自的能力简介 点进去直接用 不需要注册 不需要下载</p>
 
-  <div class="cards">
-    <a href="chat/" class="card">
-      <div class="card-icon">🌞</div>
-      <div class="card-title">Third Sun</div>
-      <div class="card-desc">接入了DeepSeek大模型的AI对话助手 像另一个你在思考 问什么答什么 不敷衍不废话</div>
-      <span class="card-tag">DeepSeek 驱动</span>
-    </a>
-
-    <a href="debate/" class="card">
-      <div class="card-icon">🔮</div>
-      <div class="card-title">Witchcraft</div>
-      <div class="card-desc">两个人把观点放进去 AI剖开逻辑做裁判 不是争输赢 是看清谁站得住脚</div>
-      <span class="card-tag">双人观点对抗 + AI 裁判</span>
-    </a>
-
-    <a href="grampus/" class="card">
-      <div class="card-icon">♐</div>
-      <div class="card-title">Grampus</div>
-      <div class="card-desc">把零散的念头丢进去 结构化的思维吐出来 混乱变清晰 只需要一步</div>
-      <span class="card-tag">智能梳理逻辑层级</span>
-    </a>
-
-    <a href="kepler/" class="card">
-      <div class="card-icon">🪐</div>
-      <div class="card-title">Kepler-22b</div>
-      <div class="card-desc">你定人物 你设世界观 AI推演剧情 每条分支都有不同结局 无限叙事可能</div>
-      <span class="card-tag">DeepSeek 驱动 · 无限叙事</span>
-    </a>
-
-    <a href="artemis/" class="card">
-      <div class="card-icon">🏛️</div>
-      <div class="card-title">Artemis</div>
-      <div class="card-desc">从灵感到分镜 AI辅助你把故事写完 创意的起点 剧本的终点</div>
-      <span class="card-tag">剧本创作引擎</span>
-    </a>
-
-    <a href="heaven/" class="card">
-      <div class="card-icon">⚖️</div>
-      <div class="card-title">Heaven</div>
-      <div class="card-desc">多维度交叉分析 告诉你判断有多可信 不是AI替你决定 是AI帮你看见盲区</div>
-      <span class="card-tag">AI 交叉分析 · 多维度报告</span>
-    </a>
+  <div class="video-section">
+    <video autoplay loop playsinline controls>
+      <source src="/sagittarius-portal/videos/sunset-nyc.mp4" type="video/mp4">
+    </video>
   </div>
 
+  <div class="cards">
+
+    <a href="chat/" class="card">
+
+      <div class="card-icon">🌞</div>
+
+      <div class="card-title">Third Sun</div>
+
+      <div class="card-desc">接入了DeepSeek大模型的AI对话助手 像另一个你在思考 问什么答什么 不敷衍不废话</div>
+
+      <span class="card-tag">DeepSeek 驱动</span>
+
+    </a>
+
+
+
+    <a href="debate/" class="card">
+
+      <div class="card-icon">🔮</div>
+
+      <div class="card-title">Witchcraft</div>
+
+      <div class="card-desc">两个人把观点放进去 AI剖开逻辑做裁判 不是争输赢 是看清谁站得住脚</div>
+
+      <span class="card-tag">双人观点对抗 + AI 裁判</span>
+
+    </a>
+
+
+
+    <a href="grampus/" class="card">
+
+      <div class="card-icon">♐</div>
+
+      <div class="card-title">Grampus</div>
+
+      <div class="card-desc">把零散的念头丢进去 结构化的思维吐出来 混乱变清晰 只需要一步</div>
+
+      <span class="card-tag">智能梳理逻辑层级</span>
+
+    </a>
+
+
+
+    <a href="kepler/" class="card">
+
+      <div class="card-icon">🪐</div>
+
+      <div class="card-title">Kepler-22b</div>
+
+      <div class="card-desc">你定人物 你设世界观 AI推演剧情 每条分支都有不同结局 无限叙事可能</div>
+
+      <span class="card-tag">DeepSeek 驱动 · 无限叙事</span>
+
+    </a>
+
+
+
+    <a href="artemis/" class="card">
+
+      <div class="card-icon">🏛️</div>
+
+      <div class="card-title">Artemis</div>
+
+      <div class="card-desc">从灵感到分镜 AI辅助你把故事写完 创意的起点 剧本的终点</div>
+
+      <span class="card-tag">剧本创作引擎</span>
+
+    </a>
+
+
+
+    <a href="heaven/" class="card">
+
+      <div class="card-icon">⚖️</div>
+
+      <div class="card-title">Heaven</div>
+
+      <div class="card-desc">多维度交叉分析 告诉你判断有多可信 不是AI替你决定 是AI帮你看见盲区</div>
+
+      <span class="card-tag">AI 交叉分析 · 多维度报告</span>
+
+    </a>
+
+  </div>
+
+
+
   <p class="footer">@张潮洋 · Sagittarius Portal</p>
+
 </div>
 
+
+
 <script>
+
 // Starfield particle animation
+
 const canvas = document.getElementById('starfield');
+
 const ctx = canvas.getContext('2d');
+
 let stars = [];
+
 let w, h;
 
+
+
 function resize() {
+
   w = canvas.width = window.innerWidth;
+
   h = canvas.height = window.innerHeight;
+
   initStars();
+
 }
+
+
 
 function initStars() {
+
   const count = Math.floor((w * h) / 1800);
+
   stars = [];
+
   for (let i = 0; i < count; i++) {
+
     stars.push({
+
       x: Math.random() * w,
+
       y: Math.random() * h,
+
       r: Math.random() * 1.8 + 0.3,
+
       speed: Math.random() * 0.3 + 0.05,
+
       opacity: Math.random() * 0.8 + 0.2,
+
       pulse: Math.random() * Math.PI * 2
+
     });
+
   }
+
 }
+
+
 
 function draw() {
+
   ctx.clearRect(0, 0, w, h);
+
   for (const s of stars) {
+
     s.pulse += 0.008;
+
     const alpha = s.opacity * (0.6 + 0.4 * Math.sin(s.pulse));
+
     ctx.beginPath();
+
     ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+
     ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+
     ctx.fill();
+
   }
+
+
 
   // Draw a few gold-tinted stars
+
   for (let i = 0; i < stars.length; i += 37) {
+
     const s = stars[i];
+
     const alpha = s.opacity * 0.4 * (0.6 + 0.4 * Math.sin(s.pulse * 1.3));
+
     ctx.beginPath();
+
     ctx.arc(s.x, s.y, s.r + 0.8, 0, Math.PI * 2);
+
     ctx.fillStyle = `rgba(255,215,0,${alpha})`;
+
     ctx.fill();
+
   }
 
+
+
   requestAnimationFrame(draw);
+
 }
 
+
+
 window.addEventListener('resize', resize);
+
 resize();
+
 draw();
+
 </script>
+
 </body>
+
 </html>
+
