@@ -6,13 +6,13 @@
 <title>Sagittarius Artemis — 剧本宇宙</title>
 <style>
 @font-face {
-  font-family: 'ZiTiGuanJiaFangSongTi'
+  font-family: 'ZiTiGuanJiaFangSongTi';
   src: url('/fonts/ZiTiGuanJiaFangSongTi.woff2') format('woff2');
   font-display: swap;
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family: 'ZiTiGuanJiaFangSongTi','PingFang SC','Microsoft YaHei',sans-serifbackground:#0a0a0f;color:#c8c8d0;min-height:100vh;overflow-x:hidden}
+body{font-family: 'ZiTiGuanJiaFangSongTi','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0a0f;color:#c8c8d0;min-height:100vh;overflow-x:hidden}
 #login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:1000;background:linear-gradient(135deg,#020208,#0a0a1a 40%,#0d1520 70%,#020212)}
 #login-screen::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(255,180,50,0.04),transparent 70%),radial-gradient(ellipse at 70% 40%,rgba(180,100,255,0.03),transparent 60%),radial-gradient(ellipse at 50% 70%,rgba(50,150,255,0.03),transparent 50%);z-index:0}
 #login-screen::after{content:'';position:absolute;inset:0;background-image:radial-gradient(1px at 10% 15%,rgba(255,255,255,0.15),transparent),radial-gradient(1px at 25% 35%,rgba(255,255,255,0.12),transparent),radial-gradient(1.5px at 40% 55%,rgba(255,255,255,0.18),transparent),radial-gradient(1px at 55% 25%,rgba(255,255,255,0.1),transparent),radial-gradient(1px at 70% 65%,rgba(255,255,255,0.14),transparent),radial-gradient(1.5px at 85% 20%,rgba(255,255,255,0.16),transparent),radial-gradient(1px at 15% 75%,rgba(255,255,255,0.11),transparent),radial-gradient(1px at 60% 80%,rgba(255,255,255,0.13),transparent),radial-gradient(1px at 90% 45%,rgba(255,255,255,0.09),transparent),radial-gradient(1px at 35% 90%,rgba(255,255,255,0.12),transparent);background-size:200% 200%;animation:stars 30s linear infinite;z-index:0}
@@ -60,7 +60,7 @@ h2{font-size:1.6em;color:#d4a84a;margin-bottom:20px;font-weight:300;border-botto
 .char-detail-inner .close-btn:hover{color:#e8c96a}
 .char-detail-inner .excerpt{background:rgba(10,10,20,0.6);border-left:2px solid rgba(232,201,106,0.3);padding:12px 16px;margin-top:12px;border-radius:0 8px 8px 0;font-size:.85em;color:#aab8c8;line-height:1.7;font-style:italic}
 .gen-section{max-width:700px}
-.gen-section textarea{width:100%;padding:14px;background:rgba(20,20,35,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#d0d0d0;font-size:.95em;resize:vertical;min-height:100px;outline:none;font-family: 'ZiTiGuanJiaFangSongTi'
+.gen-section textarea{width:100%;padding:14px;background:rgba(20,20,35,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#d0d0d0;font-size:.95em;resize:vertical;min-height:100px;outline:none;font-family: 'ZiTiGuanJiaFangSongTi'}
 .gen-section textarea:focus{border-color:#e8c96a}
 .gen-section button{padding:12px 28px;margin-top:16px;background:linear-gradient(135deg,#2a2a3a,#1a1a2e);border:1px solid rgba(232,201,106,0.3);border-radius:10px;color:#e8c96a;font-size:1em;cursor:pointer;transition:.3s}
 .gen-section button:hover:not(:disabled){background:linear-gradient(135deg,#3a3a4a,#2a2a3e);border-color:#e8c96a}
@@ -76,7 +76,7 @@ h2{font-size:1.6em;color:#d4a84a;margin-bottom:20px;font-weight:300;border-botto
 .story-card button:hover{border-color:#e8c96a;color:#e8c96a}
 #export-btn{padding:12px 28px;background:linear-gradient(135deg,#2a2a3a,#1a1a2e);border:1px solid rgba(232,201,106,0.3);border-radius:10px;color:#e8c96a;font-size:1em;cursor:pointer;transition:.3s;margin-bottom:20px}
 #export-btn:hover{border-color:#e8c96a;box-shadow:0 4px 20px rgba(232,201,106,0.1)}
-.export-area textarea{width:100%;padding:14px;background:rgba(20,20,35,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#d0d0d0;font-size:.85em;min-height:200px;resize:vertical;font-family: 'ZiTiGuanJiaFangSongTi'outline:none}
+.export-area textarea{width:100%;padding:14px;background:rgba(20,20,35,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#d0d0d0;font-size:.85em;min-height:200px;resize:vertical;font-family: 'ZiTiGuanJiaFangSongTi';outline:none}
 footer{text-align:center;padding:24px;color:#556678;font-size:.82em;border-top:1px solid rgba(255,255,255,0.04);margin-top:24px}
 .spinner{display:inline-block;width:20px;height:20px;border:2px solid rgba(232,201,106,0.2);border-top-color:#e8c96a;border-radius:50%;animation:spin .6s linear infinite;margin-right:8px;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
