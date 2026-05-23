@@ -93,21 +93,30 @@ body::before {
   color: rgba(255,255,255,0.7);
   font-weight: 300;
   letter-spacing: 0.15em;
-  margin-bottom: 60px;
+  margin-bottom: 20px;
+}
+
+.intro {
+  max-width: 680px;
+  margin: 0 auto 40px;
+  font-size: clamp(0.85rem, 2vw, 1rem);
+  color: rgba(255,255,255,0.55);
+  line-height: 1.8;
+  letter-spacing: 0.05em;
 }
 
 /* Cards */
 .cards {
   display: flex;
-  gap: 30px;
+  gap: 14px;
   flex-wrap: wrap;
   justify-content: center;
 }
 
 .card {
-  width: 300px;
+  width: 200px;
   max-width: 85vw;
-  padding: 40px 30px;
+  padding: 22px 16px;
   border-radius: 20px;
   background: rgba(255,255,255,0.04);
   backdrop-filter: blur(10px);
@@ -142,19 +151,19 @@ body::before {
 }
 
 .card-icon {
-  font-size: 3rem;
-  margin-bottom: 16px;
-}
-
-.card-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #ffd700;
+  font-size: 2rem;
   margin-bottom: 10px;
 }
 
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffd700;
+  margin-bottom: 6px;
+}
+
 .card-desc {
-  font-size: 0.9rem;
+  font-size: 0.78rem;
   color: rgba(255,255,255,0.6);
   line-height: 1.6;
 }
@@ -162,11 +171,11 @@ body::before {
 .card-tag {
   display: inline-block;
   margin-top: 14px;
-  padding: 4px 12px;
+  padding: 3px 10px;
   border-radius: 12px;
   background: rgba(255,215,0,0.1);
   border: 1px solid rgba(255,215,0,0.25);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: rgba(255,215,0,0.9);
 }
 
@@ -199,6 +208,7 @@ body::before {
   <p class="gate-inscription">我爱你 因为你是我的青春</p>
   <h1 class="title">Sagittarius Portal</h1>
   <p class="subtitle">人马座 · AI 双子星</p>
+  <p class="intro">本网页是由张潮洋及其AI助手Sagittarius A*开发的AI分身网页 承载了人马座的部分AI功能 一共六个子页面 每个都接入了DeepSeek大模型 以下是它们各自的能力简介 点进去直接用 不需要注册 不需要下载</p>
 
   <div class="cards">
     <a href="chat/" class="card">
