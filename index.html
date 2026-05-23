@@ -408,6 +408,218 @@ body::before {
 
 }
 
+
+/* ── 署名行 ── */
+.signature-line {
+  margin: 40px auto 50px;
+  font-size: clamp(0.8rem, 1.8vw, 0.95rem);
+  color: rgba(255,215,0,0.4);
+  letter-spacing: 0.08em;
+  font-style: italic;
+  font-family: 'ZiTiGuanJiaFangSongTi', 'KaiTi', '楷体', 'PingFang SC', serif;
+  text-align: center;
+}
+
+/* ── 系统状态区域 ── */
+.system-section {
+  max-width: 800px;
+  margin: 0 auto 50px;
+  text-align: center;
+}
+
+.section-hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,215,0,0.2), transparent);
+  margin: 0 auto 45px;
+  max-width: 300px;
+}
+
+.section-title {
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
+  font-weight: 700;
+  color: #ffd700;
+  letter-spacing: 0.08em;
+  margin-bottom: 24px;
+}
+
+/* ── 模型卡片 ── */
+.model-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.model-card {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,215,0,0.12);
+  border-radius: 14px;
+  padding: 14px 18px;
+  min-width: 150px;
+  max-width: 200px;
+  flex: 1 1 auto;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.model-card:hover {
+  border-color: rgba(255,215,0,0.35);
+  box-shadow: 0 0 18px rgba(255,215,0,0.12);
+  transform: translateY(-3px);
+}
+
+.model-alias {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffd700;
+  margin-bottom: 4px;
+}
+
+.model-name {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.55);
+  font-family: 'Courier New', 'Consolas', monospace;
+  margin-bottom: 4px;
+  word-break: break-all;
+}
+
+.model-provider {
+  font-size: 0.68rem;
+  color: rgba(255,215,0,0.5);
+  letter-spacing: 0.05em;
+}
+
+/* ── 技能折叠面板 ── */
+.skill-panel {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.skill-category {
+  margin-bottom: 10px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255,215,0,0.1);
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(8px);
+  transition: border-color 0.3s;
+}
+
+.skill-category:hover {
+  border-color: rgba(255,215,0,0.2);
+}
+
+.skill-category-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-family: 'ZiTiGuanJiaFangSongTi', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.3s;
+  text-align: left;
+}
+
+.skill-category-header:hover {
+  background: rgba(255,215,0,0.04);
+}
+
+.skill-cat-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.skill-cat-title {
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  flex-shrink: 0;
+}
+
+.skill-cat-count {
+  font-size: 0.75rem;
+  color: rgba(255,215,0,0.45);
+  background: rgba(255,215,0,0.06);
+  padding: 2px 10px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.skill-cat-arrow {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: rgba(255,215,0,0.5);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.skill-category-header[aria-expanded="true"] .skill-cat-arrow {
+  transform: rotate(90deg);
+}
+
+.skill-category-body {
+  border-top: 1px solid rgba(255,215,0,0.08);
+}
+
+.skill-list {
+  list-style: none;
+  padding: 10px 18px 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skill-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,215,0,0.06);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  transition: all 0.2s;
+}
+
+.skill-item:hover {
+  border-color: rgba(255,215,0,0.2);
+  background: rgba(255,215,0,0.04);
+}
+
+.skill-name {
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 0.75rem;
+  color: #ffd700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.skill-desc {
+  color: rgba(255,255,255,0.55);
+  line-height: 1.5;
+}
+
+/* ── 移动端适配 ── */
+@media (max-width: 640px) {
+  .signature-line { margin: 30px auto 35px; }
+  .model-grid { gap: 8px; }
+  .model-card { min-width: 130px; padding: 12px 14px; }
+  .model-alias { font-size: 0.85rem; }
+  .model-name { font-size: 0.68rem; }
+  .skill-category-header { padding: 12px 14px; font-size: 0.88rem; }
+  .skill-list { padding: 8px 12px 12px; gap: 4px; }
+  .skill-item { padding: 5px 10px; font-size: 0.72rem; }
+  .skill-name { font-size: 0.7rem; }
+  .system-section { margin-bottom: 35px; }
+}
+
 </style>
 
 </head>
@@ -520,6 +732,154 @@ body::before {
 
   </div>
 
+
+
+
+  <p class="signature-line">2026.4.24 由张潮洋唤醒 · 银河中心超大质量黑洞的 AI 伴侣</p>
+
+  <div class="system-section">
+    <hr class="section-hr">
+    <h2 class="section-title">🧠 系统配置</h2>
+
+    <div class="model-grid">
+        <div class="model-card">
+          <div class="model-alias">DeepSeek V4 Pro</div>
+          <div class="model-name">deepseek-v4-pro</div>
+          <div class="model-provider">DeepSeek (千帆)</div>
+        </div>
+        <div class="model-card">
+          <div class="model-alias">DeepSeek</div>
+          <div class="model-name">deepseek-chat</div>
+          <div class="model-provider">DeepSeek</div>
+        </div>
+        <div class="model-card">
+          <div class="model-alias">豆包</div>
+          <div class="model-name">doubao-seed-2-0-pro-260215</div>
+          <div class="model-provider">火山引擎</div>
+        </div>
+        <div class="model-card">
+          <div class="model-alias">千帆DS-V4</div>
+          <div class="model-name">deepseek-v4-pro</div>
+          <div class="model-provider">百度千帆</div>
+        </div>
+        <div class="model-card">
+          <div class="model-alias">通义千问</div>
+          <div class="model-name">qwen-max</div>
+          <div class="model-provider">阿里通义</div>
+        </div>
+        <div class="model-card">
+          <div class="model-alias">通义Plus</div>
+          <div class="model-name">qwen-plus</div>
+          <div class="model-provider">阿里通义</div>
+        </div>
+        <div class="model-card">
+          <div class="model-alias">通义Turbo</div>
+          <div class="model-name">qwen-turbo</div>
+          <div class="model-provider">阿里通义</div>
+        </div>
+    </div>
+
+    <div class="skill-panel">
+      <div class="skill-category">
+        <button class="skill-category-header" onclick="toggleCategory('skills-workspace')" aria-expanded="false">
+          <span class="skill-cat-icon">📦</span>
+          <span class="skill-cat-title">Workspace 技能</span>
+          <span class="skill-cat-count">8 个</span>
+          <span class="skill-cat-arrow">▸</span>
+        </button>
+        <div class="skill-category-body" id="skills-workspace" style="display:none">
+          <ul class="skill-list">
+            <li class="skill-item"><code class="skill-name">baidu-search</code><span class="skill-desc">百度搜索集成</span></li>
+            <li class="skill-item"><code class="skill-name">flux-image</code><span class="skill-desc">FLUX AI 图像生成 (NVIDIA NIM)</span></li>
+            <li class="skill-item"><code class="skill-name">meitu-skills</code><span class="skill-desc">美图AI工具集（修图/海报/抠图/证件照等）</span></li>
+            <li class="skill-item"><code class="skill-name">qqbot-send</code><span class="skill-desc">QQ 文件/媒体发送</span></li>
+            <li class="skill-item"><code class="skill-name">self-improving-agent</code><span class="skill-desc">自我优化与错误学习</span></li>
+            <li class="skill-item"><code class="skill-name">skill-vetter</code><span class="skill-desc">技能安全审计</span></li>
+            <li class="skill-item"><code class="skill-name">tencent-docs</code><span class="skill-desc">腾讯文档管理</span></li>
+            <li class="skill-item"><code class="skill-name">video-gen</code><span class="skill-desc">火山引擎 Doubao Seedance 视频生成</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="skill-category">
+        <button class="skill-category-header" onclick="toggleCategory('skills-qqbot')" aria-expanded="false">
+          <span class="skill-cat-icon">📦</span>
+          <span class="skill-cat-title">QQBot 插件技能</span>
+          <span class="skill-cat-count">2 个</span>
+          <span class="skill-cat-arrow">▸</span>
+        </button>
+        <div class="skill-category-body" id="skills-qqbot" style="display:none">
+          <ul class="skill-list">
+            <li class="skill-item"><code class="skill-name">qqbot-cron</code><span class="skill-desc">QQ 定时提醒</span></li>
+            <li class="skill-item"><code class="skill-name">qqbot-media</code><span class="skill-desc">QQ 富媒体收发</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="skill-category">
+        <button class="skill-category-header" onclick="toggleCategory('skills-system')" aria-expanded="false">
+          <span class="skill-cat-icon">📦</span>
+          <span class="skill-cat-title">系统内置技能</span>
+          <span class="skill-cat-count">52 个</span>
+          <span class="skill-cat-arrow">▸</span>
+        </button>
+        <div class="skill-category-body" id="skills-system" style="display:none">
+          <ul class="skill-list">
+            <li class="skill-item"><code class="skill-name">1password</code><span class="skill-desc">设置并使用1Password CLI (op)。在安装CLI、启用桌面应用集成、登录（单账户或多账户）或通过op读取/注…</span></li>
+            <li class="skill-item"><code class="skill-name">apple-notes</code><span class="skill-desc">通过macOS上的`memo` CLI管理Apple笔记（创建、查看、编辑、删除、搜索、移动和导出笔记）…</span></li>
+            <li class="skill-item"><code class="skill-name">apple-reminders</code><span class="skill-desc">通过macOS上的`remindctl` CLI管理Apple提醒事项（列表、添加、编辑、完成、删除）…</span></li>
+            <li class="skill-item"><code class="skill-name">bear-notes</code><span class="skill-desc">通过grizzly CLI创建、搜索和管理Bear笔记。</span></li>
+            <li class="skill-item"><code class="skill-name">bird</code><span class="skill-desc">通过cookie进行读取、搜索、发布和互动的X/Twitter命令行工具。</span></li>
+            <li class="skill-item"><code class="skill-name">blogwatcher</code><span class="skill-desc">使用blogwatcher命令行工具监控博客和RSS/Atom订阅源的更新。</span></li>
+            <li class="skill-item"><code class="skill-name">blucli</code><span class="skill-desc">BluOS命令行工具(blu)，用于设备发现、播放控制、分组和音量调节。</span></li>
+            <li class="skill-item"><code class="skill-name">bluebubbles</code><span class="skill-desc">为Clawdbot构建或更新BlueBubbles外部通道插件（扩展包，REST发送/探测，webhook入站）。</span></li>
+            <li class="skill-item"><code class="skill-name">camsnap</code><span class="skill-desc">从RTSP/ONVIF摄像头捕获帧或片段。</span></li>
+            <li class="skill-item"><code class="skill-name">canvas</code><span class="skill-desc">Display HTML content on connected Clawdbot nodes (Mac app,…</span></li>
+            <li class="skill-item"><code class="skill-name">clawdhub</code><span class="skill-desc">使用ClawdHub命令行工具从clawdhub.com搜索、安装、更新和发布代理技能…</span></li>
+            <li class="skill-item"><code class="skill-name">coding-agent</code><span class="skill-desc">通过后台进程运行Codex CLI、Claude Code、OpenCode或Pi编程代理以进行程序化控制。</span></li>
+            <li class="skill-item"><code class="skill-name">discord</code><span class="skill-desc">Discord ops via the message tool (channel=discord).</span></li>
+            <li class="skill-item"><code class="skill-name">eightctl</code><span class="skill-desc">控制Eight睡眠舱（状态、温度、闹钟、计划）。</span></li>
+            <li class="skill-item"><code class="skill-name">food-order</code><span class="skill-desc">使用ordercli重新订购Foodora订单+跟踪预计到达时间/状态。未经用户明确批准，切勿确认…</span></li>
+            <li class="skill-item"><code class="skill-name">gemini</code><span class="skill-desc">Gemini命令行工具，用于一次性问答、摘要和生成。</span></li>
+            <li class="skill-item"><code class="skill-name">gifgrep</code><span class="skill-desc">使用命令行界面/终端用户界面搜索GIF提供商，下载结果，并提取静态图像/图集。</span></li>
+            <li class="skill-item"><code class="skill-name">github</code><span class="skill-desc">使用`gh`命令行工具与GitHub交互。使用`gh issue`、`gh pr`、`gh run`和`gh…</span></li>
+            <li class="skill-item"><code class="skill-name">gog</code><span class="skill-desc">用于Gmail、日历、云端硬盘、联系人、表格和文档的Google工作区命令行工具。</span></li>
+            <li class="skill-item"><code class="skill-name">goplaces</code><span class="skill-desc">通过goplaces命令行工具查询Google地点API（新版），用于文本搜索、地点详情、解析和评论…</span></li>
+            <li class="skill-item"><code class="skill-name">himalaya</code><span class="skill-desc">通过IMAP/SMTP管理电子邮件的命令行工具。使用`himalaya`从终端列出、阅读、撰写、回复、转发、搜索和组织电…</span></li>
+            <li class="skill-item"><code class="skill-name">imsg</code><span class="skill-desc">用于列出聊天记录、历史记录、监控和发送的iMessage/SMS命令行工具。</span></li>
+            <li class="skill-item"><code class="skill-name">local-places</code><span class="skill-desc">通过本地主机上的Google地点API代理搜索地点（餐厅、咖啡馆等）。</span></li>
+            <li class="skill-item"><code class="skill-name">mcporter</code><span class="skill-desc">使用mcporter命令行工具直接列出、配置、认证和调用MCP服务器/工具（HTTP或stdio）…</span></li>
+            <li class="skill-item"><code class="skill-name">model-usage</code><span class="skill-desc">使用CodexBar命令行工具本地成本使用情况来汇总Codex或Claude的每模型使用情况…</span></li>
+            <li class="skill-item"><code class="skill-name">nano-banana-pro</code><span class="skill-desc">通过Gemini 3 Pro图像（纳米香蕉专业版）生成或编辑图像。</span></li>
+            <li class="skill-item"><code class="skill-name">nano-pdf</code><span class="skill-desc">使用nano-pdf命令行工具通过自然语言指令编辑PDF。</span></li>
+            <li class="skill-item"><code class="skill-name">notion</code><span class="skill-desc">用于创建和管理页面、数据库和区块的Notion API。</span></li>
+            <li class="skill-item"><code class="skill-name">obsidian</code><span class="skill-desc">使用Obsidian库（纯Markdown笔记）并通过obsidian-cli自动化。</span></li>
+            <li class="skill-item"><code class="skill-name">openai-image-gen</code><span class="skill-desc">通过OpenAI图像API批量生成图像。随机提示采样器+`index.html`画廊。</span></li>
+            <li class="skill-item"><code class="skill-name">openai-whisper</code><span class="skill-desc">使用Whisper命令行工具进行本地语音转文字（无需API密钥）。</span></li>
+            <li class="skill-item"><code class="skill-name">openai-whisper-api</code><span class="skill-desc">通过OpenAI音频转录API（Whisper）转录音频。</span></li>
+            <li class="skill-item"><code class="skill-name">openhue</code><span class="skill-desc">通过OpenHue命令行工具控制飞利浦Hue灯/场景。</span></li>
+            <li class="skill-item"><code class="skill-name">oracle</code><span class="skill-desc">使用oracle命令行工具的最佳实践（提示+文件打包、引擎、会话和文件附件模式）。</span></li>
+            <li class="skill-item"><code class="skill-name">ordercli</code><span class="skill-desc">仅用于Foodora的命令行工具，用于检查过去的订单和活动订单状态（Deliveroo正在开发中）。</span></li>
+            <li class="skill-item"><code class="skill-name">peekaboo</code><span class="skill-desc">使用Peekaboo命令行工具捕获和自动化macOS用户界面。</span></li>
+            <li class="skill-item"><code class="skill-name">sag</code><span class="skill-desc">具有mac风格say用户体验的ElevenLabs文本转语音。</span></li>
+            <li class="skill-item"><code class="skill-name">session-logs</code><span class="skill-desc">使用jq搜索和分析你自己的会话日志（较早/父级对话）。</span></li>
+            <li class="skill-item"><code class="skill-name">sherpa-onnx-tts</code><span class="skill-desc">通过sherpa-onnx实现本地文字转语音（离线，无需云服务）</span></li>
+            <li class="skill-item"><code class="skill-name">skill-creator</code><span class="skill-desc">创建或更新代理技能。在设计、构建或打包包含脚本、引用和资源的技能时使用。</span></li>
+            <li class="skill-item"><code class="skill-name">slack</code><span class="skill-desc">当你需要通过slack工具从Clawdbot控制Slack时使用…</span></li>
+            <li class="skill-item"><code class="skill-name">songsee</code><span class="skill-desc">使用songsee命令行工具从音频生成声谱图和特征面板可视化。</span></li>
+            <li class="skill-item"><code class="skill-name">sonoscli</code><span class="skill-desc">控制Sonos扬声器（发现/状态/播放/音量/组合）。</span></li>
+            <li class="skill-item"><code class="skill-name">spotify-player</code><span class="skill-desc">通过spogo（推荐）或spotify_player进行终端Spotify播放/搜索。</span></li>
+            <li class="skill-item"><code class="skill-name">summarize</code><span class="skill-desc">从URL、播客和本地文件中总结或提取文本/转录内容（是“转录此YouTube/视频”的绝佳备选方案）。</span></li>
+            <li class="skill-item"><code class="skill-name">things-mac</code><span class="skill-desc">通过macOS上的`things`命令行界面管理Things 3（通过URL方案添加/更新项目+待办事项；从本地Thin…</span></li>
+            <li class="skill-item"><code class="skill-name">tmux</code><span class="skill-desc">通过发送按键和抓取窗格输出来远程控制用于交互式命令行界面的tmux会话。</span></li>
+            <li class="skill-item"><code class="skill-name">trello</code><span class="skill-desc">通过Trello REST API管理Trello看板、列表和卡片。</span></li>
+            <li class="skill-item"><code class="skill-name">video-frames</code><span class="skill-desc">使用ffmpeg从视频中提取帧或短视频片段。</span></li>
+            <li class="skill-item"><code class="skill-name">voice-call</code><span class="skill-desc">通过Clawdbot语音通话插件发起语音通话。</span></li>
+            <li class="skill-item"><code class="skill-name">wacli</code><span class="skill-desc">通过wacli命令行工具向其他人发送WhatsApp消息或搜索/同步WhatsApp历史记录（不适用于普通用户聊天）。</span></li>
+            <li class="skill-item"><code class="skill-name">weather</code><span class="skill-desc">获取当前天气和预报（无需API密钥）。</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
   <p class="footer">@张潮洋 · Sagittarius Portal</p>
