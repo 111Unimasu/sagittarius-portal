@@ -19,36 +19,14 @@
 
         body {
             font-family: 'ZiTiGuanJiaFangSongTi', 'Microsoft YaHei', sans-serif;
-            background: url('bg.png') center/cover no-repeat fixed #0a0a1a;
+            background: #0a0a0a;
             min-height: 100vh;
             color: #e0e6ff;
             position: relative;
             overflow-x: hidden;
         }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(2px 2px at 20px 30px, rgba(255, 215, 0, 0.8), transparent),
-                radial-gradient(2px 2px at 40px 70px, rgba(255, 215, 0, 0.6), transparent),
-                radial-gradient(1px 1px at 90px 40px, rgba(255, 215, 0, 0.9), transparent),
-                radial-gradient(2px 2px at 160px 120px, rgba(255, 215, 0, 0.7), transparent),
-                radial-gradient(1px 1px at 230px 80px, rgba(255, 215, 0, 0.8), transparent),
-                radial-gradient(2px 2px at 300px 150px, rgba(255, 215, 0, 0.6), transparent),
-                radial-gradient(1px 1px at 380px 100px, rgba(255, 215, 0, 0.9), transparent),
-                radial-gradient(2px 2px at 450px 200px, rgba(255, 215, 0, 0.7), transparent),
-                radial-gradient(1px 1px at 520px 50px, rgba(255, 215, 0, 0.8), transparent),
-                radial-gradient(2px 2px at 600px 180px, rgba(255, 215, 0, 0.6), transparent);
-            background-repeat: repeat;
-            background-size: 650px 250px;
-            pointer-events: none;
-            z-index: 0;
-        }
+        body::before { display: none; }
 
         .back-link {
             position: fixed;
@@ -61,7 +39,7 @@
             transition: color 0.3s;
         }
         .back-link:hover {
-            color: #ffd700;
+            color: #ccc;
         }
 
         .container {
@@ -82,7 +60,7 @@
         .title {
             font-size: 2.8em;
             font-weight: 700;
-            background: linear-gradient(90deg, #ffd700, #4a9eff, #ffd700);
+            background: #111;
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -108,7 +86,7 @@
             border-radius: 20px;
             padding: 30px;
             margin-bottom: 30px;
-            backdrop-filter: blur(10px);
+            
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         }
 
@@ -124,7 +102,7 @@
             display: block;
             font-size: 1.1em;
             margin-bottom: 10px;
-            color: #ffd700;
+            color: #ccc;
             font-weight: 600;
         }
 
@@ -148,7 +126,7 @@
 
         textarea:focus {
             outline: none;
-            border-color: #ffd700;
+            border-color: #ccc;
             box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
         }
 
@@ -162,7 +140,7 @@
         }
 
         .btn {
-            background: linear-gradient(135deg, #4a9eff 0%, #7c3aed 100%);
+            background: #111;
             color: white;
             border: none;
             padding: 18px 50px;
@@ -203,7 +181,7 @@
             height: 80px;
             margin: 0 auto 20px;
             border: 4px solid rgba(74, 158, 255, 0.2);
-            border-top: 4px solid #ffd700;
+            border-top: 4px solid #ccc;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -215,7 +193,7 @@
 
         .loading-text {
             font-size: 1.2em;
-            color: #ffd700;
+            color: #ccc;
         }
 
         .report-section {
@@ -233,14 +211,14 @@
             border-radius: 20px;
             padding: 30px;
             margin-bottom: 25px;
-            backdrop-filter: blur(10px);
+            
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         }
 
         .card-title {
             font-size: 1.4em;
             font-weight: 700;
-            color: #ffd700;
+            color: #ccc;
             margin-bottom: 20px;
             padding-bottom: 10px;
             border-bottom: 2px solid rgba(74, 158, 255, 0.3);
@@ -254,7 +232,7 @@
             font-size: 4em;
             font-weight: 800;
             margin: 20px 0;
-            background: linear-gradient(90deg, #ff4444, #ffaa00, #44ff44);
+            background: #111;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -278,7 +256,7 @@
         .progress-bar {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #ff4444, #ffaa00, #44ff44);
+            background: #111;
             border-radius: 15px;
             transition: width 1.5s ease-out;
         }
@@ -291,7 +269,7 @@
             padding: 12px 15px;
             margin-bottom: 10px;
             background: rgba(74, 158, 255, 0.1);
-            border-left: 4px solid #ffd700;
+            border-left: 4px solid #ccc;
             border-radius: 0 10px 10px 0;
             line-height: 1.6;
         }
@@ -334,7 +312,7 @@
 
         .probability-circle .progress {
             fill: none;
-            stroke: #ffd700;
+            stroke: #ccc;
             stroke-width: 10;
             stroke-linecap: round;
             stroke-dasharray: 283;
@@ -349,7 +327,7 @@
             transform: translate(-50%, -50%);
             font-size: 1.5em;
             font-weight: 700;
-            color: #ffd700;
+            color: #ccc;
         }
 
         .prediction-text {
@@ -374,7 +352,7 @@
         }
 
         footer span {
-            color: #ffd700;
+            color: #ccc;
         }
 
         .error-message {
