@@ -221,23 +221,9 @@
 
 
 <body>
-<audio id="bgm" loop autoplay preload="auto" style="display:none">
+<audio id="bgm" loop autoplay style="display:none">
 <source src="../audio/river-flows-in-you.mp3" type="audio/mpeg">
 </audio>
-<script>
-(function(){
-  const bgm=document.getElementById('bgm');
-  if(!bgm)return;
-  bgm.volume=0.3;
-  bgm.loop=true;
-  function tryPlay(){bgm.play().catch(()=>{});}
-  // Try multiple event types, without once:true so it retries
-  ['click','touchstart','touchend','scroll'].forEach(function(e){
-    document.addEventListener(e,tryPlay);
-  });
-  tryPlay();
-})();
-</script>
 
 
 
