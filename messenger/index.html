@@ -224,6 +224,17 @@
 <audio id="bgm" loop autoplay style="display:none">
 <source src="../audio/river-flows-in-you.mp3" type="audio/mpeg">
 </audio>
+<script>
+(function(){
+  const bgm=document.getElementById('bgm');
+  if(!bgm)return;
+  bgm.volume=0.3;
+  function tryPlay(){bgm.play().catch(()=>{});}
+  document.addEventListener('click',tryPlay,{once:true});
+  document.addEventListener('touchstart',tryPlay,{once:true});
+  tryPlay();
+})();
+</script>
 
 
 
