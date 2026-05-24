@@ -229,9 +229,12 @@
   const bgm=document.getElementById('bgm');
   if(!bgm)return;
   bgm.volume=0.3;
+  bgm.loop=true;
   function tryPlay(){bgm.play().catch(()=>{});}
-  document.addEventListener('click',tryPlay,{once:true});
-  document.addEventListener('touchstart',tryPlay,{once:true});
+  // Try multiple event types, without once:true so it retries
+  ['click','touchstart','touchend','scroll'].forEach(function(e){
+    document.addEventListener(e,tryPlay);
+  });
   tryPlay();
 })();
 </script>
