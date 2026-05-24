@@ -30,728 +30,188 @@
 
 
 
-<style>
-
-
-
-  :root {
-
-
-
-    --bg: #0a0a0a;
-
-
-
-    --text: #e0e0e0;
-
-
-
-    --text-dim: #666;
-
-
-
-    --bubble-ai: #1a1a1a;
-
-
-
-    --bubble-user: #1a3a5c;
-
-
-
-    --border: #222;
-
-
-
-    --input-bg: #1a1a1a;
-
-
-
-    --accent: #888;
-
-
-
-    --send-bg: #333;
-
-
-
-    --send-fg: #e0e0e0;
-
-
-
+<style>  :root {
+    --bg: #ffffff;
+    --text: #111111;
+    --text-dim: #888;
+    --bubble-ai: #fafafa;
+    --bubble-user: #f0f0f0;
+    --border: #e0e0e0;
+    --input-bg: #fafafa;
+    --accent: #333;
+    --send-bg: #111;
+    --send-fg: #ffffff;
   }
-
-
 
   * { margin:0; padding:0; box-sizing:border-box; }
-
-
-
   html, body {
-
-
-
     height:100%; width:100%;
-
-
-
     background:var(--bg); color:var(--text);
-
-
-
     font-family: -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-
-
-
     overflow:hidden;
-
-
-
     -webkit-tap-highlight-color: transparent;
-
-
-
   }
-
-
-
   #app {
-
-
-
     display:flex; flex-direction:column; height:100%; max-width:640px; margin:0 auto;
-
-
-
     position:relative;
-
-
-
   }
-
-
-
-
-
-
 
   /* header */
-
-
-
   #header {
-
-
-
     padding:14px 16px;
-
-
-
-    background:#0a0a0a;
-
-
-
+    background:#fafafa;
     border-bottom:1px solid var(--border);
-
-
-
     display:flex; align-items:center; gap:10px;
-
-
-
     flex-shrink:0;
-
-
-
   }
-
-
-
   #header .dot {
-
-
-
     width:8px; height:8px; border-radius:50%;
-
-
-
     background:#4CAF50;
-
-
-
   }
-
-
-
   #header h1 {
-
-
-
-    font-size:15px; font-weight:600; color:#e0e0e0;
-
-
-
+    font-size:15px; font-weight:600; color:#111111;
   }
-
-
-
   #header .sub {
-
-
-
     font-size:11px; color:var(--text-dim);
-
-
-
     margin-left:auto;
-
-
-
   }
-
-
-
   #header .link-btn {
-
-
-
     font-size:11px; color:#888; text-decoration:none;
-
-
-
-    border:1px solid #333; border-radius:12px; padding:3px 10px;
-
-
-
+    border:1px solid #ccc; border-radius:12px; padding:3px 10px;
   }
-
-
-
-  #header .link-btn:active { background:#222; }
-
-
-
-
-
-
+  #header .link-btn:active { background:#eee; }
 
   /* messages */
-
-
-
   #messages {
-
-
-
     flex:1; overflow-y:auto; padding:16px;
-
-
-
     display:flex; flex-direction:column; gap:6px;
-
-
-
     scroll-behavior:smooth;
-
-
-
     -webkit-overflow-scrolling:touch;
-
-
-
-    background:#0a0a0a;
-
-
-
+    background:#ffffff;
   }
-
-
-
   .msg {
-
-
-
     max-width:82%; padding:10px 14px; border-radius:12px;
-
-
-
     font-size:14px; line-height:1.6; word-break:break-word;
-
-
-
     animation:fadeIn 0.25s ease;
-
-
-
   }
-
-
-
   @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
-
-
-
   .msg.user {
-
-
-
     align-self:flex-end;
-
-
-
-    color:#e0e0e0;
-
-
-
+    background:var(--bubble-user);
+    color:#111111;
   }
-
-
-
   .msg.ai {
-
-
-
     align-self:flex-start;
-
-
-
     background:var(--bubble-ai);
-
-
-
-    color:#e0e0e0;
-
-
-
+    color:#111111;
+    border:1px solid var(--border);
   }
-
-
-
   .msg.ai .label {
-
-
-
     font-size:10px; color:#888; margin-bottom:2px; letter-spacing:0.5px;
-
-
-
   }
-
-
-
   .msg.typing { opacity:0.5; }
 
-
-
-
-
-
-
   /* input area */
-
-
-
   #input-area {
-
-
-
     padding:10px 12px;
-
-
-
-    background:#0a0a0a;
-
-
-
+    background:#fafafa;
     border-top:1px solid var(--border);
-
-
-
     display:flex; gap:8px; align-items:flex-end;
-
-
-
     flex-shrink:0;
-
-
-
   }
-
-
-
   #input-box {
-
-
-
     flex:1;
-
-
-
-    background:var(--input-bg);
-
-
-
-    border:1px solid var(--border);
-
-
-
+    background:#ffffff;
+    border:1px solid #ccc;
     border-radius:18px;
-
-
-
     padding:8px 14px;
-
-
-
-    color:var(--text);
-
-
-
+    color:#111111;
     font-size:14px; font-family:inherit;
-
-
-
     resize:none;
-
-
-
     max-height:100px;
-
-
-
     outline:none;
-
-
-
     transition:border-color 0.2s;
-
-
-
   }
-
-
-
-  #input-box:focus { border-color:#888; }
-
-
-
+  #input-box:focus { border-color:#666; }
   #send-btn {
-
-
-
     width:36px; height:36px; border-radius:50%;
-
-
-
     background:var(--send-bg);
-
-
-
     border:none; color:var(--send-fg);
-
-
-
     font-size:16px; cursor:pointer;
-
-
-
     display:flex; align-items:center; justify-content:center;
-
-
-
     flex-shrink:0;
-
-
-
     transition:opacity 0.15s;
-
-
-
   }
-
-
-
   #send-btn:active { opacity:0.7; }
-
-
-
   #send-btn:disabled { opacity:0.3; }
 
-
-
-
-
-
-
   /* gear */
-
-
-
   #gear-btn {
-
-
-
-    background:none; border:none; color:#555;
-
-
-
+    background:none; border:none; color:#999;
     font-size:16px; cursor:pointer; padding:4px;
-
-
-
   }
-
-
-
-
-
-
 
   /* modal */
-
-
-
   .modal-overlay {
-
-
-
     position:fixed; top:0; left:0; right:0; bottom:0;
-
-
-
-    background:rgba(0,0,0,0.7);
-
-
-
+    background:rgba(0,0,0,0.5);
     display:flex; align-items:center; justify-content:center;
-
-
-
     z-index:100;
-
-
-
   }
-
-
-
   .modal-overlay.hidden { display:none; }
-
-
-
   .modal {
-
-
-
-    background:#0a0a0a; border-radius:14px;
-
-
-
+    background:#ffffff; border-radius:14px;
     padding:20px; width:90%; max-width:360px;
-
-
-
-    box-shadow:0 4px 24px rgba(0,0,0,0.12);
-
-
-
+    box-shadow:0 4px 24px rgba(0,0,0,0.08);
   }
-
-
-
-  .modal h2 { font-size:15px; margin-bottom:12px; color:#e0e0e0; }
-
-
-
-  .modal label { font-size:12px; color:#999; display:block; margin-bottom:4px; }
-
-
-
+  .modal h2 { font-size:15px; margin-bottom:12px; color:#111111; }
+  .modal label { font-size:12px; color:#666; display:block; margin-bottom:4px; }
   .modal input {
-
-
-
-    width:100%; background:#222; border:1px solid #333;
-
-
-
-    border-radius:8px; padding:9px; color:#e0e0e0; font-size:13px;
-
-
-
+    width:100%; background:#fafafa; border:1px solid #ddd;
+    border-radius:8px; padding:9px; color:#111111; font-size:13px;
     margin-bottom:12px; outline:none;
-
-
-
   }
-
-
-
-  .modal input:focus { border-color:#444; }
-
-
-
+  .modal input:focus { border-color:#999; }
   .modal .btn-row { display:flex; gap:8px; justify-content:flex-end; }
-
-
-
   .modal button {
-
-
-
     padding:7px 18px; border-radius:8px; border:none; font-size:13px; cursor:pointer;
-
-
-
   }
-
-
-
-  .btn-save { background:#333; color:#e0e0e0; }
-
-
-
-  .btn-cancel { background:#222; color:#888; }
-
-
-
-
-
-
+  .btn-save { background:#111; color:#ffffff; }
+  .btn-cancel { background:#eee; color:#888; }
 
   /* welcome */
-
-
-
   .welcome {
-
-
-
     text-align:center; padding:40px 20px;
-
-
-
     color:var(--text-dim);
-
-
-
   }
-
-
-
   .welcome .icon { font-size:40px; margin-bottom:10px; }
-
-
-
-  .welcome h2 { color:#e0e0e0; font-size:17px; margin-bottom:6px; }
-
-
-
-  .welcome p {
-
-    color: #888; font-size:13px; line-height:1.6; color:#888; }
-
-
-
+  .welcome h2 { color:#111111; font-size:17px; margin-bottom:6px; }
+  .welcome p { color:#888; font-size:13px; line-height:1.6; }
   .welcome .ext-link {
-
-
-
     display:inline-block; margin-top:14px;
-
-
-
     padding:8px 20px;
-
-
-
-    border:1px solid #333; border-radius:20px;
-
-
-
+    border:1px solid #ccc; border-radius:20px;
     color:#888; text-decoration:none; font-size:12px;
-
-
-
   }
+  .welcome .ext-link:active { background:#eee; }
 
-
-
-  .welcome .ext-link:active { background:#222; }
-
-
-
-
-
-
-
-  code { background:#222; padding:2px 5px; border-radius:4px; font-size:12px; }
-
-
-
-
-
-
+  code { background:#f0f0f0; padding:2px 5px; border-radius:4px; font-size:12px; color:#111; }
 
   /* download / export */
-
-
-
   #export-btn {
-
-
-
     background:none; border:none; color:#888;
-
-
-
     font-size:15px; cursor:pointer; padding:4px;
-
-
-
     transition:color 0.2s;
-
-
-
   }
-
-
-
-  #export-btn:hover { color:#e0e0e0; }
-
-
-
+  #export-btn:hover { color:#111; }
   .msg-dl-btn {
-
-
-
     display:none;
-
-
-
-    background:none; border:none; color:#555;
-
-
-
+    background:none; border:none; color:#999;
     font-size:11px; cursor:pointer; padding:2px 6px;
-
-
-
     margin-left:4px; vertical-align:middle; border-radius:4px;
-
-
-
   }
-
-
-
   .msg.ai:hover .msg-dl-btn { display:inline-block; }
-
-
-
-  .msg-dl-btn:active { background:#222; color:#888; }
-
-
-
+  .msg-dl-btn:active { background:#eee; color:#888; }
 </style>
 
 
@@ -826,7 +286,7 @@
 
         <a class="ext-link" href="https://111unimasumqq0629.asia/?portal">🌌 Sagittarius Portal</a>
 
-        <p style="font-size:10px; color:#555; margin-top:6px;">SagittariusA分身链接 · 秩序逻辑万象之境</p>
+        <p style="font-size:10px; color:#888; margin-top:6px;">SagittariusA分身链接 · 秩序逻辑万象之境</p>
 
       </div>
 
@@ -1542,7 +1002,7 @@ function saveSettings() {
 
         <a class="ext-link" href="https://111unimasumqq0629.asia/?portal">🌌 Sagittarius Portal</a>
 
-        <p style="font-size:10px; color:#555; margin-top:6px;">SagittariusA分身链接 · 秩序逻辑万象之境</p>
+        <p style="font-size:10px; color:#888; margin-top:6px;">SagittariusA分身链接 · 秩序逻辑万象之境</p>
 
       </div>
 
