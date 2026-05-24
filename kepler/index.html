@@ -5,546 +5,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sagittarius Kepler-22 b</title>
     <style>
-/* DARK THEME */
 
-/* DARK THEME v3 */
-
+/* WHITE MINIMAL THEME */
 @font-face {
   font-family: 'ZiTiGuanJiaFangSongTi';
   src: url('/sagittarius-portal/fonts/ZiTiGuanJiaFangSongTi.woff2') format('woff2');
   font-display: swap;
 }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-  background: #0a0a0a; color: #e0e0e0;
-            font-family: 'ZiTiGuanJiaFangSongTi', Tahoma, Geneva, Verdana, sans-serif;
-            min-height: 100vh;
-            color: #e0e0e0;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        body::before { display: none; }
-
-        body::after { display: none; }
-
-        .stars { display: none; }
-
-        
-            50% { opacity: 0.7; }
-        }
-
-        /* 返回按钮 */
-        .back-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 100;
-            padding: 10px 20px;
-            background: rgba(22,22,22, 0.85);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 25px;
-            color: #bbbbbb;
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            
-            letter-spacing: 1px;
-        }
-
-        .back-btn:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: #888888;
-            transform: translateX(-3px);
-            box-shadow: none;
-        }
-
-        /* 页面头部 */
-        .header {
-            text-align: center;
-            padding: 30px 20px 20px;
-            background: #1a1a1a, transparent);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            position: relative;
-            z-index: 1;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            color: #ffffff;
-            
-            color: #ffffff;
-            
-            text-shadow: none;
-            letter-spacing: 8px;
-        }
-
-        .header .tagline {
-            color: #999999;
-            font-size: 0.9rem;
-            margin-top: 8px;
-            letter-spacing: 2px;
-        }
-
-        /* 主内容区 */
-        .main-content {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 30px;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* 步骤指示器 */
-        .steps-indicator {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        .step-wrap {
-            text-align: center;
-        }
-
-        .step {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            box-shadow: none;
-            margin: 0 auto;
-        }
-
-        .step.active {
-            color: #ffffff;
-            box-shadow: none;
-            transform: scale(1.15);
-        }
-
-        .step-label {
-            text-align: center;
-            margin-top: 8px;
-            font-size: 0.85rem;
-            color: #999999;
-        }
-
-        /* 面板样式 */
-        .panel {
-            background: rgba(22,22,22, 0.8);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px;
-            padding: 25px;
-            
-            box-shadow: none;
-        }
-
-        /* 人物卡片 */
-        .character-section {
-            margin-top: 20px;
-        }
-
-        .character-card {
-            background: #1a1a1a, rgba(255,255,255,0.1));
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            position: relative;
-            transition: all 0.3s ease;
-            animation: fadeIn 0.4s ease;
-        }
-
-        .character-card:hover {
-            transform: translateY(-3px);
-            box-shadow: none;
-        }
-
-        .character-card .name-badge {
-            position: absolute;
-            top: -10px;
-            left: 20px;
-            color: #ffffff;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
-
-        .character-card .info-content {
-            margin-top: 15px;
-            padding-left: 10px;
-            border-left: 3px solid #888888;
-            font-size: 0.95rem;
-            line-height: 1.8;
-            color: #bbbbbb;
-            white-space: pre-wrap;
-        }
-
-        .character-card .delete-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            border: none;
-            background: rgba(255,255,255,0.1);
-            color: #777777;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .character-card .delete-btn:hover {
-            background: rgba(255,255,255,0.1);
-            transform: scale(1.1);
-        }
-
-        /* 输入区域 */
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 10px;
-            color: #bbbbbb;
-            font-weight: 500;
-            font-size: 1rem;
-        }
-
-        .input-group input,
-        .input-group textarea {
-            width: 100%;
-            padding: 15px;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px;
-            background: rgba(20,20,20, 0.8);
-            color: #e0e0e0;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            resize: vertical;
-            font-family: 'ZiTiGuanJiaFangSongTi';
-        }
-
-        .input-group input:focus,
-        .input-group textarea:focus {
-            outline: none;
-            border-color: #888888;
-            box-shadow: none;
-        }
-
-        .input-group textarea {
-            min-height: 150px;
-        }
-
-        /* 按钮样式 */
-        .btn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 30px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .btn-primary {
-            color: #ffffff;
-            color: white;
-            box-shadow: none;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: none;
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-secondary {
-            background: rgba(255,255,255,0.1);
-            color: #bbbbbb;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255,255,255,0.1);
-            transform: translateY(-2px);
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        /* 剧情展示区 */
-        .story-area {
-            display: none;
-        }
-
-        .story-messages {
-            height: 500px;
-            overflow-y: auto;
-            margin-bottom: 20px;
-            padding-right: 10px;
-        }
-
-        .story-messages::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .story-messages::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.1);
-            border-radius: 3px;
-        }
-
-        .story-messages::-webkit-scrollbar-thumb {
-            color: #ffffff;
-            border-radius: 3px;
-        }
-
-        /* 对话气泡 */
-        .message-bubble {
-            margin-bottom: 20px;
-            animation: fadeInUp 0.5s ease;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .message-bubble .speaker {
-            font-weight: bold;
-            color: #888888;
-            margin-bottom: 5px;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .message-bubble .content {
-            background: #1a1a1a, rgba(255,255,255,0.1));
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 0 15px 15px 15px;
-            padding: 15px 20px;
-            line-height: 1.7;
-            color: #e0e0e0;
-            font-size: 1rem;
-            white-space: pre-wrap;
-        }
-
-        .message-bubble.ending .content {
-            border-color: #777777;
-            background: #1a1a1a, rgba(244, 114, 182, 0.1));
-        }
-
-        .message-bubble.ending .speaker {
-            color: #777777;
-        }
-
-        .ending-mark {
-            text-align: center;
-            font-size: 3rem;
-            color: #777777;
-            text-shadow: none;
-            margin: 30px 0;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        
-            50% { opacity: 0.5; }
-        }
-
-        /* 选项按钮 */
-        .options-area {
-            display: none;
-            margin-top: 20px;
-        }
-
-        .option-btn {
-            width: 100%;
-            padding: 15px 20px;
-            margin-bottom: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px;
-            background: rgba(22,22,22, 0.8);
-            color: #bbbbbb;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: left;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .option-btn::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 4px;
-            height: 100%;
-            color: #ffffff;
-            transition: width 0.3s ease;
-        }
-
-        .option-btn:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: #888888;
-            transform: translateX(5px);
-        }
-
-        .option-btn:hover::before {
-            width: 8px;
-        }
-
-        .option-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* 加载动画 */
-        .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 30px;
-        }
-
-        .loading-circle {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(255,255,255,0.1);
-            border-top-color: #888888;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* 提示信息 */
-        .alert {
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-        }
-
-        .alert-info {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #93c5fd;
-        }
-
-        .alert-error {
-            background: rgba(239, 68, 68, 0.2);
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            color: #fca5a5;
-        }
-
-        /* 步骤区域切换 */
-        .step-section {
-            display: none;
-        }
-
-        .step-section.active {
-            display: block;
-        }
-
-        .fade-in {
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* 页面底部 */
-        .footer {
-            text-align: center;
-            padding: 20px;
-            background: #1a1a1a, transparent);
-            border-top: 1px solid rgba(255,255,255,0.1);
-            margin-top: 50px;
-            color: #666666;
-            font-size: 0.9rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .footer .dev-info {
-            color: #999999;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-        }
-
-        /* 人物预览标签 */
-        .preview-tag {
-            background: rgba(255,255,255,0.1);
-            padding: 5px 15px;
-            border-radius: 20px;
-            margin-right: 10px;
-            display: inline-block;
-            margin-bottom: 6px;
-        }
-
-        /* 响应式 */
-        @media (max-width: 600px) {
-            .header h1 {
-                font-size: 1.8rem;
-                letter-spacing: 4px;
-            }
-            .main-content {
-                padding: 15px;
-            }
-            .steps-indicator {
-                gap: 15px;
-            }
-            .btn {
-                padding: 10px 20px;
-                font-size: 0.85rem;
-            }
-            .story-messages {
-                height: 350px;
-            }
-        }
-    
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #ffffff; color: #111; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; min-height: 100vh; overflow-x: hidden; position: relative; }
+body::before { display: none; }
+body::after { display: none; }
+.stars { display: none; }
+.back-btn { position: fixed; top: 20px; left: 20px; z-index: 100; padding: 10px 20px; background: #fafafa; border: 1px solid #ccc; border-radius: 20px; color: #666; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease; letter-spacing: 1px; }
+.back-btn:hover { background: #f0f0f0; border-color: #999; color: #111; }
+.header { text-align: center; padding: 30px 20px 20px; background: #fafafa; border-bottom: 1px solid #e5e5e5; position: relative; z-index: 1; }
+.header h1 { font-size: 2.5rem; color: #000; letter-spacing: 8px; }
+.header .tagline { color: #888; font-size: 0.9rem; margin-top: 8px; letter-spacing: 2px; }
+.main-content { max-width: 900px; margin: 0 auto; padding: 30px; position: relative; z-index: 1; }
+.steps-indicator { display: flex; justify-content: center; gap: 30px; margin-bottom: 30px; }
+.step-wrap { text-align: center; }
+.step { width: 44px; height: 44px; border-radius: 50%; background: #f0f0f0; color: #666; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.1rem; transition: all 0.3s ease; margin: 0 auto; }
+.step.active { background: #111; color: #fff; transform: scale(1.15); }
+.step-label { text-align: center; margin-top: 8px; font-size: 0.85rem; color: #888; }
+.panel { background: #fafafa; border: 1px solid #e5e5e5; border-radius: 12px; padding: 25px; }
+.character-section { margin-top: 20px; }
+.character-card { background: #fff; border: 1px solid #e5e5e5; border-radius: 10px; padding: 20px; margin-bottom: 15px; position: relative; transition: border-color 0.3s ease; }
+.character-card:hover { border-color: #999; }
+.character-card .name-badge { position: absolute; top: -10px; left: 20px; background: #111; color: #fff; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; }
+.character-card .info-content { margin-top: 15px; padding-left: 10px; border-left: 3px solid #ccc; font-size: 0.95rem; line-height: 1.8; color: #555; white-space: pre-wrap; }
+.character-card .delete-btn { position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ccc; background: #fff; color: #888; cursor: pointer; font-size: 16px; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; }
+.character-card .delete-btn:hover { background: #f0f0f0; border-color: #999; color: #111; }
+.input-group { margin-bottom: 20px; }
+.input-group label { display: block; margin-bottom: 10px; color: #111; font-weight: 500; font-size: 1rem; }
+.input-group input, .input-group textarea { width: 100%; padding: 15px; border: 1px solid #ccc; border-radius: 10px; background: #fff; color: #111; font-size: 1rem; transition: border-color 0.3s ease; resize: vertical; }
+.input-group input:focus, .input-group textarea:focus { outline: none; border-color: #666; }
+.input-group textarea { min-height: 150px; }
+.btn { padding: 12px 30px; border: none; border-radius: 30px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 2px; }
+.btn-primary { background: #111; color: #fff; }
+.btn-primary:hover { background: #333; }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-secondary { background: #fff; color: #111; border: 1px solid #ccc; }
+.btn-secondary:hover { background: #f0f0f0; border-color: #999; }
+.btn-group { display: flex; gap: 15px; flex-wrap: wrap; }
+.story-area { display: none; }
+.story-messages { height: 500px; overflow-y: auto; margin-bottom: 20px; padding-right: 10px; }
+.story-messages::-webkit-scrollbar { width: 6px; }
+.story-messages::-webkit-scrollbar-track { background: #f0f0f0; border-radius: 3px; }
+.story-messages::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+.message-bubble { margin-bottom: 20px; animation: fadeInUp 0.5s ease; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.message-bubble .speaker { font-weight: bold; color: #111; margin-bottom: 5px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+.message-bubble .content { background: #fafafa; border: 1px solid #e5e5e5; border-radius: 0 12px 12px 12px; padding: 15px 20px; line-height: 1.7; color: #111; font-size: 1rem; white-space: pre-wrap; }
+.message-bubble.ending .content { border-color: #ccc; background: #fafafa; }
+.message-bubble.ending .speaker { color: #333; }
+.ending-mark { text-align: center; font-size: 3rem; color: #333; margin: 30px 0; }
+.options-area { display: none; margin-top: 20px; }
+.option-btn { width: 100%; padding: 15px 20px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 10px; background: #fff; color: #111; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; text-align: left; position: relative; overflow: hidden; }
+.option-btn::before { content: ''; position: absolute; left: 0; top: 0; width: 4px; height: 100%; background: #111; transition: width 0.3s ease; }
+.option-btn:hover { background: #fafafa; border-color: #666; }
+.option-btn:hover::before { width: 8px; }
+.option-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.loading { display: flex; justify-content: center; align-items: center; padding: 30px; }
+.loading-circle { width: 40px; height: 40px; border: 3px solid #e5e5e5; border-top-color: #666; border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.alert { padding: 15px; border-radius: 10px; margin-bottom: 20px; font-size: 0.9rem; }
+.alert-info { background: #f0f0f0; border: 1px solid #ccc; color: #111; }
+.alert-error { background: #fff; border: 1px solid #e53e3e; color: #e53e3e; }
+.step-section { display: none; }
+.step-section.active { display: block; }
+.fade-in { animation: fadeIn 0.5s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.footer { text-align: center; padding: 20px; background: #fafafa; border-top: 1px solid #e5e5e5; margin-top: 50px; color: #888; font-size: 0.9rem; position: relative; z-index: 1; }
+.footer .dev-info { color: #888; font-size: 0.85rem; letter-spacing: 1px; }
+.preview-tag { background: #f0f0f0; color: #111; padding: 5px 15px; border-radius: 20px; margin-right: 10px; display: inline-block; margin-bottom: 6px; }
+@media (max-width: 600px) {
+  .header h1 { font-size: 1.8rem; letter-spacing: 4px; }
+  .main-content { padding: 15px; }
+  .steps-indicator { gap: 15px; }
+  .btn { padding: 10px 20px; font-size: 0.85rem; }
+  .story-messages { height: 350px; }
+}
 
 </style>
 </head>
