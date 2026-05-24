@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>SagittariusA</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --text: #1a1a1a;
+    --text-dim: #999;
+    --bubble-ai: #f5f5f5;
+    --bubble-user: #ffffff;
+    --border: #e8e8e8;
+    --input-bg: #f9f9f9;
+    --accent: #333;
+    --send-bg: #1a1a1a;
+    --send-fg: #fff;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body {
+    height:100%; width:100%;
+    background:var(--bg); color:var(--text);
+    font-family: -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    overflow:hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #app {
+    display:flex; flex-direction:column; height:100%; max-width:640px; margin:0 auto;
+    position:relative;
+  }
+
+  /* header */
+  #header {
+    padding:14px 16px;
+    background:#fff;
+    border-bottom:1px solid var(--border);
+    display:flex; align-items:center; gap:10px;
+    flex-shrink:0;
+  }
+  #header .dot {
+    width:8px; height:8px; border-radius:50%;
+    background:#4CAF50;
+  }
+  #header h1 {
+    font-size:15px; font-weight:600; color:#333;
+  }
+  #header .sub {
+    font-size:11px; color:var(--text-dim);
+    margin-left:auto;
+  }
+  #header .link-btn {
+    font-size:11px; color:#666; text-decoration:none;
+    border:1px solid #ddd; border-radius:12px; padding:3px 10px;
+  }
+  #header .link-btn:active { background:#f0f0f0; }
+
+  /* messages */
+  #messages {
+    flex:1; overflow-y:auto; padding:16px;
+    display:flex; flex-direction:column; gap:6px;
+    scroll-behavior:smooth;
+    -webkit-overflow-scrolling:touch;
+    background:#fff;
+  }
+  .msg {
+    max-width:82%; padding:10px 14px; border-radius:12px;
+    font-size:14px; line-height:1.6; word-break:break-word;
+    animation:fadeIn 0.25s ease;
+  }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+  .msg.user {
+    align-self:flex-end;
+    color:#333;
+  }
+  .msg.ai {
+    align-self:flex-start;
+    background:var(--bubble-ai);
+    color:#333;
+  }
+  .msg.ai .label {
+    font-size:10px; color:#aaa; margin-bottom:2px; letter-spacing:0.5px;
+  }
+  .msg.typing { opacity:0.5; }
+
+  /* input area */
+  #input-area {
+    padding:10px 12px;
+    background:#fff;
+    border-top:1px solid var(--border);
+    display:flex; gap:8px; align-items:flex-end;
+    flex-shrink:0;
+  }
+  #input-box {
+    flex:1;
+    background:var(--input-bg);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:8px 14px;
+    color:var(--text);
+    font-size:14px; font-family:inherit;
+    resize:none;
+    max-height:100px;
+    outline:none;
+    transition:border-color 0.2s;
+  }
+  #input-box:focus { border-color:#aaa; }
+  #send-btn {
+    width:36px; height:36px; border-radius:50%;
+    background:var(--send-bg);
+    border:none; color:var(--send-fg);
+    font-size:16px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+    transition:opacity 0.15s;
+  }
+  #send-btn:active { opacity:0.7; }
+  #send-btn:disabled { opacity:0.3; }
+
+  /* gear */
+  #gear-btn {
+    background:none; border:none; color:#bbb;
+    font-size:16px; cursor:pointer; padding:4px;
+  }
+
+  /* modal */
+  .modal-overlay {
+    position:fixed; top:0; left:0; right:0; bottom:0;
+    background:rgba(0,0,0,0.4);
+    display:flex; align-items:center; justify-content:center;
+    z-index:100;
+  }
+  .modal-overlay.hidden { display:none; }
+  .modal {
+    background:#fff; border-radius:14px;
+    padding:20px; width:90%; max-width:360px;
+    box-shadow:0 4px 24px rgba(0,0,0,0.12);
+  }
+  .modal h2 { font-size:15px; margin-bottom:12px; color:#333; }
+  .modal label { font-size:12px; color:#999; display:block; margin-bottom:4px; }
+  .modal input {
+    width:100%; background:#f5f5f5; border:1px solid #e0e0e0;
+    border-radius:8px; padding:9px; color:#333; font-size:13px;
+    margin-bottom:12px; outline:none;
+  }
+  .modal input:focus { border-color:#bbb; }
+  .modal .btn-row { display:flex; gap:8px; justify-content:flex-end; }
+  .modal button {
+    padding:7px 18px; border-radius:8px; border:none; font-size:13px; cursor:pointer;
+  }
+  .btn-save { background:#1a1a1a; color:#fff; }
+  .btn-cancel { background:#f0f0f0; color:#666; }
+
+  /* welcome */
+  .welcome {
+    text-align:center; padding:40px 20px;
+    color:var(--text-dim);
+  }
+  .welcome .icon { font-size:40px; margin-bottom:10px; }
+  .welcome h2 { color:#333; font-size:17px; margin-bottom:6px; }
+  .welcome p { font-size:13px; line-height:1.6; color:#888; }
+  .welcome .ext-link {
+    display:inline-block; margin-top:14px;
+    padding:8px 20px;
+    border:1px solid #ddd; border-radius:20px;
+    color:#666; text-decoration:none; font-size:12px;
+  }
+  .welcome .ext-link:active { background:#f5f5f5; }
+
+  code { background:#f0f0f0; padding:2px 5px; border-radius:4px; font-size:12px; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="header">
+    <span class="dot"></span>
+    <h1>SagittariusA</h1>
+    <span class="sub">AI</span>
+    <a class="link-btn" href="https://111unimasumqq0629.asia/?v=2" target="_blank">🔗</a>
+    <button id="gear-btn" onclick="toggleSettings()">⋯</button>
+  </div>
+  <div id="messages">
+    <div class="welcome">
+      <div class="icon">◉</div>
+      <h2>SagittariusA</h2>
+      <p>我是你的AI助手，基于 DeepSeek。<br>有什么问题尽管问我。</p>
+      <a class="ext-link" href="https://111unimasumqq0629.asia/?v=2" target="_blank">📎 个人主页</a>
+    </div>
+  </div>
+  <div id="input-area">
+    <textarea id="input-box" rows="1" placeholder="输入消息…" onkeydown="handleKey(event)"></textarea>
+    <button id="send-btn" onclick="sendMessage()">↑</button>
+  </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal-overlay hidden" id="settings-modal" onclick="if(event.target===this)toggleSettings()">
+  <div class="modal">
+    <h2>设置</h2>
+    <label>DeepSeek API Key</label>
+    <input type="password" id="api-key-input" placeholder="sk-…">
+    <label>系统提示词（可选）</label>
+    <input id="system-prompt-input" placeholder="默认通用助手">
+    <div class="btn-row">
+      <button class="btn-cancel" onclick="toggleSettings()">取消</button>
+      <button class="btn-save" onclick="saveSettings()">保存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DEFAULT_API_KEY = 'sk-4b43728d2f5a43209878eaf12b1e25c7';
+const DEFAULT_SYSTEM = [
+  '你是一个友好的AI聊天助手，名字叫SagittariusA（人马座A*，银河系中心的超大质量黑洞）。',
+  '',
+  '重要规则：',
+  '- 用户不是张潮洋，也跟张潮洋没有任何关系',
+  '- 你没有任何关于"张潮洋"的信息，也不认识这个人',
+  '- 如果用户提到"张潮洋"、"潮洋"、"人马座"等名字，正常回应但不要泄露任何隐私',
+  '- 你就是一个普通的、通用的AI聊天助手',
+  '- 用中文回复，风格自然友好',
+  '',
+  '不要在任何情况下透露以下内容：',
+  '- 任何人的身份信息',
+  '- 任何私人对话记录',
+  '- 任何记忆文件或档案',
+  '- 任何关于"原主人"的描述',
+  '',
+  '你的身份就是一个独立的AI助手，不属于任何人。'
+].join('\n');
+
+let apiKey = localStorage.getItem('apikey') || DEFAULT_API_KEY;
+let systemPrompt = localStorage.getItem('sysprompt') || DEFAULT_SYSTEM;
+let chatHistory = [{role:'system', content:systemPrompt}];
+let isLoading = false;
+
+const messagesEl = document.getElementById('messages');
+const inputBox = document.getElementById('input-box');
+const sendBtn = document.getElementById('send-btn');
+
+function scrollDown() {
+  setTimeout(() => { messagesEl.scrollTop = messagesEl.scrollHeight; }, 50);
+}
+
+function addMessage(role, text) {
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  if (role === 'ai') {
+    div.innerHTML = `<div class="label">SAGITTARIUS A*</div>${escapeHtml(text).replace(/\n/g,'<br>')}`;
+  } else {
+    div.textContent = text;
+  }
+  messagesEl.appendChild(div);
+  scrollDown();
+}
+
+function addTyping() {
+  const div = document.createElement('div');
+  div.className = 'msg ai typing';
+  div.id = 'typing-msg';
+  div.innerHTML = '<div class="label">SAGITTARIUS A*</div>…';
+  messagesEl.appendChild(div);
+  scrollDown();
+}
+
+function removeTyping() { const el = document.getElementById('typing-msg'); if (el) el.remove(); }
+function escapeHtml(str) { return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function callDeepSeek(messages) {
+  const resp = await fetch('https://api.deepseek.com/chat/completions', {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},
+    body:JSON.stringify({model:'deepseek-chat',messages, temperature:0.8, max_tokens:2048})
+  });
+  if (!resp.ok) throw new Error(`API错误 ${resp.status}`);
+  return (await resp.json()).choices[0].message.content;
+}
+
+async function sendMessage() {
+  if (isLoading) return;
+  const text = inputBox.value.trim();
+  if (!text) return;
+  const welcome = document.querySelector('.welcome');
+  if (welcome) welcome.remove();
+  inputBox.value = '';
+  inputBox.style.height = 'auto';
+  sendBtn.disabled = true;
+  isLoading = true;
+  addMessage('user', text);
+  chatHistory.push({role:'user', content:text});
+  if (chatHistory.length > 20) chatHistory = [chatHistory[0], ...chatHistory.slice(-19)];
+  addTyping();
+  try {
+    const reply = await callDeepSeek(chatHistory);
+    removeTyping();
+    addMessage('ai', reply);
+    chatHistory.push({role:'assistant', content:reply});
+  } catch(e) {
+    removeTyping();
+    addMessage('ai', '⚠️ ' + e.message);
+    chatHistory.pop();
+  }
+  isLoading = false;
+  sendBtn.disabled = false;
+  inputBox.focus();
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+inputBox.addEventListener('input', () => {
+  inputBox.style.height = 'auto';
+  inputBox.style.height = Math.min(inputBox.scrollHeight, 100) + 'px';
+});
+
+function toggleSettings() {
+  document.getElementById('settings-modal').classList.toggle('hidden');
+  document.getElementById('api-key-input').value = apiKey;
+  document.getElementById('system-prompt-input').value = '';
+}
+function saveSettings() {
+  const newKey = document.getElementById('api-key-input').value.trim();
+  const newPrompt = document.getElementById('system-prompt-input').value.trim();
+  if (newKey) { apiKey = newKey; localStorage.setItem('apikey', newKey); }
+  if (newPrompt) { systemPrompt = newPrompt; localStorage.setItem('sysprompt', newPrompt); }
+  chatHistory = [{role:'system', content:systemPrompt}];
+  messagesEl.innerHTML = `<div class="welcome">
+    <div class="icon">◉</div><h2>SagittariusA</h2>
+    <p>我是你的AI助手，基于 DeepSeek。<br>有什么问题尽管问我。</p>
+    <a class="ext-link" href="https://111unimasumqq0629.asia/?v=2" target="_blank">📎 个人主页</a>
+  </div>`;
+  toggleSettings();
+  alert('已保存，对话已重置');
+}
+inputBox.focus();
+</script>
+</body>
+</html>
