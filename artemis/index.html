@@ -20,7 +20,7 @@
 
 *{margin:0;padding:0;box-sizing:border-box}
 
-body{background:#ffffff;color:#111;font-family: 'ZiTiGuanJiaFangSongTi','PingFang SC','Microsoft YaHei',sans-serif;min-height:100vh;overflow-x:hidden}
+body{font-family: 'ZiTiGuanJiaFangSongTi','PingFang SC','Microsoft YaHei',sans-serif;background:#ffffff;color:#111;min-height:100vh;overflow-x:hidden}
 
 #login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:1000;background:rgba(0,0,0,0.5)}
 
@@ -112,7 +112,7 @@ h2{font-size:1.6em;color:#111;margin-bottom:20px;font-weight:300;border-bottom:1
 
 .char-detail-inner .close-btn:hover{color:#111}
 
-.char-detail-inner .excerpt{background:#f5f5f5;border-left:2px solid #ccc;padding:12px 16px;margin-top:12px;border-radius:0 8px 8px 0;font-size:.85em;color:#555;line-height:1.7;font-style:italic}
+.char-detail-inner .excerpt{background:#f5f5f5;border-left:2px solid #ccc;padding:12px 16px;margin-top:12px;border-radius:0 8px 8px 0;font-size:.85em;color:#aab8c8;line-height:1.7;font-style:italic}
 
 .gen-section{max-width:700px}
 
@@ -1228,11 +1228,11 @@ function showCharDetail(id){
 
 <h3>${ch.name} <span class="source">${ch.source}</span></h3>
 
-<p style="color:#555;line-height:1.8;margin:8px 0">${ch.role}</p>
+<p style="color:#aab8c8;line-height:1.8;margin:8px 0">${ch.role}</p>
 
-<p style="color:#666;line-height:1.6;margin:8px 0"><strong>🎯 能力/属性：</strong>${ch.attrs}</p>
+<p style="color:#8899aa;line-height:1.6;margin:8px 0"><strong>🎯 能力/属性：</strong>${ch.attrs}</p>
 
-<p style="color:#888;line-height:1.6;margin:8px 0"><strong>🔗 关系：</strong>${ch.rels}</p>
+<p style="color:#7788aa;line-height:1.6;margin:8px 0"><strong>🔗 关系：</strong>${ch.rels}</p>
 
 <div class="excerpt">"${ch.excerpt}"</div>
 
@@ -1256,7 +1256,7 @@ function renderGenerate(){
 
 <h2>✨ AI故事生成</h2>
 
-<p style="color:#666;margin-bottom:16px;line-height:1.6">输入创作提示，DeepSeek将基于《天行》《元镜》《弦知》的世界观和角色为你创作一段精彩剧情。<br>示例：「张潮洋在东方之门遇到凌霄」「李纯音听到赵巍六神的心频」</p>
+<p style="color:#8899aa;margin-bottom:16px;line-height:1.6">输入创作提示，DeepSeek将基于《天行》《元镜》《弦知》的世界观和角色为你创作一段精彩剧情。<br>示例：「张潮洋在东方之门遇到凌霄」「李纯音听到赵巍六神的心频」</p>
 
 <textarea id="genPrompt" placeholder="输入你的创作提示…"></textarea>
 
@@ -1448,7 +1448,7 @@ function renderExport(){
 
 <h2>💾 导出故事</h2>
 
-<p style="color:#666;margin-bottom:16px;line-height:1.6">将所有已生成的故事导出为JSON文件，可用于备份或迁移。</p>
+<p style="color:#8899aa;margin-bottom:16px;line-height:1.6">将所有已生成的故事导出为JSON文件，可用于备份或迁移。</p>
 
 <button id="export-btn" onclick="exportStories()">📥 下载 JSON（全部故事）</button>
 
@@ -1458,7 +1458,7 @@ function renderExport(){
 
 </div>
 
-<button id="import-btn" style="margin-top:12px;padding:10px 20px;background:#eee;border:1px solid #ddd;border-radius:8px;color:#111;cursor:pointer" onclick="importStories()">📤 导入 JSON</button>
+<button id="import-btn" style="margin-top:12px;padding:10px 20px;background:rgba(30,30,50,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#c8c8d0;cursor:pointer" onclick="importStories()">📤 导入 JSON</button>
 
 <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
 
@@ -1560,7 +1560,7 @@ function renderOriginals(){
 
 </div>
 
-<div class="original-viewer" id="originalViewer" style="background:#fafafa;border:1px solid #ddd;border-radius:12px;padding:24px;max-height:70vh;overflow-y:auto;line-height:2;font-size:.9em;white-space:pre-wrap;color:#555;display:none"></div>
+<div class="original-viewer" id="originalViewer" style="background:rgba(15,15,30,0.7);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:24px;max-height:70vh;overflow-y:auto;line-height:2;font-size:.9em;white-space:pre-wrap;color:#aab8c8;display:none"></div>
 
 `;
 
