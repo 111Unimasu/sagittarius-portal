@@ -6,7 +6,7 @@
     <title>Sagittarius Grampus - 思维导图生成器</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
-/* DARK THEME */
+/* DARK THEME v3 */
 
 @font-face {
   font-family: 'ZiTiGuanJiaFangSongTi';
@@ -28,17 +28,17 @@
             border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
             transition: all 0.3s ease; background: rgba(22,22,22, 0.6);
         }
-        .back-link:hover { background: rgba(255,255,255,0.1); border-color: #999999; }
+        .back-link:hover { background: rgba(255,255,255,0.1); border-color: #999999; color: #999999; }
         .header { text-align: center; padding: 1.5rem; background: #1a1a1a 0%, transparent 100%); }
         .app-title {
             font-size: 2.5rem; font-weight: 700;
             color: #ffffff;
+             color: #ffffff;
              display: flex; align-items: center;
             justify-content: center; gap: 0.5rem;
         }
         .app-icon { font-size: 3rem; animation: pulse 2s ease-in-out infinite; }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
+        
             50% { transform: scale(1.1); opacity: 0.8; }
         }
         .container { max-width: 1200px; margin: 0 auto; padding: 1rem 2rem 3rem; }
@@ -56,20 +56,20 @@
         textarea:focus {
             outline: none; border-color: #999999; box-shadow: none;
         }
-        textarea::placeholder { color: #6b6b80; }
+        textarea::placeholder { color: #777777; }
         .btn {
             padding: 0.8rem 2rem; border: none; border-radius: 10px;
             font-size: 1rem; font-weight: 600; cursor: pointer;
             transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px;
         }
         .btn-primary {
-            color: #1a1a2e;
+            color: #ffffff; color: #1a1a2e;
             box-shadow: none;
         }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: none; }
         .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         .btn-secondary {
-            color: white;
+            color: #ffffff; color: white;
             margin-left: 0.5rem; box-shadow: none;
         }
         .btn-secondary:hover { transform: translateY(-2px); box-shadow: none; }
@@ -89,8 +89,7 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         .loading-text { font-size: 1.1rem; color: #999999; animation: fadeInOut 1.5s ease-in-out infinite; }
-        @keyframes fadeInOut {
-            0%, 100% { opacity: 0.5; } 50% { opacity: 1; }
+         50% { opacity: 1; }
         }
         .mindmap-container {
             display: none; margin-top: 2rem; background: rgba(25,25,25, 0.8);
@@ -113,7 +112,7 @@
         }
         .export-buttons.active { display: flex; flex-wrap: wrap; gap: 0.5rem; }
         .footer {
-            text-align: center; padding: 1rem; font-size: 0.85rem; color: #6b6b80;
+            text-align: center; padding: 1rem; font-size: 0.85rem; color: #777777;
         }
         .zoom-controls {
             position: absolute; top: 1rem; right: 1rem; display: flex;
