@@ -221,6 +221,10 @@
 
 
 <body>
+<audio id="bgm" loop autoplay style="display:none">
+<source src="../audio/river-flows-in-you.mp3" type="audio/mpeg">
+</audio>
+
 
 
 
@@ -1028,6 +1032,15 @@ inputBox.focus();
 
 
 
+
+// BGM
+(function(){
+  const bgm=document.getElementById('bgm');
+  if(bgm){
+    bgm.volume=0.3;
+    document.addEventListener('click',()=>{bgm.play().catch(()=>{});},{once:true});
+  }
+})();
 </script>
 
 
