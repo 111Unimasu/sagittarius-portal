@@ -170,6 +170,22 @@
   .welcome .ext-link:active { background:#f5f5f5; }
 
   code { background:#f0f0f0; padding:2px 5px; border-radius:4px; font-size:12px; }
+
+  /* download / export */
+  #export-btn {
+    background:none; border:none; color:#888;
+    font-size:15px; cursor:pointer; padding:4px;
+    transition:color 0.2s;
+  }
+  #export-btn:hover { color:#333; }
+  .msg-dl-btn {
+    display:none;
+    background:none; border:none; color:#bbb;
+    font-size:11px; cursor:pointer; padding:2px 6px;
+    margin-left:4px; vertical-align:middle; border-radius:4px;
+  }
+  .msg.ai:hover .msg-dl-btn { display:inline-block; }
+  .msg-dl-btn:active { background:#e8e8e8; color:#666; }
 </style>
 </head>
 <body>
@@ -179,6 +195,7 @@
     <h1>SagittariusA</h1>
     <span class="sub">AI</span>
     <a class="link-btn" href="https://111unimasumqq0629.asia/?v=2" target="_blank">🔗</a>
+    <button id="export-btn" onclick="exportChat()" title="导出对话">📥</button>
     <button id="gear-btn" onclick="toggleSettings()">⋯</button>
   </div>
   <div id="messages">
@@ -248,12 +265,46 @@ function addMessage(role, text) {
   const div = document.createElement('div');
   div.className = `msg ${role}`;
   if (role === 'ai') {
-    div.innerHTML = `<div class="label">SAGITTARIUS A*</div>${escapeHtml(text).replace(/\n/g,'<br>')}`;
+    const idx = messagesEl.querySelectorAll('.msg.ai').length;
+    div.innerHTML = `<div class="label">SAGITTARIUS A*</div>${escapeHtml(text).replace(/\n/g,'<br>')}<button class="msg-dl-btn" onclick="downloadMsg(${idx})" title="下载为 Markdown">⬇</button>`;
+    div._text = text;
   } else {
     div.textContent = text;
   }
   messagesEl.appendChild(div);
   scrollDown();
+}
+
+function downloadMsg(idx) {
+  const msgs = messagesEl.querySelectorAll('.msg.ai');
+  if (idx < msgs.length) {
+    downloadFile(`sagittariusa-msg.md`, msgs[idx]._text || msgs[idx].textContent || '');
+  }
+}
+
+function downloadFile(filename, text) {
+  const blob = new Blob([text], {type:'text/markdown;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function exportChat() {
+  const msgs = messagesEl.querySelectorAll('.msg');
+  if (msgs.length === 0) return;
+  let out = 'SagittariusA 对话记录\n' + '='.repeat(30) + '\n\n';
+  msgs.forEach(m => {
+    if (m.classList.contains('user')) {
+      out += '👤 用户: ' + (m.textContent || '') + '\n\n';
+    } else if (m.classList.contains('ai')) {
+      out += '🤖 SagittariusA: ' + (m._text || m.textContent || '') + '\n\n';
+    }
+  });
+  const now = new Date();
+  const ts = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
+  downloadFile(`chat-${ts}.txt`, out);
 }
 
 function addTyping() {
