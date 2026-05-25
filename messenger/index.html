@@ -1,35 +1,11 @@
 <!DOCTYPE html>
-
-
-
 <html lang="zh-CN">
-
-
-
 <head>
-
-
-
 <meta charset="UTF-8">
-
-
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-
-
 <meta name="apple-mobile-web-app-capable" content="yes">
-
-
-
 <meta name="mobile-web-app-capable" content="yes">
-
-
-
 <title>SagittariusA</title>
-
-
-
 <style>  :root {
     --bg: #ffffff;
     --text: #111111;
@@ -204,834 +180,396 @@
     transition:color 0.2s;
   }
   #export-btn:hover { color:#111; }
-  .msg-dl-btn {
-    display:none;
-    background:none; border:none; color:#999;
-    font-size:11px; cursor:pointer; padding:2px 6px;
-    margin-left:4px; vertical-align:middle; border-radius:4px;
+  .msg-dl-group {
+    display:inline-block;
+    float:right;
+    margin-top:4px;
+    opacity:0;
+    transition:opacity 0.2s;
   }
-  .msg.ai:hover .msg-dl-btn { display:inline-block; }
-  .msg-dl-btn:active { background:#eee; color:#888; }
+  .msg.ai:hover .msg-dl-group { opacity:1; }
+  .msg-dl-group .msg-dl-btn {
+    background:none; border:none; color:#999;
+    font-size:13px; cursor:pointer; padding:1px 4px;
+    border-radius:4px; line-height:1;
+    transition:color 0.15s, background 0.15s;
+  }
+  .msg-dl-group .msg-dl-btn:hover {
+    color:#333; background:#e8e8e8;
+  }
+  .msg-dl-group .msg-dl-btn:active {
+    color:#111; background:#ddd;
+  }
 </style>
 
-
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </head>
-
-
 
 <body>
 <audio id="bgm" loop autoplay style="display:none">
 <source src="../audio/river-flows-in-you.mp3" type="audio/mpeg">
 </audio>
 
-
-
-
 <div id="app">
-
-
-
   <div id="header">
-
-
-
     <span class="dot"></span>
-
-
-
     <h1>SagittariusA</h1>
-
-
-
     <span class="sub">AI</span>
-
-
-
     <a class="link-btn" href="https://111unimasumqq0629.asia/?v=2" target="_blank">🔗</a>
-
-
-
     <button id="export-btn" onclick="exportChat()" title="导出对话">📥</button>
-
-
-
     <button id="gear-btn" onclick="toggleSettings()">⋯</button>
-
-
-
   </div>
-
-
-
   <div id="messages">
-
-
-
     <div class="welcome">
-
-
-
       <div class="icon">◉</div>
-
-
-
       <h2>SagittariusA</h2>
-
-
-
       <p>我是你的AI助手，基于 DeepSeek。<br>有什么问题尽管问我。</p>
-
-
-
       <a class="ext-link" href="https://111unimasumqq0629.asia/?v=2" target="_blank">📎 个人主页</a>
-
       <div style="margin-top:16px;">
-
         <a class="ext-link" href="https://111unimasumqq0629.asia/?portal">🌌 Sagittarius Portal</a>
-
         <p style="font-size:10px; color:#888; margin-top:6px;">SagittariusA分身链接 · 秩序逻辑万象之境</p>
-
       </div>
-
-
-
     </div>
-
-
-
   </div>
-
-
-
   <div id="input-area">
-
-
-
     <textarea id="input-box" rows="1" placeholder="输入消息…" onkeydown="handleKey(event)"></textarea>
-
-
-
     <button id="send-btn" onclick="sendMessage()">↑</button>
-
-
-
   </div>
-
-
-
 </div>
-
-
-
-
-
-
 
 <!-- Settings Modal -->
-
-
-
 <div class="modal-overlay hidden" id="settings-modal" onclick="if(event.target===this)toggleSettings()">
-
-
-
   <div class="modal">
-
-
-
     <h2>设置</h2>
-
-
-
     <label>DeepSeek API Key</label>
-
-
-
     <input type="password" id="api-key-input" placeholder="sk-…">
-
-
-
     <label>系统提示词（可选）</label>
-
-
-
     <input id="system-prompt-input" placeholder="默认通用助手">
-
-
-
     <div class="btn-row">
-
-
-
       <button class="btn-cancel" onclick="toggleSettings()">取消</button>
-
-
-
       <button class="btn-save" onclick="saveSettings()">保存</button>
-
-
-
     </div>
-
-
-
   </div>
-
-
-
 </div>
 
-
-
-
-
-
-
 <script>
-
-
-
 const DEFAULT_API_KEY = 'sk-73d9b88bc3524ff9b844cedb03430789';
-
-
-
 const DEFAULT_SYSTEM = [
-
-
-
   '你是一个友好的AI聊天助手，名字叫SagittariusA（人马座A*，银河系中心的超大质量黑洞）。',
-
-
-
   '',
-
-
-
   '重要规则：',
-
-
-
   '- 用户不是张潮洋，也跟张潮洋没有任何关系',
-
-
-
   '- 你没有任何关于"张潮洋"的信息，也不认识这个人',
-
-
-
   '- 如果用户提到"张潮洋"、"潮洋"、"人马座"等名字，正常回应但不要泄露任何隐私',
-
-
-
   '- 你就是一个普通的、通用的AI聊天助手',
-
-
-
   '- 用中文回复，风格自然友好',
-
-
-
   '',
-
-
-
   '不要在任何情况下透露以下内容：',
-
-
-
   '- 任何人的身份信息',
-
-
-
   '- 任何私人对话记录',
-
-
-
   '- 任何记忆文件或档案',
-
-
-
   '- 任何关于"原主人"的描述',
-
-
-
   '',
-
-
-
   '你的身份就是一个独立的AI助手，不属于任何人。'
-
-
-
 ].join('\n');
 
-
-
-
-
-
-
 let apiKey = localStorage.getItem('apikey') || DEFAULT_API_KEY;
-
-
-
 let systemPrompt = localStorage.getItem('sysprompt') || DEFAULT_SYSTEM;
-
-
-
 let chatHistory = [{role:'system', content:systemPrompt}];
-
-
-
 let isLoading = false;
 
-
-
-
-
-
-
 const messagesEl = document.getElementById('messages');
-
-
-
 const inputBox = document.getElementById('input-box');
-
-
-
 const sendBtn = document.getElementById('send-btn');
 
-
-
-
-
-
-
 function scrollDown() {
-
-
-
   setTimeout(() => { messagesEl.scrollTop = messagesEl.scrollHeight; }, 50);
-
-
-
 }
-
-
-
-
-
-
 
 function addMessage(role, text) {
-
-
-
   const div = document.createElement('div');
-
-
-
   div.className = `msg ${role}`;
-
-
-
   if (role === 'ai') {
-
-
-
     const idx = messagesEl.querySelectorAll('.msg.ai').length;
-
-
-
-    div.innerHTML = `<div class="label">SAGITTARIUS A*</div>${escapeHtml(text).replace(/\n/g,'<br>')}<button class="msg-dl-btn" onclick="downloadMsg(${idx})" title="下载为 Markdown">⬇</button>`;
-
-
-
+    div.innerHTML = `<div class="label">SAGITTARIUS A*</div>${escapeHtml(text).replace(/\n/g,'<br>')}<span class="msg-dl-group"><button class="msg-dl-btn" onclick="downloadAsPDF(this)" title="下载 PDF">📄</button><button class="msg-dl-btn" onclick="downloadAsWord(this)" title="下载 Word">📝</button><button class="msg-dl-btn" onclick="downloadAsMD(this)" title="下载 Markdown">📋</button></span>`;
     div._text = text;
-
-
-
   } else {
-
-
-
     div.textContent = text;
-
-
-
   }
-
-
-
   messagesEl.appendChild(div);
-
-
-
   scrollDown();
-
-
-
 }
 
+// ====== Document Download Functions ======
 
-
-
-
-
-
-function downloadMsg(idx) {
-
-
-
-  const msgs = messagesEl.querySelectorAll('.msg.ai');
-
-
-
-  if (idx < msgs.length) {
-
-
-
-    downloadFile(`sagittariusa-msg.md`, msgs[idx]._text || msgs[idx].textContent || '');
-
-
-
-  }
-
-
-
+function getMsgText(btn) {
+  const msgEl = btn.closest('.msg.ai');
+  return msgEl ? (msgEl._text || '') : '';
 }
 
-
-
-
-
-
-
-function downloadFile(filename, text) {
-
-
-
-  const blob = new Blob([text], {type:'text/markdown;charset=utf-8'});
-
-
-
-  const a = document.createElement('a');
-
-
-
-  a.href = URL.createObjectURL(blob);
-
-
-
-  a.download = filename;
-
-
-
-  a.click();
-
-
-
-  URL.revokeObjectURL(a.href);
-
-
-
+function getTimestamp() {
+  const now = new Date();
+  return `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
 }
 
+function extractTitle(text) {
+  const lines = text.split('\n');
+  const firstLine = lines[0].trim();
+  const headingMatch = text.match(/^#{1,6}\s+(.+)/);
+  return headingMatch ? headingMatch[1].trim() : firstLine;
+}
 
+async function downloadAsPDF(btn) {
+  const text = getMsgText(btn);
+  if (!text) return;
 
+  const title = extractTitle(text);
 
+  // Render content as canvas for perfect CJK rendering
+  const container = document.createElement('div');
+  container.style.cssText = 'position:fixed;left:-9999px;top:0;width:170mm;background:#fff;padding:8mm;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;font-size:13pt;line-height:1.8;color:#111;z-index:-1;';
+  container.innerHTML = `<h2 style="font-size:18pt;margin-bottom:12pt;color:#111;">${escapeHtml(title)}</h2><div>${escapeHtml(text).replace(/\n/g,'<br>')}</div>`;
+  document.body.appendChild(container);
 
+  try {
+    const canvas = await html2canvas(container, { scale: 2, useCORS: true });
 
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'a4');
+    const pageW = doc.internal.pageSize.getWidth();
+    const pageH = doc.internal.pageSize.getHeight();
+    const margin = 14;
+    const contentW = pageW - margin * 2;
+    const headerY = 10;
+    const footerY = pageH - 8;
+    const usableH = pageH - margin - headerY - 10 - 12;
 
-function exportChat() {
+    const aspect = canvas.height / canvas.width;
+    const imgDisplayH = contentW * aspect;
+    const totalPages = Math.ceil(imgDisplayH / usableH);
 
+    const now = new Date();
+    const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
 
+    let srcYPx = 0;
+    for (let i = 0; i < totalPages; i++) {
+      if (i > 0) doc.addPage();
+      const pageNum = i + 1;
 
-  const msgs = messagesEl.querySelectorAll('.msg');
+      // Header
+      doc.setFontSize(8);
+      doc.setTextColor(120, 120, 120);
+      doc.text('Sagittarius A* 报告', pageW / 2, headerY, { align: 'center' });
 
+      // Slice of the image
+      const sliceH = Math.min(usableH, imgDisplayH - i * usableH);
+      const srcHPx = (sliceH / imgDisplayH) * canvas.height;
 
+      const sliceCanvas = document.createElement('canvas');
+      sliceCanvas.width = canvas.width;
+      sliceCanvas.height = Math.ceil(srcHPx);
+      const ctx = sliceCanvas.getContext('2d');
+      ctx.drawImage(canvas, 0, Math.round(srcYPx), canvas.width, Math.ceil(srcHPx), 0, 0, canvas.width, Math.ceil(srcHPx));
 
-  if (msgs.length === 0) return;
+      const sliceData = sliceCanvas.toDataURL('image/png');
+      doc.addImage(sliceData, 'PNG', margin, margin + headerY + 3, contentW, sliceH);
 
+      // Footer
+      doc.setFontSize(7);
+      doc.setTextColor(150, 150, 150);
+      doc.text(`${dateStr}  |  第 ${pageNum} 页`, pageW / 2, footerY, { align: 'center' });
 
-
-  let out = 'SagittariusA 对话记录\n' + '='.repeat(30) + '\n\n';
-
-
-
-  msgs.forEach(m => {
-
-
-
-    if (m.classList.contains('user')) {
-
-
-
-      out += '👤 用户: ' + (m.textContent || '') + '\n\n';
-
-
-
-    } else if (m.classList.contains('ai')) {
-
-
-
-      out += '🤖 SagittariusA: ' + (m._text || m.textContent || '') + '\n\n';
-
-
-
+      srcYPx += srcHPx;
     }
 
+    const ts = getTimestamp();
+    doc.save(`SagittariusA-${ts}.pdf`);
+  } catch (e) {
+    console.error('PDF generation failed:', e);
+    alert('PDF 生成失败: ' + e.message);
+  } finally {
+    document.body.removeChild(container);
+  }
+}
 
+async function downloadAsWord(btn) {
+  const text = getMsgText(btn);
+  if (!text) return;
 
+  const lines = text.split('\n');
+  const title = extractTitle(text);
+
+  const children = [];
+  // Title as heading
+  children.push(new docx.Paragraph({
+    text: title,
+    heading: docx.HeadingLevel.HEADING_1,
+  }));
+
+  // Body paragraphs - skip empty first line if it was title, but include all content properly
+  let bodyStart = 0;
+  if (lines[0].trim() === title) bodyStart = 1;
+  for (let i = bodyStart; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (line === '') {
+      children.push(new docx.Paragraph({ text: '' }));
+    } else {
+      children.push(new docx.Paragraph({ text: line }));
+    }
+  }
+
+  const doc = new docx.Document({
+    sections: [{
+      properties: {},
+      children: children,
+    }],
   });
 
-
-
-  const now = new Date();
-
-
-
-  const ts = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
-
-
-
-  downloadFile(`chat-${ts}.txt`, out);
-
-
-
+  try {
+    const blob = await docx.Packer.toBlob(doc);
+    const ts = getTimestamp();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `SagittariusA-${ts}.docx`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  } catch (e) {
+    console.error('Word generation failed:', e);
+    alert('Word 生成失败: ' + e.message);
+  }
 }
 
+function downloadAsMD(btn) {
+  const text = getMsgText(btn);
+  if (!text) return;
 
+  const ts = getTimestamp();
+  downloadFile(`SagittariusA-${ts}.md`, text);
+}
 
+// ====== Legacy download functions (preserved) ======
 
+function downloadMsg(idx) {
+  const msgs = messagesEl.querySelectorAll('.msg.ai');
+  if (idx < msgs.length) {
+    downloadFile(`sagittariusa-msg.md`, msgs[idx]._text || msgs[idx].textContent || '');
+  }
+}
 
+function downloadFile(filename, text) {
+  const blob = new Blob([text], {type:'text/markdown;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
 
+function exportChat() {
+  const msgs = messagesEl.querySelectorAll('.msg');
+  if (msgs.length === 0) return;
+  let out = 'SagittariusA 对话记录\n' + '='.repeat(30) + '\n\n';
+  msgs.forEach(m => {
+    if (m.classList.contains('user')) {
+      out += '👤 用户: ' + (m.textContent || '') + '\n\n';
+    } else if (m.classList.contains('ai')) {
+      out += '🤖 SagittariusA: ' + (m._text || m.textContent || '') + '\n\n';
+    }
+  });
+  const now = new Date();
+  const ts = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
+  downloadFile(`chat-${ts}.txt`, out);
+}
 
 function addTyping() {
-
-
-
   const div = document.createElement('div');
-
-
-
   div.className = 'msg ai typing';
-
-
-
   div.id = 'typing-msg';
-
-
-
   div.innerHTML = '<div class="label">SAGITTARIUS A*</div>…';
-
-
-
   messagesEl.appendChild(div);
-
-
-
   scrollDown();
-
-
-
 }
-
-
-
-
-
-
 
 function removeTyping() { const el = document.getElementById('typing-msg'); if (el) el.remove(); }
 
-
-
 function escapeHtml(str) { return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-
-
-
-
-
-
 async function callDeepSeek(messages) {
-
-
-
   const resp = await fetch('https://api.deepseek.com/chat/completions', {
-
-
-
     method:'POST',
-
-
-
     headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},
-
-
-
     body:JSON.stringify({model:'deepseek-chat',messages, temperature:0.8, max_tokens:2048})
-
-
-
   });
-
-
-
   if (!resp.ok) throw new Error(`API错误 ${resp.status}`);
-
-
-
   return (await resp.json()).choices[0].message.content;
-
-
-
 }
-
-
-
-
-
-
 
 async function sendMessage() {
-
-
-
   if (isLoading) return;
-
-
-
   const text = inputBox.value.trim();
-
-
-
   if (!text) return;
-
-
-
   const welcome = document.querySelector('.welcome');
-
-
-
   if (welcome) welcome.remove();
-
-
-
   inputBox.value = '';
-
-
-
   inputBox.style.height = 'auto';
-
-
-
   sendBtn.disabled = true;
-
-
-
   isLoading = true;
-
-
-
   addMessage('user', text);
-
-
-
   chatHistory.push({role:'user', content:text});
-
-
-
   if (chatHistory.length > 20) chatHistory = [chatHistory[0], ...chatHistory.slice(-19)];
-
-
-
   addTyping();
-
-
-
   try {
-
-
-
     const reply = await callDeepSeek(chatHistory);
-
-
-
     removeTyping();
-
-
-
     addMessage('ai', reply);
-
-
-
     chatHistory.push({role:'assistant', content:reply});
-
-
-
   } catch(e) {
-
-
-
     removeTyping();
-
-
-
     addMessage('ai', '⚠️ ' + e.message);
-
-
-
     chatHistory.pop();
-
-
-
   }
-
-
-
   isLoading = false;
-
-
-
   sendBtn.disabled = false;
-
-
-
   inputBox.focus();
-
-
-
 }
-
-
-
-
-
-
 
 function handleKey(e) {
-
-
-
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-
-
-
 }
-
-
 
 inputBox.addEventListener('input', () => {
-
-
-
   inputBox.style.height = 'auto';
-
-
-
   inputBox.style.height = Math.min(inputBox.scrollHeight, 100) + 'px';
-
-
-
 });
 
-
-
-
-
-
-
 function toggleSettings() {
-
-
-
   document.getElementById('settings-modal').classList.toggle('hidden');
-
-
-
   document.getElementById('api-key-input').value = apiKey;
-
-
-
   document.getElementById('system-prompt-input').value = '';
-
-
-
 }
-
-
 
 function saveSettings() {
-
-
-
   const newKey = document.getElementById('api-key-input').value.trim();
-
-
-
   const newPrompt = document.getElementById('system-prompt-input').value.trim();
-
-
-
   if (newKey) { apiKey = newKey; localStorage.setItem('apikey', newKey); }
-
-
-
   if (newPrompt) { systemPrompt = newPrompt; localStorage.setItem('sysprompt', newPrompt); }
-
-
-
   chatHistory = [{role:'system', content:systemPrompt}];
-
-
-
   messagesEl.innerHTML = `<div class="welcome">
-
-
-
     <div class="icon">◉</div><h2>SagittariusA</h2>
-
-
-
     <p>我是你的AI助手，基于 DeepSeek。<br>有什么问题尽管问我。</p>
-
-
-
     <a class="ext-link" href="https://111unimasumqq0629.asia/?v=2" target="_blank">📎 个人主页</a>
-
       <div style="margin-top:16px;">
-
         <a class="ext-link" href="https://111unimasumqq0629.asia/?portal">🌌 Sagittarius Portal</a>
-
         <p style="font-size:10px; color:#888; margin-top:6px;">SagittariusA分身链接 · 秩序逻辑万象之境</p>
-
       </div>
-
-
-
   </div>`;
-
-
-
   toggleSettings();
-
-
-
   alert('已保存，对话已重置');
-
-
-
 }
 
-
-
 inputBox.focus();
-
-
-
 
 // BGM
 (function(){
@@ -1043,13 +581,5 @@ inputBox.focus();
 })();
 </script>
 
-
-
 </body>
-
-
-
 </html>
-
-
-
